@@ -3,5 +3,6 @@ cflie.map
 cflie.bin
 cflie.elf
 cflie.hex
+version.c
 *~
 #*#
