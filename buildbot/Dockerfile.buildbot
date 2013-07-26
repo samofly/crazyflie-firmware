@@ -1,0 +1,40 @@
+FROM base:latest
+
+# Enable universe repository (for virtualenv)
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"
+RUN apt-get update
+
+# upstart-related fixes
+RUN dpkg-divert --local --rename --add /sbin/initctl
+RUN ln -s /bin/true /sbin/initctl
+
+# Install packages for Buildbot and Crazyflie
+RUN apt-get install -y gcc-multilib g++-multilib make cmake texinfo
+RUN apt-get install -y autoconf automake git python-dev python-virtualenv
+
+# Install ssh daemon
+RUN apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+
+# Install Buildbot
+# We need at least Buildbot 0.8.8, due to http://trac.buildbot.net/ticket/2476
+# Once Buildbot 0.8.8 is released, uncomment the following lines and
+# delete the 2 lines after them
+# RUN pip install buildbot
+# RUN pip install buildbot-slave
+RUN pip install http://buildbot.googlecode.com/files/buildbot-0.8.8rc1.tar.gz
+RUN pip install http://buildbot.googlecode.com/files/buildbot-slave-0.8.8rc1.tar.gz
+
+RUN adduser --gecos "" --disabled-password user
+RUN adduser user sudo
+RUN sh -c "echo \"$PASSWORD\n$PASSWORD\n\" | passwd user"
+
+# Setup Buildbot dir
+RUN mkdir -p /home/user/buildbot
+RUN /bin/sh -c "cd /home/user/buildbot && buildbot create-master master && mv master/master.cfg.sample master/master.cfg"
+RUN /bin/sh -c "cd /home/user/buildbot && buildslave create-slave slave localhost:9989 example-slave pass"
+
+EXPOSE $WEB_PORT:8010
+
+CMD /bin/bash -c "cd /home/user/buildbot && buildbot start master && buildslave start slave && /usr/sbin/sshd -D"
