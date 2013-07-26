@@ -3,21 +3,20 @@
 FILE=utils/src/version.c
 
 #Get the relevant informations
-ID=$(hg identify -nit)
 
-REV=$(echo -n $ID | cut -d' ' -f1)
-LOCAL=$(echo -n $ID | cut -d' ' -f2)
-TAG=$(echo -n $ID | cut -d' ' -f3)
+REV=$(git rev-parse HEAD)
+LOCAL=""
+TAG=""
 
 #LOCAL=$(hg identify -n)
 #REV=$(hg identify -i)
 #TAG=$(hg identify -t)
 #BRANCH=$(hg identify -b)
 
-if echo -n $REV | grep +\$>/dev/null; then
-  MODIFIED=1
-else
+if git diff --quiet HEAD; then
   MODIFIED=0
+else
+  MODIFIED=1
 fi
 
 #Patch version.c

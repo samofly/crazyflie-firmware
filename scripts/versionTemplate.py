@@ -17,23 +17,19 @@ if len(sys.argv)<3:
     sys.exit(1)
 
 #Get the build repos information
-identify = subprocess.check_output(["hg", "identify", "-nitb"])
-identify = identify.split()
-version['revision'] = identify[0]
-version['irevision0'] = "0x" + identify[0][0:8]
-version['irevision1'] = "0x" + identify[0][8:12]
-version['local_revision'] = identify[1]
-version['branch'] = identify[2]
-if len(identify)>3:
-  version['tag'] = identify[3]
-else:
-  version['tag'] = ""
+version['revision'] = subprocess.check_output(["git", "rev-parse", "HEAD"]).strip()
+version['local_revision'] = ""
+version['irevision0'] = "0"
+version['irevision1'] = "0"
+version['tag'] = ""
+
+version['branch'] = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).strip()
 
 try:
-    version['local_revision'].index('+')
-    version['modified'] = 'true'
-except Exception:
+    subprocess.check_output(["git", "diff", "--quiet", "HEAD"])
     version['modified'] = 'false'
+except Exception:
+    version['modified'] = 'true'
 
 #Apply information to the file template
 infile  = open(sys.argv[1], 'r')
