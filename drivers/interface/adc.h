@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -39,40 +39,38 @@
  * Number of samples used in the mean value calculation.
  * Mean size should be evenly dividable by decimation bits.
  */
-#define ADC_DECIMATE_TO_BITS  12
-#define ADC_MEAN_SIZE         8
+#define ADC_DECIMATE_TO_BITS 12
+#define ADC_MEAN_SIZE 8
 
-#define ADC_RESOLUTION        12
-#define ADC_DECIMATE_DIVEDEND (ADC_MEAN_SIZE / (1 << (ADC_DECIMATE_TO_BITS - ADC_RESOLUTION)))
+#define ADC_RESOLUTION 12
+#define ADC_DECIMATE_DIVEDEND                                                  \
+  (ADC_MEAN_SIZE / (1 << (ADC_DECIMATE_TO_BITS - ADC_RESOLUTION)))
 
 #if ADC_DECIMATE_TO_BITS < ADC_RESOLUTION
-#  error "ADC_DECIMATE_TO_BITS must be bigger or equal to ADC_RESOLUTION"
+#error "ADC_DECIMATE_TO_BITS must be bigger or equal to ADC_RESOLUTION"
 #endif
 
-#define ADC_SAMPLING_FREQ      100
-#define ADC_OVERSAMPLING_FREQ  (ADC_SAMPLING_FREQ * ADC_MEAN_SIZE)
+#define ADC_SAMPLING_FREQ 100
+#define ADC_OVERSAMPLING_FREQ (ADC_SAMPLING_FREQ *ADC_MEAN_SIZE)
 
-#define ADC_TRIG_PRESCALE       1
-#define ADC_TRIG_PRESCALE_FREQ  (72000000 / (ADC_TRIG_PRESCALE + 1))
-#define ADC_TRIG_PERIOD         (ADC_TRIG_PRESCALE_FREQ / (ADC_OVERSAMPLING_FREQ))
+#define ADC_TRIG_PRESCALE 1
+#define ADC_TRIG_PRESCALE_FREQ (72000000 / (ADC_TRIG_PRESCALE + 1))
+#define ADC_TRIG_PERIOD (ADC_TRIG_PRESCALE_FREQ / (ADC_OVERSAMPLING_FREQ))
 
-#define ADC_INTERNAL_VREF   1.20
+#define ADC_INTERNAL_VREF 1.20
 
 /******** Types ********/
 
-typedef struct __attribute__((packed))
-{
+typedef struct __attribute__((packed)) {
   uint16_t vref;
   uint16_t val;
 } AdcPair;
 
-typedef struct __attribute__((packed))
-{
+typedef struct __attribute__((packed)) {
   AdcPair vbat;
 } AdcGroup;
 
-typedef struct
-{
+typedef struct {
   uint16_t vbat;
   uint16_t vbatVref;
 } AdcDeciGroup;

@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -38,7 +38,7 @@
 struct configblock_s {
   /* header */
   uint32_t magic;
-  uint8_t  version;
+  uint8_t version;
   /* Content */
   uint8_t radioChannel;
   uint8_t radioSpeed;
@@ -50,64 +50,57 @@ struct configblock_s {
 
 static struct configblock_s *configblock;
 
-static bool cb_ok=false;
+static bool cb_ok = false;
 
-static uint8_t calculate_cksum(void* data, size_t len)
-{
-  unsigned char* c = data;
+static uint8_t calculate_cksum(void *data, size_t len) {
+  unsigned char *c = data;
   int i;
-  unsigned char cksum=0;
-  
-  for (i=0; i<len; i++)
+  unsigned char cksum = 0;
+
+  for (i = 0; i < len; i++)
     cksum += *(c++);
 
   return cksum;
 }
 
-int configblockInit(void)
-{
-  configblock = (void*)CONFIG_BLOCK_ADDRESS;
+int configblockInit(void) {
+  configblock = (void *)CONFIG_BLOCK_ADDRESS;
 
-  //Verify the config block
-  if (configblock->magic!=MAGIC || configblock->version!= VERSION || 
-      calculate_cksum(configblock, sizeof(*configblock)) )
+  // Verify the config block
+  if (configblock->magic != MAGIC || configblock->version != VERSION ||
+      calculate_cksum(configblock, sizeof(*configblock)))
     return -1;
 
   cb_ok = true;
-  
+
   return 0;
 }
 
 /* Static accessors */
-int configblockGetRadioChannel(void)
-{
+int configblockGetRadioChannel(void) {
   if (cb_ok)
     return configblock->radioChannel;
   else
     return RADIO_CHANEL;
 }
 
-int configblockGetRadioSpeed(void)
-{
+int configblockGetRadioSpeed(void) {
   if (cb_ok)
     return configblock->radioSpeed;
   else
     return RADIO_DATARATE;
 }
 
-float configblockGetCalibPitch(void)
-{
+float configblockGetCalibPitch(void) {
   if (cb_ok)
     return configblock->calibPitch;
   else
     return 0;
 }
 
-float configblockGetCalibRoll(void)
-{
+float configblockGetCalibRoll(void) {
   if (cb_ok)
     return configblock->calibRoll;
   else
     return 0;
 }
-

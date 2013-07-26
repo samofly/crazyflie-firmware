@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -36,8 +36,7 @@
 static bool isInit;
 
 /* Interruption initialisation */
-void extiInit()
-{
+void extiInit() {
   if (isInit)
     return;
 
@@ -48,19 +47,14 @@ void extiInit()
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-  
+
   isInit = true;
 }
 
-bool extiTest(void)
-{
-  return isInit;
-}
+bool extiTest(void) { return isInit; }
 
-void extiInterruptHandler(void)
-{
-  if (EXTI_GetITStatus(RADIO_GPIO_IRQ_LINE)==SET)
-  {
+void extiInterruptHandler(void) {
+  if (EXTI_GetITStatus(RADIO_GPIO_IRQ_LINE) == SET) {
     nrfIsr();
     EXTI_ClearITPendingBit(RADIO_GPIO_IRQ_LINE);
   }

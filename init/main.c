@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -44,27 +44,26 @@
 /* Private functions */
 static void prvClockInit(void);
 
-int main() 
-{
-  //Low level init: Clock and Interrupt controller
+int main() {
+  // Low level init: Clock and Interrupt controller
   prvClockInit();
   nvicInit();
 
-  //Launch the system task that will initialize and start everything
+  // Launch the system task that will initialize and start everything
   systemLaunch();
 
-  //Start the FreeRTOS scheduler
+  // Start the FreeRTOS scheduler
   vTaskStartScheduler();
 
-  //Should never reach this point!
-  while(1);
+  // Should never reach this point!
+  while (1)
+    ;
 
   return 0;
 }
 
-//Clock configuration
-static void prvClockInit(void)
-{
+// Clock configuration
+static void prvClockInit(void) {
   ErrorStatus HSEStartUpStatus;
 
   RCC_DeInit();
@@ -73,8 +72,7 @@ static void prvClockInit(void)
   /* Wait till HSE is ready */
   HSEStartUpStatus = RCC_WaitForHSEStartUp();
 
-  if (HSEStartUpStatus == SUCCESS)
-  {
+  if (HSEStartUpStatus == SUCCESS) {
     /* Enable Prefetch Buffer */
     FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
 
@@ -100,27 +98,30 @@ static void prvClockInit(void)
     RCC_PLLCmd(ENABLE);
 
     /* Wait till PLL is ready */
-    while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
+    while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)
+      ;
 
     /* Select PLL as system clock source */
     RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
 
     /* Wait till PLL is used as system clock source */
-    while(RCC_GetSYSCLKSource() != 0x08);
+    while (RCC_GetSYSCLKSource() != 0x08)
+      ;
   } else {
-      GPIO_InitTypeDef GPIO_InitStructure;
-  
-    //Cannot start the main oscillator: red/green LED of death...
+    GPIO_InitTypeDef GPIO_InitStructure;
+
+    // Cannot start the main oscillator: red/green LED of death...
     GPIO_InitStructure.GPIO_Pin = LED_GPIO_RED | LED_GPIO_GREEN;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-    
+
     GPIO_ResetBits(GPIOB, LED_RED);
     GPIO_ResetBits(GPIOB, LED_GREEN);
 
-    //Cannot start xtal oscillator!
-    while(1); 
+    // Cannot start xtal oscillator!
+    while (1)
+      ;
   }
 }

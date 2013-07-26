@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -14,7 +14,7 @@
 
 #include <stdarg.h>
 
-#ifndef	__EPRINTF_H__
+#ifndef __EPRINTF_H__
 #define __EPRINTF_H__
 
 /**
@@ -29,8 +29,7 @@ typedef int (*putc_t)(int c);
  * @param[in] ... Parameters to print
  * @return the number of character printed
  */
-int eprintf(putc_t putcf, char * fmt, ...) 
-    __attribute__ (( format(printf, 2, 3) ));
+int eprintf(putc_t putcf, char *fmt, ...) __attribute__((format(printf, 2, 3)));
 
 /**
  * Light printf implementation
@@ -39,6 +38,6 @@ int eprintf(putc_t putcf, char * fmt, ...)
  * @param[in] ap Parameters to print
  * @return the number of character printed
  */
-int evprintf(putc_t putcf, char * fmt, va_list ap);
+int evprintf(putc_t putcf, char *fmt, va_list ap);
 
 #endif //__EPRINTF_H__

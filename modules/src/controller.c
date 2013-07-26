@@ -24,7 +24,7 @@
  *
  */
 #include <stdbool.h>
- 
+
 #include "stm32f10x_conf.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -41,11 +41,13 @@
   }
 */
 
-//Fancier version
-#define TRUNCATE_SINT16(out, in) (out = (in<INT16_MIN)?INT16_MIN:((in>INT16_MAX)?INT16_MAX:in) )
+// Fancier version
+#define TRUNCATE_SINT16(out, in)                                               \
+  (out = (in < INT16_MIN) ? INT16_MIN : ((in > INT16_MAX) ? INT16_MAX : in))
 
-//Better semantic
-#define SATURATE_SINT16(in) ( (in<INT16_MIN)?INT16_MIN:((in>INT16_MAX)?INT16_MAX:in) )
+// Better semantic
+#define SATURATE_SINT16(in)                                                    \
+  ((in < INT16_MIN) ? INT16_MIN : ((in > INT16_MAX) ? INT16_MAX : in))
 
 PidObject pidRollRate;
 PidObject pidPitchRate;
@@ -60,14 +62,15 @@ int16_t yawOutput;
 
 static bool isInit;
 
-void controllerInit()
-{
-  if(isInit)
+void controllerInit() {
+  if (isInit)
     return;
-  
-  //TODO: get parameters from configuration manager instead
-  pidInit(&pidRollRate, 0, PID_ROLL_RATE_KP, PID_ROLL_RATE_KI, PID_ROLL_RATE_KD);
-  pidInit(&pidPitchRate, 0, PID_PITCH_RATE_KP, PID_PITCH_RATE_KI, PID_PITCH_RATE_KD);
+
+  // TODO: get parameters from configuration manager instead
+  pidInit(&pidRollRate, 0, PID_ROLL_RATE_KP, PID_ROLL_RATE_KI,
+          PID_ROLL_RATE_KD);
+  pidInit(&pidPitchRate, 0, PID_PITCH_RATE_KP, PID_PITCH_RATE_KI,
+          PID_PITCH_RATE_KD);
   pidInit(&pidYawRate, 0, PID_YAW_RATE_KP, PID_YAW_RATE_KI, PID_YAW_RATE_KD);
   pidSetIntegralLimit(&pidRollRate, PID_ROLL_RATE_INTEGRATION_LIMIT);
   pidSetIntegralLimit(&pidPitchRate, PID_PITCH_RATE_INTEGRATION_LIMIT);
@@ -79,19 +82,15 @@ void controllerInit()
   pidSetIntegralLimit(&pidRoll, PID_ROLL_INTEGRATION_LIMIT);
   pidSetIntegralLimit(&pidPitch, PID_PITCH_INTEGRATION_LIMIT);
   pidSetIntegralLimit(&pidYaw, PID_YAW_INTEGRATION_LIMIT);
-  
+
   isInit = true;
 }
 
-bool controllerTest()
-{
-  return isInit;
-}
+bool controllerTest() { return isInit; }
 
-void controllerCorrectRatePID(
-       float rollRateActual, float pitchRateActual, float yawRateActual,
-       float rollRateDesired, float pitchRateDesired, float yawRateDesired)
-{
+void controllerCorrectRatePID(float rollRateActual, float pitchRateActual,
+                              float yawRateActual, float rollRateDesired,
+                              float pitchRateDesired, float yawRateDesired) {
   pidSetDesired(&pidRollRate, rollRateDesired);
   TRUNCATE_SINT16(rollOutput, pidUpdate(&pidRollRate, rollRateActual, TRUE));
 
@@ -102,11 +101,12 @@ void controllerCorrectRatePID(
   TRUNCATE_SINT16(yawOutput, pidUpdate(&pidYawRate, yawRateActual, TRUE));
 }
 
-void controllerCorrectAttitudePID(
-       float eulerRollActual, float eulerPitchActual, float eulerYawActual,
-       float eulerRollDesired, float eulerPitchDesired, float eulerYawDesired,
-       float* rollRateDesired, float* pitchRateDesired, float* yawRateDesired)
-{
+void controllerCorrectAttitudePID(float eulerRollActual, float eulerPitchActual,
+                                  float eulerYawActual, float eulerRollDesired,
+                                  float eulerPitchDesired,
+                                  float eulerYawDesired, float *rollRateDesired,
+                                  float *pitchRateDesired,
+                                  float *yawRateDesired) {
   pidSetDesired(&pidRoll, eulerRollDesired);
   *rollRateDesired = pidUpdate(&pidRoll, eulerRollActual, TRUE);
 
@@ -125,8 +125,7 @@ void controllerCorrectAttitudePID(
   *yawRateDesired = pidUpdate(&pidYaw, eulerYawActual, FALSE);
 }
 
-void controllerResetAllPID(void)
-{
+void controllerResetAllPID(void) {
   pidReset(&pidRoll);
   pidReset(&pidPitch);
   pidReset(&pidYaw);
@@ -135,8 +134,7 @@ void controllerResetAllPID(void)
   pidReset(&pidYawRate);
 }
 
-void controllerGetActuatorOutput(int16_t* roll, int16_t* pitch, int16_t* yaw)
-{
+void controllerGetActuatorOutput(int16_t *roll, int16_t *pitch, int16_t *yaw) {
   *roll = rollOutput;
   *pitch = pitchOutput;
   *yaw = yawOutput;

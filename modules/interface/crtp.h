@@ -33,18 +33,17 @@
 
 #define CRTP_HEADER(port, channel) (((port & 0x0F) << 4) | (channel & 0x0F))
 
-#define CRTP_IS_NULL_PACKET(P) ((P.header&0xF3)==0xF3)
+#define CRTP_IS_NULL_PACKET(P) ((P.header & 0xF3) == 0xF3)
 
 typedef enum {
-  CRTP_PORT_CONSOLE     = 0x00,
-  CRTP_PORT_PARAM       = 0x02,
-  CRTP_PORT_COMMANDER   = 0x03,
-  CRTP_PORT_LOG         = 0x05,
-  CRTP_PORT_LINK        = 0x0F,
+  CRTP_PORT_CONSOLE = 0x00,
+  CRTP_PORT_PARAM = 0x02,
+  CRTP_PORT_COMMANDER = 0x03,
+  CRTP_PORT_LOG = 0x05,
+  CRTP_PORT_LINK = 0x0F,
 } CRTPPort;
 
-typedef struct _CRTPPacket
-{
+typedef struct _CRTPPacket {
   uint8_t size;
   union {
     struct {
@@ -52,19 +51,19 @@ typedef struct _CRTPPacket
         uint8_t header;
         struct {
 #ifndef CRTP_HEADER_COMPAT
-          uint8_t channel     : 2;
-          uint8_t reserved    : 2;
-          uint8_t port        : 4;
+          uint8_t channel : 2;
+          uint8_t reserved : 2;
+          uint8_t port : 4;
 #else
-          uint8_t channel  : 2;
-          uint8_t port     : 4;
+          uint8_t channel : 2;
+          uint8_t port : 4;
           uint8_t reserved : 2;
 #endif
         };
       };
       uint8_t data[CRTP_MAX_DATA_SIZE];
     };
-    uint8_t raw[CRTP_MAX_DATA_SIZE+1];
+    uint8_t raw[CRTP_MAX_DATA_SIZE + 1];
   };
 } __attribute__((packed)) CRTPPacket;
 
@@ -108,7 +107,8 @@ int crtpSendPacket(CRTPPacket *p);
 /**
  * Put a packet in the TX task
  *
- * If the TX stack is full, the function block until one place is free (Good for console implementation)
+ * If the TX stack is full, the function block until one place is free (Good for
+ *console implementation)
  */
 int crtpSendPacketBlock(CRTPPacket *p);
 
@@ -116,7 +116,8 @@ int crtpSendPacketBlock(CRTPPacket *p);
  * Fetch a packet with a specidied task ID.
  *
  * @param[in]  taskId The id of the CRTP task
- * @param[out] p      The CRTP Packet with infomation (unchanged if nothing to fetch)
+ * @param[out] p      The CRTP Packet with infomation (unchanged if nothing to
+ *fetch)
  *
  * @returns status of fetch from queue
  */
@@ -126,7 +127,8 @@ int crtpReceivePacket(CRTPPort taskId, CRTPPacket *p);
  * Fetch a packet with a specidied task ID. Wait some time befor giving up
  *
  * @param[in]  taskId The id of the CRTP task
- * @param[out] p      The CRTP Packet with infomation (unchanged if nothing to fetch)
+ * @param[out] p      The CRTP Packet with infomation (unchanged if nothing to
+ *fetch)
  * @param[in] wait    Wait time in milisecond
  *
  * @returns status of fetch from queue
@@ -149,13 +151,12 @@ void crtpPacketReveived(CRTPPacket *p);
  * Function pointer structure to be filled by the CRTP link to permits CRTP to
  * use manu link
  */
-struct crtpLinkOperations
-{
+struct crtpLinkOperations {
   int (*setEnable)(bool enable);
   int (*sendPacket)(CRTPPacket *pk);
   int (*receivePacket)(CRTPPacket *pk);
 };
 
-void crtpSetLink(struct crtpLinkOperations * lk);
+void crtpSetLink(struct crtpLinkOperations *lk);
 
 #endif /*CRTP_H_*/

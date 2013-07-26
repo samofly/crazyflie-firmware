@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -36,53 +36,45 @@
 #define WORKER_QUEUE_LENGTH 5
 
 struct worker_work {
-  void (*function)(void*);
-  void* arg;
+  void (*function)(void *);
+  void *arg;
 };
 
 static xQueueHandle workerQueue;
 
-void workerInit()
-{
+void workerInit() {
   if (workerQueue)
     return;
 
   workerQueue = xQueueCreate(WORKER_QUEUE_LENGTH, sizeof(struct worker_work));
 }
 
-bool workerTest()
-{
-  return (workerQueue != NULL);
-}
+bool workerTest() { return (workerQueue != NULL); }
 
-void workerLoop()
-{
+void workerLoop() {
   struct worker_work work;
 
   if (!workerQueue)
     return;
 
-  while (1)
-  {
+  while (1) {
     xQueueReceive(workerQueue, &work, portMAX_DELAY);
-    
+
     if (work.function)
       work.function(work.arg);
   }
 }
 
-int workerSchedule(void (*function)(void*), void *arg)
-{
+int workerSchedule(void (*function)(void *), void *arg) {
   struct worker_work work;
-  
+
   if (!function)
     return ENOEXEC;
-  
+
   work.function = function;
   work.arg = arg;
   if (xQueueSend(workerQueue, &work, 0) == pdFALSE)
     return ENOMEM;
 
-  return 0; 
+  return 0;
 }
-

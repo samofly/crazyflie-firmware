@@ -34,26 +34,27 @@
 #include "stm32f10x_i2c.h"
 
 // Delay is approx 0.2us per loop @64Mhz
-#define I2CDEV_LOOPS_PER_US  5
-#define I2CDEV_LOOPS_PER_MS  (1000 * I2CDEV_LOOPS_PER_US)
+#define I2CDEV_LOOPS_PER_US 5
+#define I2CDEV_LOOPS_PER_MS (1000 * I2CDEV_LOOPS_PER_US)
 
 #define I2CDEV_I2C1_PIN_SDA GPIO_Pin_7
 #define I2CDEV_I2C1_PIN_SCL GPIO_Pin_6
 
-#define I2CDEV_NO_MEM_ADDR  0xFF
+#define I2CDEV_NO_MEM_ADDR 0xFF
 
 /**
  * Read bytes from an I2C peripheral
  * @param I2Cx  Pointer to I2C peripheral to read from
  * @param devAddress  The device address to read from
- * @param memAddress  The internal address to read from, I2CDEV_NO_MEM_ADDR if none.
+ * @param memAddress  The internal address to read from, I2CDEV_NO_MEM_ADDR if
+ *none.
  * @param len  Number of bytes to read.
  * @param data  Pointer to a buffer to read the data to.
  *
  * @return TRUE if read was successful, otherwise FALSE.
  */
 bool i2cdevRead(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
-               uint16_t len, uint8_t *data);
+                uint16_t len, uint8_t *data);
 /**
  * I2C device init function.
  * @param I2Cx  Pointer to I2C peripheral to initialize.
@@ -66,7 +67,8 @@ int i2cdevInit(I2C_TypeDef *I2Cx);
  * Read a byte from an I2C peripheral
  * @param I2Cx  Pointer to I2C peripheral to read from
  * @param devAddress  The device address to read from
- * @param memAddress  The internal address to read from, I2CDEV_NO_MEM_ADDR if none.
+ * @param memAddress  The internal address to read from, I2CDEV_NO_MEM_ADDR if
+ *none.
  * @param data  Pointer to a buffer to read the data to.
  *
  * @return TRUE if read was successful, otherwise FALSE.
@@ -78,19 +80,21 @@ bool i2cdevReadByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  * Read a bit from an I2C peripheral
  * @param I2Cx  Pointer to I2C peripheral to read from
  * @param devAddress  The device address to read from
- * @param memAddress  The internal address to read from, I2CDEV_NO_MEM_ADDR if none.
+ * @param memAddress  The internal address to read from, I2CDEV_NO_MEM_ADDR if
+ *none.
  * @param bitNum  The bit number 0 - 7 to read.
  * @param data  Pointer to a buffer to read the data to.
  *
  * @return TRUE if read was successful, otherwise FALSE.
  */
 bool i2cdevReadBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
-                     uint8_t bitNum, uint8_t *data);
+                   uint8_t bitNum, uint8_t *data);
 /**
  * Read up to 8 bits from an I2C peripheral
  * @param I2Cx  Pointer to I2C peripheral to read from
  * @param devAddress  The device address to read from
- * @param memAddress  The internal address to read from, I2CDEV_NO_MEM_ADDR if none.
+ * @param memAddress  The internal address to read from, I2CDEV_NO_MEM_ADDR if
+ *none.
  * @param bitStart The bit to start from, 0 - 7.
  * @param length  The number of bits to read, 1 - 8.
  * @param data  Pointer to a buffer to read the data to.
@@ -104,7 +108,8 @@ bool i2cdevReadBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  * Write bytes to an I2C peripheral
  * @param I2Cx  Pointer to I2C peripheral to write to
  * @param devAddress  The device address to write to
- * @param memAddress  The internal address to write to, I2CDEV_NO_MEM_ADDR if none.
+ * @param memAddress  The internal address to write to, I2CDEV_NO_MEM_ADDR if
+ *none.
  * @param len  Number of bytes to read.
  * @param data  Pointer to a buffer to read the data from that will be written.
  *
@@ -117,7 +122,8 @@ bool i2cdevWrite(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  * Write a byte to an I2C peripheral
  * @param I2Cx  Pointer to I2C peripheral to write to
  * @param devAddress  The device address to write to
- * @param memAddress  The internal address to write from, I2CDEV_NO_MEM_ADDR if none.
+ * @param memAddress  The internal address to write from, I2CDEV_NO_MEM_ADDR if
+ *none.
  * @param data  The byte to write.
  *
  * @return TRUE if write was successful, otherwise FALSE.
@@ -129,7 +135,8 @@ bool i2cdevWriteByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  * Write a bit to an I2C peripheral
  * @param I2Cx  Pointer to I2C peripheral to write to
  * @param devAddress  The device address to write to
- * @param memAddress  The internal address to write to, I2CDEV_NO_MEM_ADDR if none.
+ * @param memAddress  The internal address to write to, I2CDEV_NO_MEM_ADDR if
+ *none.
  * @param bitNum  The bit number, 0 - 7, to write.
  * @param data  The bit to write.
  *
@@ -142,7 +149,8 @@ bool i2cdevWriteBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  * Write up to 8 bits to an I2C peripheral
  * @param I2Cx  Pointer to I2C peripheral to write to
  * @param devAddress  The device address to write to
- * @param memAddress  The internal address to write to, I2CDEV_NO_MEM_ADDR if none.
+ * @param memAddress  The internal address to write to, I2CDEV_NO_MEM_ADDR if
+ *none.
  * @param bitStart The bit to start from, 0 - 7.
  * @param length  The number of bits to write, 1 - 8.
  * @param data  The byte containing the bits to write.

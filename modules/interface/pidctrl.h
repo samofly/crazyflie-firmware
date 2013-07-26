@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -21,7 +21,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * pidtctrl.h - Used to receive/answer requests from client and to receive updated PID values from client
+ * pidtctrl.h - Used to receive/answer requests from client and to receive
+ *updated PID values from client
  */
 #include "crtp.h"
 
@@ -29,4 +30,3 @@
  * Initialize the PID control task
  */
 void pidCtrlInit();
-

@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -27,9 +27,8 @@
 #ifndef __CPUID_H__
 #define __CPUID_H__
 
-//The CPU ID is 12 bytes long
-unsigned char * cpuidGetId();
+// The CPU ID is 12 bytes long
+unsigned char *cpuidGetId();
 int cpuIdGetFlashSize();
 
 #endif /* __CPUID_H__ */
-

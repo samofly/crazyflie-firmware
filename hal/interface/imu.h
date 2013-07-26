@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -29,22 +29,19 @@
 #include <stdbool.h>
 #include "filter.h"
 
-typedef struct
-{
+typedef struct {
   int16_t x;
   int16_t y;
   int16_t z;
 } Axis3i16;
 
-typedef struct
-{
+typedef struct {
   int32_t x;
   int32_t y;
   int32_t z;
 } Axis3i32;
 
-typedef struct
-{
+typedef struct {
   float x;
   float y;
   float z;
@@ -53,28 +50,29 @@ typedef struct
 /**
  * IMU update frequency dictates the overall update frequency.
  */
-#define IMU_UPDATE_FREQ   500
-#define IMU_UPDATE_DT     (float)(1.0/IMU_UPDATE_FREQ)
+#define IMU_UPDATE_FREQ 500
+#define IMU_UPDATE_DT (float)(1.0 / IMU_UPDATE_FREQ)
 
 /**
  * Set ACC_WANTED_LPF1_CUTOFF_HZ to the wanted cut-off freq in Hz.
  * The highest cut-off freq that will have any affect is fs /(2*pi).
  * E.g. fs = 350 Hz -> highest cut-off = 350/(2*pi) = 55.7 Hz -> 55 Hz
  */
-#define IMU_ACC_WANTED_LPF_CUTOFF_HZ  10
+#define IMU_ACC_WANTED_LPF_CUTOFF_HZ 10
 /**
  * Attenuation should be between 1 to 256.
  *
  * f0 = fs / 2*pi*attenuation ->
  * attenuation = fs / 2*pi*f0
  */
-#define IMU_ACC_IIR_LPF_ATTENUATION (IMU_UPDATE_FREQ / (2 * 3.1415 * IMU_ACC_WANTED_LPF_CUTOFF_HZ))
-#define IMU_ACC_IIR_LPF_ATT_FACTOR  (int)(((1<<IIR_SHIFT) / IMU_ACC_IIR_LPF_ATTENUATION) + 0.5)
+#define IMU_ACC_IIR_LPF_ATTENUATION                                            \
+  (IMU_UPDATE_FREQ / (2 * 3.1415 * IMU_ACC_WANTED_LPF_CUTOFF_HZ))
+#define IMU_ACC_IIR_LPF_ATT_FACTOR                                             \
+  (int)(((1 << IIR_SHIFT) / IMU_ACC_IIR_LPF_ATTENUATION) + 0.5)
 
 void imu6Init(void);
 bool imu6Test(void);
-void imu6Read(Axis3f* gyro, Axis3f* acc);
+void imu6Read(Axis3f *gyro, Axis3f *acc);
 bool imu6IsCalibrated(void);
-
 
 #endif /* IMU_H_ */

@@ -1,6 +1,6 @@
 /*
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -62,17 +62,14 @@ xSemaphoreHandle canStartMutex;
 static void systemTask(void *arg);
 
 /* Public functions */
-void systemLaunch(void)
-{
-  xTaskCreate(systemTask, (const signed char * const)"SYSTEM",
-              2*configMINIMAL_STACK_SIZE, NULL, /*Piority*/2, NULL);
-
+void systemLaunch(void) {
+  xTaskCreate(systemTask, (const signed char * const) "SYSTEM",
+              2 * configMINIMAL_STACK_SIZE, NULL, /*Piority*/ 2, NULL);
 }
 
-//This must be the first module to be initialized!
-void systemInit(void)
-{
-  if(isInit)
+// This must be the first module to be initialized!
+void systemInit(void) {
+  if (isInit)
     return;
 
   canStartMutex = xSemaphoreCreateMutex();
@@ -83,19 +80,18 @@ void systemInit(void)
   adcInit();
   ledseqInit();
   pmInit();
-    
+
   isInit = true;
 }
 
-bool systemTest()
-{
-  bool pass=isInit;
-  
+bool systemTest() {
+  bool pass = isInit;
+
   pass &= adcTest();
   pass &= ledseqTest();
   pass &= pmTest();
   pass &= workerTest();
-  
+
   return pass;
 }
 
@@ -103,11 +99,10 @@ bool systemTest()
 
 extern int paramsLen;
 
-void systemTask(void *arg)
-{
+void systemTask(void *arg) {
   bool pass = true;
-  
-  //Init the high-levels modules
+
+  // Init the high-levels modules
   systemInit();
 
 #ifndef USE_UART_CRTP
@@ -117,91 +112,71 @@ void systemTask(void *arg)
 #ifdef HAS_UART
   uartInit();
 #endif
-#endif //ndef USE_UART_CRTP
+#endif // ndef USE_UART_CRTP
 
   commInit();
 
   DEBUG_PRINT("Crazyflie is up and running!\n");
-  DEBUG_PRINT("Build %s:%s (%s) %s\n", V_SLOCAL_REVISION,
-              V_SREVISION, V_STAG, (V_MODIFIED)?"MODIFIED":"CLEAN");
+  DEBUG_PRINT("Build %s:%s (%s) %s\n", V_SLOCAL_REVISION, V_SREVISION, V_STAG,
+              (V_MODIFIED) ? "MODIFIED" : "CLEAN");
   DEBUG_PRINT("I am 0x%X%X%X and I have %dKB of flash!\n",
-              *((int*)(0x1FFFF7E8+8)), *((int*)(0x1FFFF7E8+4)),
-              *((int*)(0x1FFFF7E8+0)), *((short*)(0x1FFFF7E0)));
+              *((int *)(0x1FFFF7E8 + 8)), *((int *)(0x1FFFF7E8 + 4)),
+              *((int *)(0x1FFFF7E8 + 0)), *((short *)(0x1FFFF7E0)));
 
   commanderInit();
   stabilizerInit();
-  
-  //Test the modules
+
+  // Test the modules
   pass &= systemTest();
   pass &= commTest();
   pass &= commanderTest();
   pass &= stabilizerTest();
-  
-  //Start the firmware
-  if(pass)
-  {
+
+  // Start the firmware
+  if (pass) {
     systemStart();
     ledseqRun(LED_RED, seq_alive);
     ledseqRun(LED_GREEN, seq_testPassed);
-  }
-  else
-  {
-    if (systemTest())
-    {
-      while(1)
-      {
-        ledseqRun(LED_RED, seq_testPassed); //Red passed == not passed!
+  } else {
+    if (systemTest()) {
+      while (1) {
+        ledseqRun(LED_RED, seq_testPassed); // Red passed == not passed!
         vTaskDelay(M2T(2000));
       }
-    }
-    else
-    {
+    } else {
       ledInit();
       ledSet(LED_RED, true);
     }
   }
-  
+
   workerLoop();
-  
-  //Should never reach this point!
-  while(1)
+
+  // Should never reach this point!
+  while (1)
     vTaskDelay(portMAX_DELAY);
 }
 
-
 /* Global system variables */
-void systemStart()
-{
-  xSemaphoreGive(canStartMutex);
-}
+void systemStart() { xSemaphoreGive(canStartMutex); }
 
-void systemWaitStart(void)
-{
-  //This permits to guarantee that the system task is initialized before other
-  //tasks waits for the start event.
-  while(!isInit)
+void systemWaitStart(void) {
+  // This permits to guarantee that the system task is initialized before other
+  // tasks waits for the start event.
+  while (!isInit)
     vTaskDelay(2);
 
   xSemaphoreTake(canStartMutex, portMAX_DELAY);
   xSemaphoreGive(canStartMutex);
 }
 
-void systemSetCanFly(bool val)
-{
-  canFly = val;
-}
+void systemSetCanFly(bool val) { canFly = val; }
 
-bool systemCanFly(void)
-{
-  return canFly;
-}
+bool systemCanFly(void) { return canFly; }
 
 /*System parameters (mostly for test, should be removed from here) */
 PARAM_GROUP_START(cpu)
 PARAM_ADD(PARAM_UINT16 | PARAM_RONLY, flash, 0x1FFFF7E0)
-PARAM_ADD(PARAM_UINT32 | PARAM_RONLY, id0, 0x1FFFF7E8+0)
-PARAM_ADD(PARAM_UINT32 | PARAM_RONLY, id1, 0x1FFFF7E8+4)
-PARAM_ADD(PARAM_UINT32 | PARAM_RONLY, id2, 0x1FFFF7E8+8)
+PARAM_ADD(PARAM_UINT32 | PARAM_RONLY, id0, 0x1FFFF7E8 + 0)
+PARAM_ADD(PARAM_UINT32 | PARAM_RONLY, id1, 0x1FFFF7E8 + 4)
+PARAM_ADD(PARAM_UINT32 | PARAM_RONLY, id2, 0x1FFFF7E8 + 8)
 PARAM_GROUP_STOP(cpu)
-
-

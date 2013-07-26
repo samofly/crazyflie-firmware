@@ -30,8 +30,8 @@
 void sensfusion6Init(void);
 bool sensfusion6Test(void);
 
-void sensfusion6UpdateQ(float gx, float gy, float gz, float ax, float ay, float az, float dt);
-void sensfusion6GetEulerRPY(float* roll, float* pitch, float* yaw);
-
+void sensfusion6UpdateQ(float gx, float gy, float gz, float ax, float ay,
+                        float az, float dt);
+void sensfusion6GetEulerRPY(float *roll, float *pitch, float *yaw);
 
 #endif /* SENSORFUSION6_H_ */

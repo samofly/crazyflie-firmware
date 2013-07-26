@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -48,47 +48,46 @@
 #define IMU_ENABLE_PRESSURE_MS5611
 //#define IMU_MPU6050_DLPF_256HZ
 
-#define IMU_GYRO_FS_CFG       MPU6050_GYRO_FS_2000
-#define IMU_DEG_PER_LSB_CFG   MPU6050_DEG_PER_LSB_2000
-#define IMU_ACCEL_FS_CFG      MPU6050_ACCEL_FS_8
-#define IMU_G_PER_LSB_CFG     MPU6050_G_PER_LSB_8
-#define IMU_1G_RAW            (int16_t)(1.0 / MPU6050_G_PER_LSB_8)
+#define IMU_GYRO_FS_CFG MPU6050_GYRO_FS_2000
+#define IMU_DEG_PER_LSB_CFG MPU6050_DEG_PER_LSB_2000
+#define IMU_ACCEL_FS_CFG MPU6050_ACCEL_FS_8
+#define IMU_G_PER_LSB_CFG MPU6050_G_PER_LSB_8
+#define IMU_1G_RAW (int16_t)(1.0 / MPU6050_G_PER_LSB_8)
 
-#define IMU_STARTUP_TIME_MS   1000
+#define IMU_STARTUP_TIME_MS 1000
 
 #define GYRO_NBR_OF_AXES 3
-#define GYRO_X_SIGN      (-1)
-#define GYRO_Y_SIGN      (-1)
-#define GYRO_Z_SIGN      (-1)
-#define GYRO_NBR_OF_AXES            3
-#define GYRO_MIN_BIAS_TIMEOUT_MS    M2T(1*1000)
+#define GYRO_X_SIGN (-1)
+#define GYRO_Y_SIGN (-1)
+#define GYRO_Z_SIGN (-1)
+#define GYRO_NBR_OF_AXES 3
+#define GYRO_MIN_BIAS_TIMEOUT_MS M2T(1 * 1000)
 
-#define IMU_NBR_OF_BIAS_SAMPLES  128
+#define IMU_NBR_OF_BIAS_SAMPLES 128
 
-#define GYRO_VARIANCE_BASE        4000
+#define GYRO_VARIANCE_BASE 4000
 #define GYRO_VARIANCE_THRESHOLD_X (GYRO_VARIANCE_BASE)
 #define GYRO_VARIANCE_THRESHOLD_Y (GYRO_VARIANCE_BASE)
 #define GYRO_VARIANCE_THRESHOLD_Z (GYRO_VARIANCE_BASE)
 
-typedef struct
-{
-  Axis3i16   bias;
-  bool       isBiasValueFound;
-  bool       isBufferFilled;
-  Axis3i16*  bufHead;
-  Axis3i16   buffer[IMU_NBR_OF_BIAS_SAMPLES];
+typedef struct {
+  Axis3i16 bias;
+  bool isBiasValueFound;
+  bool isBufferFilled;
+  Axis3i16 *bufHead;
+  Axis3i16 buffer[IMU_NBR_OF_BIAS_SAMPLES];
 } BiasObj;
 
-BiasObj    gyroBias;
-BiasObj    accelBias;
-int32_t    varianceSampleTime;
-Axis3i16   gyroMpu;
-Axis3i16   accelMpu;
-Axis3i16   accelLPF;
-Axis3i16   accelLPFAligned;
-Axis3i16   mag;
-Axis3i32   accelStoredFilterValues;
-uint8_t    imuAccLpfAttFactor;
+BiasObj gyroBias;
+BiasObj accelBias;
+int32_t varianceSampleTime;
+Axis3i16 gyroMpu;
+Axis3i16 accelMpu;
+Axis3i16 accelLPF;
+Axis3i16 accelLPFAligned;
+Axis3i16 mag;
+Axis3i32 accelStoredFilterValues;
+uint8_t imuAccLpfAttFactor;
 static bool isHmc5883lPresent;
 static bool isMs5611Present;
 
@@ -102,39 +101,37 @@ float sinRoll;
  * MPU6050 selt test function. If the chip is moved to much during the self test
  * it will cause the test to fail.
  */
-static void imuBiasInit(BiasObj* bias);
-static void imuCalculateBiasMean(BiasObj* bias, Axis3i32* meanOut);
-static void imuCalculateVarianceAndMean(BiasObj* bias, Axis3i32* varOut, Axis3i32* meanOut);
-static bool imuFindBiasValue(BiasObj* bias);
-static void imuAddBiasValue(BiasObj* bias, Axis3i16* dVal);
-static void imuAccIIRLPFilter(Axis3i16* in, Axis3i16* out,
-                              Axis3i32* storedValues, int32_t attenuation);
-static void imuAccAlignToGravity(Axis3i16* in, Axis3i16* out);
+static void imuBiasInit(BiasObj *bias);
+static void imuCalculateBiasMean(BiasObj *bias, Axis3i32 *meanOut);
+static void imuCalculateVarianceAndMean(BiasObj *bias, Axis3i32 *varOut,
+                                        Axis3i32 *meanOut);
+static bool imuFindBiasValue(BiasObj *bias);
+static void imuAddBiasValue(BiasObj *bias, Axis3i16 *dVal);
+static void imuAccIIRLPFilter(Axis3i16 *in, Axis3i16 *out,
+                              Axis3i32 *storedValues, int32_t attenuation);
+static void imuAccAlignToGravity(Axis3i16 *in, Axis3i16 *out);
 
 // TODO: Fix __errno linker error with math lib
 int __attribute__((used)) __errno;
 
 static bool isInit;
 
-void imu6Init(void)
-{
-  if(isInit)
+void imu6Init(void) {
+  if (isInit)
     return;
 
- isHmc5883lPresent = FALSE;
- isMs5611Present = FALSE;
+  isHmc5883lPresent = FALSE;
+  isMs5611Present = FALSE;
 
   // Wait for sensors to startup
-  while (xTaskGetTickCount() < M2T(IMU_STARTUP_TIME_MS));
+  while (xTaskGetTickCount() < M2T(IMU_STARTUP_TIME_MS))
+    ;
 
   i2cdevInit(I2C1);
   mpu6050Init(I2C1);
-  if (mpu6050TestConnection() == TRUE)
-  {
+  if (mpu6050TestConnection() == TRUE) {
     DEBUG_PRINT("MPU6050 I2C connection [OK].\n");
-  }
-  else
-  {
+  } else {
     DEBUG_PRINT("MPU6050 I2C connection [FAIL].\n");
   }
 
@@ -170,28 +167,21 @@ void imu6Init(void)
   mpu6050SetDLPFMode(MPU6050_DLPF_BW_188);
 #endif
 
-
 #ifdef IMU_ENABLE_MAG_HMC5883
   hmc5883lInit(I2C1);
-  if (hmc5883lTestConnection() == TRUE)
-  {
+  if (hmc5883lTestConnection() == TRUE) {
     isHmc5883lPresent = TRUE;
     DEBUG_PRINT("HMC5883 I2C connection [OK].\n");
-  }
-  else
-  {
+  } else {
     DEBUG_PRINT("HMC5883L I2C connection [FAIL].\n");
   }
 #endif
 
 #ifdef IMU_ENABLE_PRESSURE_MS5611
-  if (ms5611Init(I2C1) == TRUE)
-  {
+  if (ms5611Init(I2C1) == TRUE) {
     isMs5611Present = TRUE;
     DEBUG_PRINT("MS5611 I2C connection [OK].\n");
-  }
-  else
-  {
+  } else {
     DEBUG_PRINT("MS5611 I2C connection [FAIL].\n");
   }
 #endif
@@ -201,71 +191,59 @@ void imu6Init(void)
   varianceSampleTime = -GYRO_MIN_BIAS_TIMEOUT_MS + 1;
   imuAccLpfAttFactor = IMU_ACC_IIR_LPF_ATT_FACTOR;
 
-  cosPitch = cos(configblockGetCalibPitch() * M_PI/180);
-  sinPitch = sin(configblockGetCalibPitch() * M_PI/180);
-  cosRoll = cos(configblockGetCalibRoll() * M_PI/180);
-  sinRoll = sin(configblockGetCalibRoll() * M_PI/180);
+  cosPitch = cos(configblockGetCalibPitch() * M_PI / 180);
+  sinPitch = sin(configblockGetCalibPitch() * M_PI / 180);
+  cosRoll = cos(configblockGetCalibRoll() * M_PI / 180);
+  sinRoll = sin(configblockGetCalibRoll() * M_PI / 180);
 
   isInit = TRUE;
 }
 
-bool imu6Test(void)
-{
+bool imu6Test(void) {
   bool testStatus = TRUE;
 
-  if (!isInit)
-  {
+  if (!isInit) {
     DEBUG_PRINT("Uninitialized");
     testStatus = FALSE;
   }
   // Test for CF 10-DOF variant with none responding sensor
-  if((isHmc5883lPresent && !isMs5611Present) ||
-     (!isHmc5883lPresent && isMs5611Present))
-  {
+  if ((isHmc5883lPresent && !isMs5611Present) ||
+      (!isHmc5883lPresent && isMs5611Present)) {
     DEBUG_PRINT("HMC5883L or MS5611 is not responding");
     testStatus = FALSE;
   }
-  if (testStatus)
-  {
+  if (testStatus) {
     testStatus = mpu6050SelfTest();
   }
-  if (testStatus && isHmc5883lPresent)
-  {
+  if (testStatus && isHmc5883lPresent) {
     testStatus = hmc5883lSelfTest();
   }
-  if (testStatus && isMs5611Present)
-  {
+  if (testStatus && isMs5611Present) {
     testStatus = ms5611SelfTest();
   }
 
   return testStatus;
 }
 
-
-void imu6Read(Axis3f* gyroOut, Axis3f* accOut)
-{
-  mpu6050GetMotion6(&accelMpu.x, &accelMpu.y, &accelMpu.z, &gyroMpu.x, &gyroMpu.y, &gyroMpu.z);
+void imu6Read(Axis3f *gyroOut, Axis3f *accOut) {
+  mpu6050GetMotion6(&accelMpu.x, &accelMpu.y, &accelMpu.z, &gyroMpu.x,
+                    &gyroMpu.y, &gyroMpu.z);
 
   imuAddBiasValue(&gyroBias, &gyroMpu);
-  if (!accelBias.isBiasValueFound)
-  {
+  if (!accelBias.isBiasValueFound) {
     imuAddBiasValue(&accelBias, &accelMpu);
   }
-  if (!gyroBias.isBiasValueFound)
-  {
+  if (!gyroBias.isBiasValueFound) {
     imuFindBiasValue(&gyroBias);
-    if (gyroBias.isBiasValueFound)
-    {
+    if (gyroBias.isBiasValueFound) {
       ledseqRun(LED_RED, seq_calibrated);
-//      uartPrintf("Gyro bias: %i, %i, %i\n",
-//                  gyroBias.bias.x, gyroBias.bias.y, gyroBias.bias.z);
+      //      uartPrintf("Gyro bias: %i, %i, %i\n",
+      //                  gyroBias.bias.x, gyroBias.bias.y, gyroBias.bias.z);
     }
   }
 
 #ifdef IMU_TAKE_ACCEL_BIAS
-  if (gyroBias.isBiasValueFound &&
-      !accelBias.isBiasValueFound)
-  {
+  if (gyroBias.isBiasValueFound && !accelBias.isBiasValueFound) {
     Axis3i32 mean;
 
     imuCalculateBiasMean(&accelBias, &mean);
@@ -273,11 +251,10 @@ void imu6Read(Axis3f* gyroOut, Axis3f* accOut)
     accelBias.bias.y = mean.y;
     accelBias.bias.z = mean.z - IMU_1G_RAW;
     accelBias.isBiasValueFound = TRUE;
-    //uartPrintf("Accel bias: %i, %i, %i\n",
+    // uartPrintf("Accel bias: %i, %i, %i\n",
     //            accelBias.bias.x, accelBias.bias.y, accelBias.bias.z);
   }
 #endif
-
 
   imuAccIIRLPFilter(&accelMpu, &accelLPF, &accelStoredFilterValues,
                     (int32_t)imuAccLpfAttFactor);
@@ -314,8 +291,7 @@ void imu6Read(Axis3f* gyroOut, Axis3f* accOut)
 #endif
 }
 
-bool imu6IsCalibrated(void)
-{
+bool imu6IsCalibrated(void) {
   bool status;
 
   status = gyroBias.isBiasValueFound;
@@ -326,8 +302,7 @@ bool imu6IsCalibrated(void)
   return status;
 }
 
-static void imuBiasInit(BiasObj* bias)
-{
+static void imuBiasInit(BiasObj *bias) {
   bias->isBufferFilled = FALSE;
   bias->bufHead = bias->buffer;
 }
@@ -335,14 +310,13 @@ static void imuBiasInit(BiasObj* bias)
 /**
  * Calculates the variance and mean for the bias buffer.
  */
-static void imuCalculateVarianceAndMean(BiasObj* bias, Axis3i32* varOut, Axis3i32* meanOut)
-{
+static void imuCalculateVarianceAndMean(BiasObj *bias, Axis3i32 *varOut,
+                                        Axis3i32 *meanOut) {
   uint32_t i;
-  int32_t sum[GYRO_NBR_OF_AXES] = {0};
-  int64_t sumSq[GYRO_NBR_OF_AXES] = {0};
+  int32_t sum[GYRO_NBR_OF_AXES] = { 0 };
+  int64_t sumSq[GYRO_NBR_OF_AXES] = { 0 };
 
-  for (i = 0; i < IMU_NBR_OF_BIAS_SAMPLES; i++)
-  {
+  for (i = 0; i < IMU_NBR_OF_BIAS_SAMPLES; i++) {
     sum[0] += bias->buffer[i].x;
     sum[1] += bias->buffer[i].y;
     sum[2] += bias->buffer[i].z;
@@ -365,13 +339,12 @@ static void imuCalculateVarianceAndMean(BiasObj* bias, Axis3i32* varOut, Axis3i3
 /**
  * Calculates the mean for the bias buffer.
  */
-static void __attribute__((used)) imuCalculateBiasMean(BiasObj* bias, Axis3i32* meanOut)
-{
+static void __attribute__((used))
+    imuCalculateBiasMean(BiasObj *bias, Axis3i32 *meanOut) {
   uint32_t i;
-  int32_t sum[GYRO_NBR_OF_AXES] = {0};
+  int32_t sum[GYRO_NBR_OF_AXES] = { 0 };
 
-  for (i = 0; i < IMU_NBR_OF_BIAS_SAMPLES; i++)
-  {
+  for (i = 0; i < IMU_NBR_OF_BIAS_SAMPLES; i++) {
     sum[0] += bias->buffer[i].x;
     sum[1] += bias->buffer[i].y;
     sum[2] += bias->buffer[i].z;
@@ -380,22 +353,19 @@ static void __attribute__((used)) imuCalculateBiasMean(BiasObj* bias, Axis3i32* 
   meanOut->x = sum[0] / IMU_NBR_OF_BIAS_SAMPLES;
   meanOut->y = sum[1] / IMU_NBR_OF_BIAS_SAMPLES;
   meanOut->z = sum[2] / IMU_NBR_OF_BIAS_SAMPLES;
-
 }
 
 /**
  * Adds a new value to the variance buffer and if it is full
  * replaces the oldest one. Thus a circular buffer.
  */
-static void imuAddBiasValue(BiasObj* bias, Axis3i16* dVal)
-{
+static void imuAddBiasValue(BiasObj *bias, Axis3i16 *dVal) {
   bias->bufHead->x = dVal->x;
   bias->bufHead->y = dVal->y;
   bias->bufHead->z = dVal->z;
   bias->bufHead++;
 
-  if (bias->bufHead >= &bias->buffer[IMU_NBR_OF_BIAS_SAMPLES])
-  {
+  if (bias->bufHead >= &bias->buffer[IMU_NBR_OF_BIAS_SAMPLES]) {
     bias->bufHead = bias->buffer;
     bias->isBufferFilled = TRUE;
   }
@@ -406,27 +376,24 @@ static void imuAddBiasValue(BiasObj* bias, Axis3i16* dVal)
  * The bias value should have been added before calling this.
  * @param bias  The bias object
  */
-static bool imuFindBiasValue(BiasObj* bias)
-{
+static bool imuFindBiasValue(BiasObj *bias) {
   bool foundBias = FALSE;
 
-  if (bias->isBufferFilled)
-  {
+  if (bias->isBufferFilled) {
     Axis3i32 variance;
     Axis3i32 mean;
 
     imuCalculateVarianceAndMean(bias, &variance, &mean);
 
-    //uartSendData(sizeof(variance), (uint8_t*)&variance);
-    //uartSendData(sizeof(mean), (uint8_t*)&mean);
-    //uartPrintf("%i, %i, %i", variance.x, variance.y, variance.z);
-    //uartPrintf("    %i, %i, %i\n", mean.x, mean.y, mean.z);
+    // uartSendData(sizeof(variance), (uint8_t*)&variance);
+    // uartSendData(sizeof(mean), (uint8_t*)&mean);
+    // uartPrintf("%i, %i, %i", variance.x, variance.y, variance.z);
+    // uartPrintf("    %i, %i, %i\n", mean.x, mean.y, mean.z);
 
     if (variance.x < GYRO_VARIANCE_THRESHOLD_X &&
         variance.y < GYRO_VARIANCE_THRESHOLD_Y &&
         variance.z < GYRO_VARIANCE_THRESHOLD_Z &&
-        (varianceSampleTime + GYRO_MIN_BIAS_TIMEOUT_MS < xTaskGetTickCount()))
-    {
+        (varianceSampleTime + GYRO_MIN_BIAS_TIMEOUT_MS < xTaskGetTickCount())) {
       varianceSampleTime = xTaskGetTickCount();
       bias->bias.x = mean.x;
       bias->bias.y = mean.y;
@@ -439,21 +406,19 @@ static bool imuFindBiasValue(BiasObj* bias)
   return foundBias;
 }
 
-static void imuAccIIRLPFilter(Axis3i16* in, Axis3i16* out, Axis3i32* storedValues, int32_t attenuation)
-{
+static void imuAccIIRLPFilter(Axis3i16 *in, Axis3i16 *out,
+                              Axis3i32 *storedValues, int32_t attenuation) {
   out->x = iirLPFilterSingle(in->x, attenuation, &storedValues->x);
   out->y = iirLPFilterSingle(in->y, attenuation, &storedValues->y);
   out->z = iirLPFilterSingle(in->z, attenuation, &storedValues->z);
 }
-
 
 /**
  * Compensate for a miss-aligned accelerometer. It uses the trim
  * data gathered from the UI and written in the config-block to
  * rotate the accelerometer to be aligned with gravity.
  */
-static void imuAccAlignToGravity(Axis3i16* in, Axis3i16* out)
-{
+static void imuAccAlignToGravity(Axis3i16 *in, Axis3i16 *out) {
   Axis3i16 rx;
   Axis3i16 ry;
 

@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -37,30 +37,30 @@
 uint32_t traceTickCount;
 
 #if (configCHECK_FOR_STACK_OVERFLOW == 1)
-void vApplicationStackOverflowHook(xTaskHandle *pxTask, signed portCHAR *pcTaskName)
-{
+void vApplicationStackOverflowHook(xTaskHandle *pxTask,
+                                   signed portCHAR *pcTaskName) {
   consolePrintf("\nStack overflow!\n");
-  while(1);
+  while (1)
+    ;
 }
 #endif
 
 #ifdef UART_OUTPUT_TRACE_DATA
-void debugSendTraceInfo(unsigned int taskNbr)
-{
+void debugSendTraceInfo(unsigned int taskNbr) {
   uint32_t traceData;
-  traceData = (taskNbr << 29) | (((traceTickCount << 16) + TIM1->CNT) & 0x1FFFFFF);
-  uartSendDataDma(sizeof(traceData), (uint8_t*)&traceData);
+  traceData =
+      (taskNbr << 29) | (((traceTickCount << 16) + TIM1->CNT) & 0x1FFFFFF);
+  uartSendDataDma(sizeof(traceData), (uint8_t *)&traceData);
 }
 
-void debugInitTrace(void)
-{
-  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+void debugInitTrace(void) {
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
   NVIC_InitTypeDef NVIC_InitStructure;
 
-  //Enable the Timer
+  // Enable the Timer
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 
-  //Timer configuration
+  // Timer configuration
   TIM_TimeBaseStructure.TIM_Period = 0xFFFF;
   TIM_TimeBaseStructure.TIM_Prescaler = 72;
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -81,7 +81,5 @@ void debugInitTrace(void)
   traceTickCount = 0;
 }
 #else
-void debugSendTraceInfo(unsigned int taskNbr)
-{
-}
+void debugSendTraceInfo(unsigned int taskNbr) {}
 #endif

@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -25,12 +25,6 @@
  */
 #include "cpuid.h"
 
-unsigned char * cpuidGetId()
-{
-  return (unsigned char *)(0x1FFFF7E8);
-}
+unsigned char *cpuidGetId() { return (unsigned char *)(0x1FFFF7E8); }
 
-int cpuIdGetFlashSize()
-{
-  return *((short*)(0x1FFFF7E0));
-}
+int cpuIdGetFlashSize() { return *((short *)(0x1FFFF7E0)); }

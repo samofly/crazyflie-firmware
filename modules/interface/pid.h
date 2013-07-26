@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -29,53 +29,51 @@
 
 #include <stdbool.h>
 
-#define PID_ROLL_RATE_KP  70.0
-#define PID_ROLL_RATE_KI  0.0
-#define PID_ROLL_RATE_KD  0.0
-#define PID_ROLL_RATE_INTEGRATION_LIMIT    100.0
+#define PID_ROLL_RATE_KP 70.0
+#define PID_ROLL_RATE_KI 0.0
+#define PID_ROLL_RATE_KD 0.0
+#define PID_ROLL_RATE_INTEGRATION_LIMIT 100.0
 
-#define PID_PITCH_RATE_KP  70.0
-#define PID_PITCH_RATE_KI  0.0
-#define PID_PITCH_RATE_KD  0.0
-#define PID_PITCH_RATE_INTEGRATION_LIMIT   100.0
+#define PID_PITCH_RATE_KP 70.0
+#define PID_PITCH_RATE_KI 0.0
+#define PID_PITCH_RATE_KD 0.0
+#define PID_PITCH_RATE_INTEGRATION_LIMIT 100.0
 
-#define PID_YAW_RATE_KP  50.0
-#define PID_YAW_RATE_KI  25.0
-#define PID_YAW_RATE_KD  0.0
-#define PID_YAW_RATE_INTEGRATION_LIMIT     500.0
+#define PID_YAW_RATE_KP 50.0
+#define PID_YAW_RATE_KI 25.0
+#define PID_YAW_RATE_KD 0.0
+#define PID_YAW_RATE_INTEGRATION_LIMIT 500.0
 
-#define PID_ROLL_KP  3.5
-#define PID_ROLL_KI  2.0
-#define PID_ROLL_KD  0.0
-#define PID_ROLL_INTEGRATION_LIMIT    20.0
+#define PID_ROLL_KP 3.5
+#define PID_ROLL_KI 2.0
+#define PID_ROLL_KD 0.0
+#define PID_ROLL_INTEGRATION_LIMIT 20.0
 
-#define PID_PITCH_KP  3.5
-#define PID_PITCH_KI  2.0
-#define PID_PITCH_KD  0.0
-#define PID_PITCH_INTEGRATION_LIMIT   20.0
+#define PID_PITCH_KP 3.5
+#define PID_PITCH_KI 2.0
+#define PID_PITCH_KD 0.0
+#define PID_PITCH_INTEGRATION_LIMIT 20.0
 
-#define PID_YAW_KP  0.0
-#define PID_YAW_KI  0.0
-#define PID_YAW_KD  0.0
-#define PID_YAW_INTEGRATION_LIMIT     360.0
+#define PID_YAW_KP 0.0
+#define PID_YAW_KI 0.0
+#define PID_YAW_KD 0.0
+#define PID_YAW_INTEGRATION_LIMIT 360.0
 
+#define DEFAULT_PID_INTEGRATION_LIMIT 5000.0
 
-#define DEFAULT_PID_INTEGRATION_LIMIT  5000.0
-
-typedef struct
-{
-  float desired;     //< set point
-  float error;        //< error
-  float prevError;    //< previous error
-  float integ;        //< integral
-  float deriv;        //< derivative
-  float kp;           //< proportional gain
-  float ki;           //< integral gain
-  float kd;           //< derivative gain
-  float outP;         //< proportional output (debugging)
-  float outI;         //< integral output (debugging)
-  float outD;         //< derivative output (debugging)
-  float iLimit;      //< integral limit
+typedef struct {
+  float desired;   //< set point
+  float error;     //< error
+  float prevError; //< previous error
+  float integ;     //< integral
+  float deriv;     //< derivative
+  float kp;        //< proportional gain
+  float ki;        //< integral gain
+  float kd;        //< derivative gain
+  float outP;      //< proportional output (debugging)
+  float outI;      //< integral output (debugging)
+  float outD;      //< derivative output (debugging)
+  float iLimit;    //< integral limit
 } PidObject;
 
 /**
@@ -87,7 +85,7 @@ typedef struct
  * @param[in] ki        The integral gain
  * @param[in] kd        The derivative gain
  */
-void pidInit(PidObject* pid, const float desired, const float kp,
+void pidInit(PidObject *pid, const float desired, const float kp,
              const float ki, const float kd);
 
 /**
@@ -96,7 +94,7 @@ void pidInit(PidObject* pid, const float desired, const float kp,
  * @param[in] pid   A pointer to the pid object.
  * @param[in] limit Pid integral swing limit.
  */
-void pidSetIntegralLimit(PidObject* pid, const float limit);
+void pidSetIntegralLimit(PidObject *pid, const float limit);
 
 /**
  * Reset the PID error values
@@ -104,7 +102,7 @@ void pidSetIntegralLimit(PidObject* pid, const float limit);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] limit Pid integral swing limit.
  */
-void pidReset(PidObject* pid);
+void pidReset(PidObject *pid);
 
 /**
  * Update the PID parameters.
@@ -115,7 +113,7 @@ void pidReset(PidObject* pid);
  *                        Set to False if pidSetError() has been used.
  * @return PID algorithm output
  */
-float pidUpdate(PidObject* pid, const float measured, const bool updateError);
+float pidUpdate(PidObject *pid, const float measured, const bool updateError);
 
 /**
  * Set a new set point for the PID to track.
@@ -123,19 +121,19 @@ float pidUpdate(PidObject* pid, const float measured, const bool updateError);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] angle The new set point
  */
-void pidSetDesired(PidObject* pid, const float desired);
+void pidSetDesired(PidObject *pid, const float desired);
 
 /**
  * Set a new set point for the PID to track.
  * @return The set point
  */
-float pidGetDesired(PidObject* pid);
+float pidGetDesired(PidObject *pid);
 
 /**
  * Find out if PID is active
  * @return TRUE if active, FALSE otherwise
  */
-bool pidIsActive(PidObject* pid);
+bool pidIsActive(PidObject *pid);
 
 /**
  * Set a new error. Use if a special error calculation is needed.
@@ -143,7 +141,7 @@ bool pidIsActive(PidObject* pid);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] error The new error
  */
-void pidSetError(PidObject* pid, const float error);
+void pidSetError(PidObject *pid, const float error);
 
 /**
  * Set a new proportional gain for the PID.
@@ -151,7 +149,7 @@ void pidSetError(PidObject* pid, const float error);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] kp    The new proportional gain
  */
-void pidSetKp(PidObject* pid, const float kp);
+void pidSetKp(PidObject *pid, const float kp);
 
 /**
  * Set a new integral gain for the PID.
@@ -159,7 +157,7 @@ void pidSetKp(PidObject* pid, const float kp);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] ki    The new integral gain
  */
-void pidSetKi(PidObject* pid, const float ki);
+void pidSetKi(PidObject *pid, const float ki);
 
 /**
  * Set a new derivative gain for the PID.
@@ -167,6 +165,6 @@ void pidSetKi(PidObject* pid, const float ki);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] kd    The derivative gain
  */
-void pidSetKd(PidObject* pid, const float kd);
+void pidSetKd(PidObject *pid, const float kd);
 
 #endif /* PID_H_ */

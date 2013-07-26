@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -29,8 +29,11 @@
 #ifndef __CFASSERT_H__
 #define __CFASSERT_H__
 
-#define ASSERT(e)  if (e) ; \
-        else assertFail( #e, __FILE__, __LINE__ )
+#define ASSERT(e)                                                              \
+  if (e)                                                                       \
+    ;                                                                          \
+  else                                                                         \
+  assertFail(#e, __FILE__, __LINE__)
 
 /**
  * Assert handler function

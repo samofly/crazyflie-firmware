@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -33,48 +33,41 @@
 #include "crtp.h"
 #include "crtpservice.h"
 
-static bool isInit=false;
+static bool isInit = false;
 
 typedef enum {
-  linkEcho   = 0x00,
+  linkEcho = 0x00,
   linkSource = 0x01,
-  linkSink   = 0x02,
+  linkSink = 0x02,
 } LinkNbr;
 
 void crtpserviceHandler(CRTPPacket *p);
 
-void crtpserviceInit(void)
-{
+void crtpserviceInit(void) {
   if (isInit)
     return;
 
   // Register a callback to service the Link port
   crtpRegisterPortCB(CRTP_PORT_LINK, crtpserviceHandler);
-  
+
   isInit = true;
 }
 
-bool crtpserviceTest(void)
-{
-  return isInit;
-}
+bool crtpserviceTest(void) { return isInit; }
 
-void crtpserviceHandler(CRTPPacket *p)
-{
-  switch (p->channel)
-  {
-    case linkEcho:
-      crtpSendPacket(p);
-      break;
-    case linkSource:
-      p->size = CRTP_MAX_DATA_SIZE;
-      crtpSendPacket(p);
-      break;
-    case linkSink:
-      /* Ignore packet */
-      break;
-    default:
-      break;
-  } 
+void crtpserviceHandler(CRTPPacket *p) {
+  switch (p->channel) {
+  case linkEcho:
+    crtpSendPacket(p);
+    break;
+  case linkSource:
+    p->size = CRTP_MAX_DATA_SIZE;
+    crtpSendPacket(p);
+    break;
+  case linkSink:
+    /* Ignore packet */
+    break;
+  default:
+    break;
+  }
 }
-

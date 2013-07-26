@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -31,18 +31,18 @@
 #include "crtp.h"
 #include "eprintf.h"
 
-#define UART_TYPE       USART3
-#define UART_PERIF      RCC_APB1Periph_USART3
+#define UART_TYPE USART3
+#define UART_PERIF RCC_APB1Periph_USART3
 
-#define UART_DMA_IRQ    DMA1_Channel2_IRQn
-#define UART_DMA_IT_TC  DMA1_IT_TC2
-#define UART_DMA_CH     DMA1_Channel2
+#define UART_DMA_IRQ DMA1_Channel2_IRQn
+#define UART_DMA_IT_TC DMA1_IT_TC2
+#define UART_DMA_CH DMA1_Channel2
 
 #define UART_GPIO_PERIF RCC_APB2Periph_GPIOB
-#define UART_GPIO_PORT  GPIOB
-#define UART_GPIO_TX    GPIO_Pin_10
-#define UART_GPIO_RX    GPIO_Pin_11
- 
+#define UART_GPIO_PORT GPIOB
+#define UART_GPIO_TX GPIO_Pin_10
+#define UART_GPIO_RX GPIO_Pin_11
+
 /**
  * Initialize the UART.
  *
@@ -62,7 +62,7 @@ bool uartTest(void);
  *
  * @return Address of the crtp link operations structure.
  */
-struct crtpLinkOperations * uartGetLink();
+struct crtpLinkOperations *uartGetLink();
 
 /**
  * Sends raw data using a lock. Should be used from
@@ -73,7 +73,7 @@ struct crtpLinkOperations * uartGetLink();
  *
  * @note If UART Crtp link is activated this function does nothing
  */
-void uartSendData(uint32_t size, uint8_t* data);
+void uartSendData(uint32_t size, uint8_t *data);
 
 /**
  * Send a single character to the serial port using the uartSendData function.
@@ -91,7 +91,7 @@ int uartPutchar(int ch);
  *
  * @note If UART Crtp link is activated this function does nothing
  */
-#define uartPrintf(FMT, ...) eprintf(uartPutchar, FMT, ## __VA_ARGS__)
+#define uartPrintf(FMT, ...) eprintf(uartPutchar, FMT, ##__VA_ARGS__)
 
 /**
  * Sends raw data using DMA transfer. Should be used from
@@ -102,7 +102,7 @@ int uartPutchar(int ch);
  *
  * @note If UART Crtp link is activated this function does nothing
  */
-void uartSendDataDma(uint32_t size, uint8_t* data);
+void uartSendDataDma(uint32_t size, uint8_t *data);
 
 /**
  * Interrupt service routine handling UART interrupts.

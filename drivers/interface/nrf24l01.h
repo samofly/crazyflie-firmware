@@ -1,6 +1,6 @@
 /*
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -51,7 +51,7 @@ unsigned char nrfRead1Reg(unsigned char address);
 unsigned char nrfWriteReg(unsigned char address, char *buffer, int len);
 unsigned char nrfWrite1Reg(unsigned char address, char byte);
 
-//Interrupt access
+// Interrupt access
 void nrfSetInterruptCallback(void (*cb)(void));
 
 // Low level functionality of the nrf chip
@@ -64,9 +64,8 @@ unsigned char nrfWriteAck(unsigned int pipe, char *buffer, int len);
 unsigned char nrfReadRX(char *buffer, int len);
 void nrfSetChannel(unsigned int channel);
 void nrfSetDatarate(int datarate);
-void nrfSetAddress(unsigned int pipe, char* address);
+void nrfSetAddress(unsigned int pipe, char *address);
 void nrfSetEnable(bool enable);
 unsigned char nrfGetStatus();
-
 
 #endif

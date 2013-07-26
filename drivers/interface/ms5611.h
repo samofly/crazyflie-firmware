@@ -33,8 +33,12 @@
 #include <stdbool.h>
 
 // addresses of the device
-#define MS5611_ADDR_CSB_HIGH  0x76   //CBR=1 0x76 I2C address when CSB is connected to HIGH (VCC)
-#define MS5611_ADDR_CSB_LOW   0x77   //CBR=0 0x77 I2C address when CSB is connected to LOW (GND)
+
+// CBR=1 0x76 I2C address when CSB is connected to HIGH (VCC)
+#define MS5611_ADDR_CSB_HIGH 0x76 
+
+// CBR=0 0x77 I2C address when CSB is connected to LOW (GND)
+#define MS5611_ADDR_CSB_LOW 0x77
 
 // registers of the device
 #define MS5611_D1 0x40
@@ -51,21 +55,22 @@
 #define MS5611_OSR_2048 0x06
 #define MS5611_OSR_4096 0x08
 
-#define MS5611_PROM_BASE_ADDR 0xA2 // by adding ints from 0 to 6 we can read all the prom configuration values.
+// by adding ints from 0 to 6 we can read all the prom configuration values.
+#define MS5611_PROM_BASE_ADDR 0xA2 
+
 // C1 will be at 0xA2 and all the subsequent are multiples of 2
 #define MS5611_PROM_REG_COUNT 6 // number of registers in the PROM
-#define MS5611_PROM_REG_SIZE 2 // size in bytes of a prom registry.
+#define MS5611_PROM_REG_SIZE 2  // size in bytes of a prom registry.
 
 // Self test parameters. Only checks that values are sane
-#define MS5611_ST_PRESS_MAX   (1100.0) //mbar
-#define MS5611_ST_PRESS_MIN   (450.0)  //mbar
-#define MS5611_ST_TEMP_MAX    (60.0)   //degree celcius
-#define MS5611_ST_TEMP_MIN    (-20.0)  //degree celcius
-
+#define MS5611_ST_PRESS_MAX (1100.0) // mbar
+#define MS5611_ST_PRESS_MIN (450.0) // mbar
+#define MS5611_ST_TEMP_MAX (60.0) // degree celcius
+#define MS5611_ST_TEMP_MIN (-20.0) // degree celcius
 
 bool ms5611Init(I2C_TypeDef *i2cPort);
 bool ms5611SelfTest(void);
-bool ms5611EvaluateSelfTest(float min, float max, float value, char* string);
+bool ms5611EvaluateSelfTest(float min, float max, float value, char *string);
 float ms5611GetPressure(uint8_t osr);
 float ms5611CalcPressure(int32_t rawPress, int32_t dT);
 float ms5611GetTemperature(uint8_t osr);

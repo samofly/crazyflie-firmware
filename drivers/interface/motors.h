@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -39,21 +39,21 @@
 
 /******** Defines ********/
 
-//The following defines gives a PWM of 9 bits at ~140KHz for a sysclock of 72MHz
-#define MOTORS_PWM_BITS     9
-#define MOTORS_PWM_PERIOD   ((1<<MOTORS_PWM_BITS) - 1)
+// The following defines gives a PWM of 9 bits at ~140KHz for a sysclock of
+// 72MHz
+#define MOTORS_PWM_BITS 9
+#define MOTORS_PWM_PERIOD ((1 << MOTORS_PWM_BITS) - 1)
 #define MOTORS_PWM_PRESCALE 0
 
-
 // Motors IDs define
-#define MOTOR_M1  0
-#define MOTOR_M2  1
-#define MOTOR_M3  2
-#define MOTOR_M4  3
+#define MOTOR_M1 0
+#define MOTOR_M2 1
+#define MOTOR_M3 2
+#define MOTOR_M4 3
 
 // Test defines
-#define MOTORS_TEST_RATIO         (uint16_t)(0.5*(1<<16))
-#define MOTORS_TEST_ON_TIME_MS    10
+#define MOTORS_TEST_RATIO (uint16_t)(0.5 * (1 << 16))
+#define MOTORS_TEST_ON_TIME_MS 10
 #define MOTORS_TEST_DELAY_TIME_MS 50
 
 /*** Public interface ***/
@@ -82,7 +82,6 @@ int motorsGetRatio(int id);
 /**
  * FreeRTOS Task to test the Motors driver
  */
-void motorsTestTask(void* params);
+void motorsTestTask(void *params);
 
 #endif /* __MOTORS_H__ */
-

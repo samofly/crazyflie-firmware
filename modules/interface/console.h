@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -49,7 +49,7 @@ int consolePutchar(int ch);
  * Put a null-terminated string on the console buffer
  *
  * @param str Null terminated string
- * @return a nonnegative number on success, or EOF on error. 
+ * @return a nonnegative number on success, or EOF on error.
  */
 int consolePuts(char *str);
 
@@ -60,10 +60,10 @@ void consoleFlush(void);
 
 /**
  * Macro implementing consolePrintf with eprintf
- * 
+ *
  * @param FMT String format
  * @patam ... Parameters to print
  */
-#define consolePrintf(FMT, ...) eprintf(consolePutchar, FMT, ## __VA_ARGS__)
+#define consolePrintf(FMT, ...) eprintf(consolePutchar, FMT, ##__VA_ARGS__)
 
 #endif /*CONSOLE_H_*/

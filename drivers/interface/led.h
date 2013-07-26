@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -30,21 +30,24 @@
 
 #include "stm32f10x_conf.h"
 
-//Led polarity configuration constant
+// Led polarity configuration constant
 #define LED_POL_POS 0
 #define LED_POL_NEG 1
 
-//Hardware configuration
-#define LED_GPIO_PERIF   RCC_APB2Periph_GPIOB
-#define LED_GPIO_PORT    GPIOB
-#define LED_GPIO_GREEN   GPIO_Pin_5
-#define LED_POL_GREEN    LED_POL_NEG
-#define LED_GPIO_RED     GPIO_Pin_4
-#define LED_POL_RED      LED_POL_NEG
+// Hardware configuration
+#define LED_GPIO_PERIF RCC_APB2Periph_GPIOB
+#define LED_GPIO_PORT GPIOB
+#define LED_GPIO_GREEN GPIO_Pin_5
+#define LED_POL_GREEN LED_POL_NEG
+#define LED_GPIO_RED GPIO_Pin_4
+#define LED_POL_RED LED_POL_NEG
 
 #define LED_NUM 2
 
-typedef enum {LED_RED=0, LED_GREEN} led_t;
+typedef enum {
+  LED_RED = 0,
+  LED_GREEN
+} led_t;
 
 void ledInit();
 bool ledTest();
@@ -54,7 +57,7 @@ void ledSet(led_t led, bool value);
 
 void ledTask(void *param);
 
-//Legacy functions
+// Legacy functions
 #define ledSetRed(VALUE) ledSet(LED_RED, VALUE)
 #define ledSetGreen(VALUE) ledSet(LED_GREEN, VALUE)
 

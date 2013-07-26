@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -47,7 +47,7 @@
 #define UART_DATA_TIMEOUT_MS 1000
 #define UART_DATA_TIMEOUT_TICKS (UART_DATA_TIMEOUT_MS / portTICK_RATE_MS)
 #define CRTP_START_BYTE 0xAA
-#define CCR_ENABLE_SET  ((uint32_t)0x00000001)
+#define CCR_ENABLE_SET ((uint32_t)0x00000001)
 
 static bool isInit = false;
 
@@ -56,8 +56,11 @@ static uint8_t outBuffer[64];
 static uint8_t dataIndex;
 static uint8_t dataSize;
 static uint8_t crcIndex = 0;
-static bool    isUartDmaInitialized;
-static enum { notSentSecondStart, sentSecondStart} txState;
+static bool isUartDmaInitialized;
+static enum {
+  notSentSecondStart,
+  sentSecondStart
+} txState;
 static xQueueHandle packetDelivery;
 static xQueueHandle uartDataDelivery;
 static DMA_InitTypeDef DMA_InitStructureShare;
@@ -68,12 +71,11 @@ void uartRxTask(void *param);
   * Configures the UART DMA. Mainly used for FreeRTOS trace
   * data transfer.
   */
-void uartDmaInit(void)
-{
+void uartDmaInit(void) {
   NVIC_InitTypeDef NVIC_InitStructure;
 
   // USART TX DMA Channel Config
-  DMA_InitStructureShare.DMA_PeripheralBaseAddr = (uint32_t)&UART_TYPE->DR;
+  DMA_InitStructureShare.DMA_PeripheralBaseAddr = (uint32_t) & UART_TYPE->DR;
   DMA_InitStructureShare.DMA_MemoryBaseAddr = (uint32_t)outBuffer;
   DMA_InitStructureShare.DMA_DIR = DMA_DIR_PeripheralDST;
   DMA_InitStructureShare.DMA_BufferSize = 0;
@@ -94,8 +96,7 @@ void uartDmaInit(void)
   isUartDmaInitialized = TRUE;
 }
 
-void uartInit(void)
-{
+void uartInit(void) {
 
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -106,26 +107,28 @@ void uartInit(void)
   RCC_APB1PeriphClockCmd(UART_PERIF, ENABLE);
 
   /* Configure USART Rx as input floating */
-  GPIO_InitStructure.GPIO_Pin   = UART_GPIO_RX;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+  GPIO_InitStructure.GPIO_Pin = UART_GPIO_RX;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
-/* Configure USART Tx as alternate function push-pull */
-  GPIO_InitStructure.GPIO_Pin   = UART_GPIO_TX;
+  /* Configure USART Tx as alternate function push-pull */
+  GPIO_InitStructure.GPIO_Pin = UART_GPIO_TX;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-#if defined(UART_OUTPUT_TRACE_DATA) || defined(ADC_OUTPUT_RAW_DATA) || defined(IMU_OUTPUT_RAW_DATA_ON_UART)
-  USART_InitStructure.USART_BaudRate            = 2000000;
-  USART_InitStructure.USART_Mode                = USART_Mode_Tx;
+#if defined(UART_OUTPUT_TRACE_DATA) || defined(ADC_OUTPUT_RAW_DATA) ||         \
+    defined(IMU_OUTPUT_RAW_DATA_ON_UART)
+  USART_InitStructure.USART_BaudRate = 2000000;
+  USART_InitStructure.USART_Mode = USART_Mode_Tx;
 #else
-  USART_InitStructure.USART_BaudRate            = 115200;
-  USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;
+  USART_InitStructure.USART_BaudRate = 115200;
+  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 #endif
-  USART_InitStructure.USART_WordLength          = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits            = USART_StopBits_1;
-  USART_InitStructure.USART_Parity              = USART_Parity_No ;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+  USART_InitStructure.USART_StopBits = USART_StopBits_1;
+  USART_InitStructure.USART_Parity = USART_Parity_No;
+  USART_InitStructure.USART_HardwareFlowControl =
+      USART_HardwareFlowControl_None;
   USART_Init(UART_TYPE, &USART_InitStructure);
 
 #if defined(UART_OUTPUT_TRACE_DATA) || defined(ADC_OUTPUT_RAW_DATA)
@@ -142,27 +145,29 @@ void uartInit(void)
 
   vSemaphoreCreateBinary(waitUntilSendDone);
 
-  xTaskCreate(uartRxTask, (const signed char * const)"UART-Rx",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
+  xTaskCreate(uartRxTask, (const signed char * const) "UART-Rx",
+              configMINIMAL_STACK_SIZE, NULL, /*priority*/ 2, NULL);
 
   packetDelivery = xQueueCreate(2, sizeof(CRTPPacket));
   uartDataDelivery = xQueueCreate(40, sizeof(uint8_t));
 #endif
-  //Enable it
+  // Enable it
   USART_Cmd(UART_TYPE, ENABLE);
-  
+
   isInit = true;
 }
 
-bool uartTest(void)
-{
-  return isInit;
-}
+bool uartTest(void) { return isInit; }
 
-void uartRxTask(void *param)
-{
-  enum {waitForFirstStart, waitForSecondStart,
-        waitForPort, waitForSize, waitForData, waitForCRC } rxState;
+void uartRxTask(void *param) {
+  enum {
+    waitForFirstStart,
+    waitForSecondStart,
+    waitForPort,
+    waitForSize,
+    waitForData,
+    waitForCRC
+  } rxState;
 
   uint8_t c;
   uint8_t dataIndex = 0;
@@ -170,72 +175,62 @@ void uartRxTask(void *param)
   CRTPPacket p;
   rxState = waitForFirstStart;
   uint8_t counter = 0;
-  while(1)
-  {
-    if (xQueueReceive(uartDataDelivery, &c, UART_DATA_TIMEOUT_TICKS) == pdTRUE)
-    {
+  while (1) {
+    if (xQueueReceive(uartDataDelivery, &c, UART_DATA_TIMEOUT_TICKS) ==
+        pdTRUE) {
       counter++;
-     /* if (counter > 4)
-        ledSetRed(1);*/
-      switch(rxState)
-      {
-        case waitForFirstStart:
-          rxState = (c == CRTP_START_BYTE) ? waitForSecondStart : waitForFirstStart;
-          break;
-        case waitForSecondStart:
-          rxState = (c == CRTP_START_BYTE) ? waitForPort : waitForFirstStart;
-          break;
-        case waitForPort:
-          p.header = c;
-          crc = c;
-          rxState = waitForSize;
-          break;
-        case waitForSize:
-          if (c < CRTP_MAX_DATA_SIZE)
-          {
-            p.size = c;
-            crc = (crc + c) % 0xFF;
-            dataIndex = 0;
-            rxState = (c > 0) ? waitForData : waitForCRC;
-          }
-          else
-          {
-            rxState = waitForFirstStart;
-          }
-          break;
-        case waitForData:
-          p.data[dataIndex] = c;
+      /* if (counter > 4)
+         ledSetRed(1);*/
+      switch (rxState) {
+      case waitForFirstStart:
+        rxState =
+            (c == CRTP_START_BYTE) ? waitForSecondStart : waitForFirstStart;
+        break;
+      case waitForSecondStart:
+        rxState = (c == CRTP_START_BYTE) ? waitForPort : waitForFirstStart;
+        break;
+      case waitForPort:
+        p.header = c;
+        crc = c;
+        rxState = waitForSize;
+        break;
+      case waitForSize:
+        if (c < CRTP_MAX_DATA_SIZE) {
+          p.size = c;
           crc = (crc + c) % 0xFF;
-          dataIndex++;
-          if (dataIndex == p.size)
-          {
-            rxState = waitForCRC;
-          }
-          break;
-        case waitForCRC:
-          if (crc == c)
-          {
-            xQueueSend(packetDelivery, &p, 0);
-          }
+          dataIndex = 0;
+          rxState = (c > 0) ? waitForData : waitForCRC;
+        } else {
           rxState = waitForFirstStart;
-          break;
-        default:
-          ASSERT(0);
-          break;
+        }
+        break;
+      case waitForData:
+        p.data[dataIndex] = c;
+        crc = (crc + c) % 0xFF;
+        dataIndex++;
+        if (dataIndex == p.size) {
+          rxState = waitForCRC;
+        }
+        break;
+      case waitForCRC:
+        if (crc == c) {
+          xQueueSend(packetDelivery, &p, 0);
+        }
+        rxState = waitForFirstStart;
+        break;
+      default:
+        ASSERT(0);
+        break;
       }
-    }
-    else
-    {
+    } else {
       // Timeout
       rxState = waitForFirstStart;
     }
   }
 }
 
-static int uartReceiveCRTPPacket(CRTPPacket *p)
-{
-  if (xQueueReceive(packetDelivery, p, portMAX_DELAY) == pdTRUE)
-  {
+static int uartReceiveCRTPPacket(CRTPPacket *p) {
+  if (xQueueReceive(packetDelivery, p, portMAX_DELAY) == pdTRUE) {
     return 0;
   }
 
@@ -245,36 +240,30 @@ static int uartReceiveCRTPPacket(CRTPPacket *p)
 static portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 static uint8_t rxDataInterrupt;
 
-void uartIsr(void)
-{
-  if (USART_GetITStatus(UART_TYPE, USART_IT_TXE))
-  {
-    if (dataIndex < dataSize)
-    {
+void uartIsr(void) {
+  if (USART_GetITStatus(UART_TYPE, USART_IT_TXE)) {
+    if (dataIndex < dataSize) {
       USART_SendData(UART_TYPE, outBuffer[dataIndex] & 0xFF);
       dataIndex++;
-      if (dataIndex < dataSize - 1 && dataIndex > 1)
-      {
-        outBuffer[crcIndex] = (outBuffer[crcIndex] + outBuffer[dataIndex]) % 0xFF;
+      if (dataIndex < dataSize - 1 && dataIndex > 1) {
+        outBuffer[crcIndex] =
+            (outBuffer[crcIndex] + outBuffer[dataIndex]) % 0xFF;
       }
-    }
-    else
-    {
+    } else {
       USART_ITConfig(UART_TYPE, USART_IT_TXE, DISABLE);
       xHigherPriorityTaskWoken = pdFALSE;
       xSemaphoreGiveFromISR(waitUntilSendDone, &xHigherPriorityTaskWoken);
     }
   }
   USART_ClearITPendingBit(UART_TYPE, USART_IT_TXE);
-  if (USART_GetITStatus(UART_TYPE, USART_IT_RXNE))
-  {
+  if (USART_GetITStatus(UART_TYPE, USART_IT_RXNE)) {
     rxDataInterrupt = USART_ReceiveData(UART_TYPE) & 0xFF;
-    xQueueSendFromISR(uartDataDelivery, &rxDataInterrupt, &xHigherPriorityTaskWoken);
+    xQueueSendFromISR(uartDataDelivery, &rxDataInterrupt,
+                      &xHigherPriorityTaskWoken);
   }
 }
 
-static int uartSendCRTPPacket(CRTPPacket *p)
-{
+static int uartSendCRTPPacket(CRTPPacket *p) {
   outBuffer[0] = CRTP_START_BYTE;
   outBuffer[1] = CRTP_START_BYTE;
   outBuffer[2] = p->header;
@@ -289,64 +278,51 @@ static int uartSendCRTPPacket(CRTPPacket *p)
   USART_SendData(UART_TYPE, outBuffer[0] & 0xFF);
   USART_ITConfig(UART_TYPE, USART_IT_TXE, ENABLE);
   xSemaphoreTake(waitUntilSendDone, portMAX_DELAY);
-  
+
   return 0;
 }
 
-static int uartSetEnable(bool enable)
-{
-  return 0;
-}
+static int uartSetEnable(bool enable) { return 0; }
 
-static struct crtpLinkOperations uartOp =
-{
-  .setEnable         = uartSetEnable,
-  .sendPacket        = uartSendCRTPPacket,
-  .receivePacket     = uartReceiveCRTPPacket,
-};
+static struct crtpLinkOperations uartOp = { .setEnable = uartSetEnable,
+                                            .sendPacket = uartSendCRTPPacket,
+                                            .receivePacket =
+                                                uartReceiveCRTPPacket, };
 
-struct crtpLinkOperations * uartGetLink()
-{
-  return &uartOp;
-}
+struct crtpLinkOperations *uartGetLink() { return &uartOp; }
 
-void uartDmaIsr(void)
-{
+void uartDmaIsr(void) {
   DMA_ITConfig(UART_DMA_CH, DMA_IT_TC, DISABLE);
   DMA_ClearITPendingBit(UART_DMA_IT_TC);
   USART_DMACmd(UART_TYPE, USART_DMAReq_Tx, DISABLE);
   DMA_Cmd(UART_DMA_CH, DISABLE);
-
 }
 
-void uartSendData(uint32_t size, uint8_t* data)
-{
+void uartSendData(uint32_t size, uint8_t *data) {
 #ifdef UART_OUTPUT_RAW_DATA_ONLY
   uint32_t i;
 
-  for(i = 0; i < size; i++)
-  {
-    while (!(UART_TYPE->SR & USART_FLAG_TXE));
+  for (i = 0; i < size; i++) {
+    while (!(UART_TYPE->SR & USART_FLAG_TXE))
+      ;
     UART_TYPE->DR = (data[i] & 0xFF);
   }
 #endif
 }
 
-int uartPutchar(int ch)
-{
-    uartSendData(1, (uint8_t *)&ch);
-    
-    return (unsigned char)ch;
+int uartPutchar(int ch) {
+  uartSendData(1, (uint8_t *)&ch);
+
+  return (unsigned char)ch;
 }
 
-void uartSendDataDma(uint32_t size, uint8_t* data)
-{
-  if (isUartDmaInitialized)
-  {
+void uartSendDataDma(uint32_t size, uint8_t *data) {
+  if (isUartDmaInitialized) {
     memcpy(outBuffer, data, size);
     DMA_InitStructureShare.DMA_BufferSize = size;
     // Wait for DMA to be free
-    while(UART_DMA_CH->CCR & CCR_ENABLE_SET);
+    while (UART_DMA_CH->CCR & CCR_ENABLE_SET)
+      ;
     DMA_Init(UART_DMA_CH, &DMA_InitStructureShare);
     // Enable the Transfer Complete interrupt
     DMA_ITConfig(UART_DMA_CH, DMA_IT_TC, ENABLE);

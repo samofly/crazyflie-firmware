@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -41,59 +41,48 @@ static bool isInit;
 /**
  * Send the data to the client
  */
-static void consoleSendMessage(void)
-{
+static void consoleSendMessage(void) {
   crtpSendPacketBlock(&messageToPrint);
   messageToPrint.size = 0;
 }
 
-void consoleInit()
-{
+void consoleInit() {
   if (isInit)
     return;
 
   messageToPrint.size = 0;
   messageToPrint.header = CRTP_HEADER(CRTP_PORT_CONSOLE, 0);
   vSemaphoreCreateBinary(synch);
-  
+
   isInit = true;
 }
 
-bool consoleTest(void)
-{
-  return isInit;
-}
+bool consoleTest(void) { return isInit; }
 
-int consolePutchar(int ch)
-{
-  if (xSemaphoreTake(synch, portMAX_DELAY) == pdTRUE)
-  {
+int consolePutchar(int ch) {
+  if (xSemaphoreTake(synch, portMAX_DELAY) == pdTRUE) {
     messageToPrint.data[messageToPrint.size] = (unsigned char)ch;
     messageToPrint.size++;
-    if (ch == '\n' || messageToPrint.size == CRTP_MAX_DATA_SIZE)
-    {
+    if (ch == '\n' || messageToPrint.size == CRTP_MAX_DATA_SIZE) {
       consoleSendMessage();
     }
     xSemaphoreGive(synch);
   }
-  
+
   return (unsigned char)ch;
 }
 
-int consolePuts(char *str)
-{
+int consolePuts(char *str) {
   int ret = 0;
-  
-  while(*str)
+
+  while (*str)
     ret |= consolePutchar(*str++);
-  
+
   return ret;
 }
 
-void consoleFlush(void)
-{
-  if (xSemaphoreTake(synch, portMAX_DELAY) == pdTRUE)
-  {
+void consoleFlush(void) {
+  if (xSemaphoreTake(synch, portMAX_DELAY) == pdTRUE) {
     consoleSendMessage();
     xSemaphoreGive(synch);
   }

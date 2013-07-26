@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -49,6 +49,6 @@ void workerLoop();
  * @param arg      Argument that will be passed to the function when executed
  * @return         0 in case of success. Anything else on failure.
  */
-int workerSchedule(void (*function)(void*), void *arg);
+int workerSchedule(void (*function)(void *), void *arg);
 
 #endif //__WORKER_H

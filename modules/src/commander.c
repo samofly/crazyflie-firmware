@@ -32,11 +32,10 @@
 #include "crtp.h"
 #include "configblock.h"
 
-#define MIN_THRUST  10000
-#define MAX_THRUST  60000
+#define MIN_THRUST 10000
+#define MAX_THRUST 60000
 
-struct CommanderCrtpValues
-{
+struct CommanderCrtpValues {
   float roll;
   float pitch;
   float yaw;
@@ -45,17 +44,16 @@ struct CommanderCrtpValues
 
 static struct CommanderCrtpValues targetVal[2];
 static bool isInit;
-static int side=0;
+static int side = 0;
 static uint32_t lastUpdate;
 static bool isInactive;
 
-static void commanderCrtpCB(CRTPPacket* pk);
+static void commanderCrtpCB(CRTPPacket *pk);
 static void commanderWatchdog(void);
 static void commanderWatchdogReset(void);
 
-void commanderInit(void)
-{
-  if(isInit)
+void commanderInit(void) {
+  if (isInit)
     return;
 
   crtpInit();
@@ -66,88 +64,71 @@ void commanderInit(void)
   isInit = TRUE;
 }
 
-bool commanderTest(void)
-{
+bool commanderTest(void) {
   crtpTest();
   return isInit;
 }
 
-static void commanderCrtpCB(CRTPPacket* pk)
-{
-  targetVal[!side] = *((struct CommanderCrtpValues*)pk->data);
+static void commanderCrtpCB(CRTPPacket *pk) {
+  targetVal[!side] = *((struct CommanderCrtpValues *)pk->data);
   side = !side;
   commanderWatchdogReset();
 }
 
-static void commanderWatchdog(void)
-{
+static void commanderWatchdog(void) {
   int usedSide = side;
   uint32_t ticktimeSinceUpdate;
 
   ticktimeSinceUpdate = xTaskGetTickCount() - lastUpdate;
 
-  if (ticktimeSinceUpdate > COMMANDER_WDT_TIMEOUT_STABALIZE)
-  {
+  if (ticktimeSinceUpdate > COMMANDER_WDT_TIMEOUT_STABALIZE) {
     targetVal[usedSide].roll = 0;
     targetVal[usedSide].pitch = 0;
     targetVal[usedSide].yaw = 0;
   }
-  if (ticktimeSinceUpdate > COMMANDER_WDT_TIMEOUT_SHUTDOWN)
-  {
+  if (ticktimeSinceUpdate > COMMANDER_WDT_TIMEOUT_SHUTDOWN) {
     targetVal[usedSide].thrust = 0;
     isInactive = TRUE;
-  }
-  else
-  {
+  } else {
     isInactive = FALSE;
   }
 }
 
-static void commanderWatchdogReset(void)
-{
-  lastUpdate = xTaskGetTickCount();
-}
+static void commanderWatchdogReset(void) { lastUpdate = xTaskGetTickCount(); }
 
-uint32_t commanderGetInactivityTime(void)
-{
+uint32_t commanderGetInactivityTime(void) {
   return xTaskGetTickCount() - lastUpdate;
 }
 
-void commanderGetRPY(float* eulerRollDesired, float* eulerPitchDesired, float* eulerYawDesired)
-{
+void commanderGetRPY(float *eulerRollDesired, float *eulerPitchDesired,
+                     float *eulerYawDesired) {
   int usedSide = side;
 
-  *eulerRollDesired  = targetVal[usedSide].roll;
+  *eulerRollDesired = targetVal[usedSide].roll;
   *eulerPitchDesired = targetVal[usedSide].pitch;
-  *eulerYawDesired   = targetVal[usedSide].yaw;
+  *eulerYawDesired = targetVal[usedSide].yaw;
 }
 
-void commanderGetRPYType(RPYType* rollType, RPYType* pitchType, RPYType* yawType)
-{
-  *rollType  = ANGLE;
+void commanderGetRPYType(RPYType *rollType, RPYType *pitchType,
+                         RPYType *yawType) {
+  *rollType = ANGLE;
   *pitchType = ANGLE;
-  *yawType   = RATE;
+  *yawType = RATE;
 }
 
-void commanderGetTrust(uint16_t* thrust)
-{
+void commanderGetTrust(uint16_t *thrust) {
   int usedSide = side;
   uint16_t rawThrust = targetVal[usedSide].thrust;
 
-  if (rawThrust > MIN_THRUST)
-  {
+  if (rawThrust > MIN_THRUST) {
     *thrust = rawThrust;
-  }
-  else
-  {
+  } else {
     *thrust = 0;
   }
 
-  if (rawThrust > MAX_THRUST)
-  {
+  if (rawThrust > MAX_THRUST) {
     *thrust = MAX_THRUST;
   }
 
   commanderWatchdog();
 }
-

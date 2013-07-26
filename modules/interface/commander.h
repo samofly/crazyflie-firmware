@@ -28,11 +28,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define COMMANDER_WDT_TIMEOUT_STABALIZE  M2T(500)
-#define COMMANDER_WDT_TIMEOUT_SHUTDOWN   M2T(2000)
+#define COMMANDER_WDT_TIMEOUT_STABALIZE M2T(500)
+#define COMMANDER_WDT_TIMEOUT_SHUTDOWN M2T(2000)
 
-typedef enum
-{
+typedef enum {
   RATE,
   ANGLE
 } RPYType;
@@ -41,8 +40,10 @@ void commanderInit(void);
 bool commanderTest(void);
 
 uint32_t commanderGetInactivityTime(void);
-void commanderGetRPY(float* eulerRollDesired, float* eulerPitchDesired, float* eulerYawDesired);
-void commanderGetRPYType(RPYType* rollType, RPYType* pitchType, RPYType* yawType);
-void commanderGetTrust(uint16_t* thrust);
+void commanderGetRPY(float *eulerRollDesired, float *eulerPitchDesired,
+                     float *eulerYawDesired);
+void commanderGetRPYType(RPYType *rollType, RPYType *pitchType,
+                         RPYType *yawType);
+void commanderGetTrust(uint16_t *thrust);
 
 #endif /* COMMANDER_H_ */

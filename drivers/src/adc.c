@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -45,30 +45,29 @@
 #endif
 
 // PORT A
-#define GPIO_VBAT        GPIO_Pin_3
+#define GPIO_VBAT GPIO_Pin_3
 
 // CHANNELS
-#define NBR_OF_ADC_CHANNELS   1
-#define CH_VBAT               ADC_Channel_3
+#define NBR_OF_ADC_CHANNELS 1
+#define CH_VBAT ADC_Channel_3
 
-#define CH_VREF               ADC_Channel_17
-#define CH_TEMP               ADC_Channel_16
+#define CH_VREF ADC_Channel_17
+#define CH_TEMP ADC_Channel_16
 
 static bool isInit;
 volatile AdcGroup adcValues[ADC_MEAN_SIZE * 2];
 
-xQueueHandle      adcQueue;
+xQueueHandle adcQueue;
 
-static void adcDmaInit(void)
-{
+static void adcDmaInit(void) {
   DMA_InitTypeDef DMA_InitStructure;
 
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
   // DMA channel1 configuration
   DMA_DeInit(DMA1_Channel1);
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
-  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&adcValues;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & ADC1->DR;
+  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t) & adcValues;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
   DMA_InitStructure.DMA_BufferSize = NBR_OF_ADC_CHANNELS * (ADC_MEAN_SIZE * 2);
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -86,25 +85,22 @@ static void adcDmaInit(void)
 /**
  * Decimates the adc samples after oversampling
  */
-static void adcDecimate(AdcGroup* oversampled, AdcGroup* decimated)
-{
+static void adcDecimate(AdcGroup *oversampled, AdcGroup *decimated) {
   uint32_t i, j;
   uint32_t sum;
   uint32_t sumVref;
-  AdcGroup* adcIterator;
+  AdcGroup *adcIterator;
   AdcPair *adcOversampledPair;
   AdcPair *adcDecimatedPair;
 
   // Compute sums and decimate each channel
-  adcDecimatedPair = (AdcPair*)decimated;
-  for (i = 0; i < NBR_OF_ADC_CHANNELS; i++)
-  {
+  adcDecimatedPair = (AdcPair *)decimated;
+  for (i = 0; i < NBR_OF_ADC_CHANNELS; i++) {
     adcIterator = oversampled;
     sum = 0;
     sumVref = 0;
-    for (j = 0; j < ADC_MEAN_SIZE; j++)
-    {
-      adcOversampledPair = &((AdcPair*)adcIterator)[i];
+    for (j = 0; j < ADC_MEAN_SIZE; j++) {
+      adcOversampledPair = &((AdcPair *)adcIterator)[i];
       sum += adcOversampledPair->val;
       sumVref += adcOversampledPair->vref;
       adcIterator++;
@@ -116,10 +112,9 @@ static void adcDecimate(AdcGroup* oversampled, AdcGroup* decimated)
   }
 }
 
-void adcInit(void)
-{
+void adcInit(void) {
 
-  if(isInit)
+  if (isInit)
     return;
 
   ADC_InitTypeDef ADC_InitStructure;
@@ -130,9 +125,10 @@ void adcInit(void)
   // Enable TIM2, GPIOA and ADC1 clock
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC2 |
-                         RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+                             RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO,
+                         ENABLE);
 
-  //Timer configuration
+  // Timer configuration
   TIM_TimeBaseStructure.TIM_Period = ADC_TRIG_PERIOD;
   TIM_TimeBaseStructure.TIM_Prescaler = ADC_TRIG_PRESCALE;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
@@ -181,9 +177,11 @@ void adcInit(void)
   ADC_Cmd(ADC1, ENABLE);
   // Calibrate ADC1
   ADC_ResetCalibration(ADC1);
-  while(ADC_GetResetCalibrationStatus(ADC1));
+  while (ADC_GetResetCalibrationStatus(ADC1))
+    ;
   ADC_StartCalibration(ADC1);
-  while(ADC_GetCalibrationStatus(ADC1));
+  while (ADC_GetCalibrationStatus(ADC1))
+    ;
 
   // Enable ADC1 external trigger
   ADC_ExternalTrigConvCmd(ADC1, ENABLE);
@@ -193,9 +191,11 @@ void adcInit(void)
   ADC_Cmd(ADC2, ENABLE);
   // Calibrate ADC2
   ADC_ResetCalibration(ADC2);
-  while(ADC_GetResetCalibrationStatus(ADC2));
+  while (ADC_GetResetCalibrationStatus(ADC2))
+    ;
   ADC_StartCalibration(ADC2);
-  while(ADC_GetCalibrationStatus(ADC2));
+  while (ADC_GetCalibrationStatus(ADC2))
+    ;
 
   // Enable ADC2 external trigger
   ADC_ExternalTrigConvCmd(ADC2, ENABLE);
@@ -207,26 +207,21 @@ void adcInit(void)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  adcQueue = xQueueCreate(1, sizeof(AdcGroup*));
+  adcQueue = xQueueCreate(1, sizeof(AdcGroup *));
 
-  xTaskCreate(adcTask, (const signed char * const)"ADC",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
+  xTaskCreate(adcTask, (const signed char * const) "ADC",
+              configMINIMAL_STACK_SIZE, NULL, /*priority*/ 3, NULL);
 
   isInit = true;
 }
 
-bool adcTest(void)
-{
-  return isInit;
-}
+bool adcTest(void) { return isInit; }
 
-float adcConvertToVoltageFloat(uint16_t v, uint16_t vref)
-{
+float adcConvertToVoltageFloat(uint16_t v, uint16_t vref) {
   return (v / (vref / ADC_INTERNAL_VREF));
 }
 
-void adcDmaStart(void)
-{
+void adcDmaStart(void) {
   // Enable the Transfer Complete and Half Transfer Interrupt
   DMA_ITConfig(DMA1_Channel1, DMA_IT_TC | DMA_IT_HT, ENABLE);
   // Enable ADC1 DMA
@@ -235,48 +230,42 @@ void adcDmaStart(void)
   TIM_Cmd(TIM2, ENABLE);
 }
 
-void adcDmaStop(void)
-{
-//  TIM_Cmd(TIM2, DISABLE);
+void adcDmaStop(void) {
+  //  TIM_Cmd(TIM2, DISABLE);
 }
 
-void adcInterruptHandler(void)
-{
+void adcInterruptHandler(void) {
   portBASE_TYPE xHigherPriorityTaskWoken;
-  AdcGroup* adcBuffer;
+  AdcGroup *adcBuffer;
 
-  if(DMA_GetITStatus(DMA1_IT_HT1))
-  {
+  if (DMA_GetITStatus(DMA1_IT_HT1)) {
     DMA_ClearITPendingBit(DMA1_IT_HT1);
-    adcBuffer = (AdcGroup*)&adcValues[0];
+    adcBuffer = (AdcGroup *)&adcValues[0];
     xQueueSendFromISR(adcQueue, &adcBuffer, &xHigherPriorityTaskWoken);
   }
-  if(DMA_GetITStatus(DMA1_IT_TC1))
-  {
+  if (DMA_GetITStatus(DMA1_IT_TC1)) {
     DMA_ClearITPendingBit(DMA1_IT_TC1);
-    adcBuffer = (AdcGroup*)&adcValues[ADC_MEAN_SIZE];
+    adcBuffer = (AdcGroup *)&adcValues[ADC_MEAN_SIZE];
     xQueueSendFromISR(adcQueue, &adcBuffer, &xHigherPriorityTaskWoken);
   }
 }
 
-void adcTask(void *param)
-{
-  AdcGroup* adcRawValues;
+void adcTask(void *param) {
+  AdcGroup *adcRawValues;
   AdcGroup adcValues;
 
-  vTaskSetApplicationTaskTag(0, (void*)TASK_ADC_ID_NBR);
+  vTaskSetApplicationTaskTag(0, (void *)TASK_ADC_ID_NBR);
   vTaskDelay(1000);
 
   adcDmaStart();
 
-  while(1)
-  {
+  while (1) {
     xQueueReceive(adcQueue, &adcRawValues, portMAX_DELAY);
-    adcDecimate(adcRawValues, &adcValues);  // 10% CPU
+    adcDecimate(adcRawValues, &adcValues); // 10% CPU
     pmBatteryUpdate(&adcValues);
 
 #ifdef ADC_OUTPUT_RAW_DATA
-    uartSendDataDma(sizeof(AdcGroup)*ADC_MEAN_SIZE, (uint8_t*)adcRawValues);
+    uartSendDataDma(sizeof(AdcGroup) * ADC_MEAN_SIZE, (uint8_t *)adcRawValues);
 #endif
   }
 }

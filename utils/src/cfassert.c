@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -28,10 +28,8 @@
 #include "uart.h"
 #include "led.h"
 
-void assertFail(char *exp, char *file, int line)
-{
-  while (1)
-  {
+void assertFail(char *exp, char *file, int line) {
+  while (1) {
     ledSet(LED_RED, 1);
     ledSet(LED_GREEN, 1);
     uartPrintf("Assert failed [%s] in file %s, line %d\n", exp, file, line);

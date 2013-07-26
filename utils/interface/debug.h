@@ -40,11 +40,14 @@
 //#endif
 
 #ifdef TEST_PRINTS
-  #define TEST_AND_PRINT(e, msgOK, msgFail)\
-    if(e) { consolePrintf(msgOK); } else { consolePrintf(msgFail); }
-  #define FAIL_PRINT(msg) consolePrintf(msg)
+#define TEST_AND_PRINT(e, msgOK, msgFail)                                      \
+  if (e) {                                                                     \
+    consolePrintf(msgOK);                                                      \
+  } else {                                                                     \
+    consolePrintf(msgFail);                                                    \
+  }
+#define FAIL_PRINT(msg) consolePrintf(msg)
 #else
-  #define TEST_AND_PRINT(e, msgOK, msgFail)
-  #define FAIL_PRINT(msg)
+#define TEST_AND_PRINT(e, msgOK, msgFail)
+#define FAIL_PRINT(msg)
 #endif
-

@@ -1,6 +1,6 @@
 /*
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -31,7 +31,7 @@
 
 void eskylinkInit();
 bool eskylinkTest();
-struct crtpLinkOperations * eskylinkGetLink();
+struct crtpLinkOperations *eskylinkGetLink();
 void eskylinkReInit(void);
 
 #endif
