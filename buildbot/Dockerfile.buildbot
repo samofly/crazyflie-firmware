@@ -30,9 +30,10 @@ RUN adduser --gecos "" --disabled-password user
 RUN adduser user sudo
 RUN sh -c "echo \"$PASSWORD\n$PASSWORD\n\" | passwd user"
 
-# Setup Buildbot dir
+# Setup Buildbot dir and configs
 RUN mkdir -p /home/user/buildbot
-RUN /bin/sh -c "cd /home/user/buildbot && buildbot create-master master && mv master/master.cfg.sample master/master.cfg"
+RUN /bin/sh -c "cd /home/user/buildbot && buildbot create-master master"
+ADD ./master.cfg /home/user/buildbot/master/master.cfg
 RUN /bin/sh -c "cd /home/user/buildbot && buildslave create-slave slave localhost:9989 example-slave pass"
 
 EXPOSE $WEB_PORT:8010

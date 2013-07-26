@@ -16,8 +16,10 @@ docker rmi $IMAGE_NAME || echo "Old buildbot image not found, so nothing to dele
 
 readonly TMP_DIR=`mktemp -d`
 readonly DOCKERFILE="$TMP_DIR/Dockerfile"
+readonly MASTER_CFG="$TMP_DIR/master.cfg"
 
 envsubst < Dockerfile.buildbot > $DOCKERFILE
+envsubst < master.cfg > $MASTER_CFG
 
 cd $TMP_DIR
 docker build -t $IMAGE_NAME .
