@@ -56,19 +56,19 @@
     ***************************************************************************
 
 
-    http://www.FreeRTOS.org - Documentation, books, training, latest versions, 
+    http://www.FreeRTOS.org - Documentation, books, training, latest versions,
     license and Real Time Engineers Ltd. contact details.
 
     http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
     including FreeRTOS+Trace - an indispensable productivity tool, and our new
     fully thread aware and reentrant UDP/IP stack.
 
-    http://www.OpenRTOS.com - Real Time Engineers ltd license FreeRTOS to High 
-    Integrity Systems, who sell the code with commercial support, 
+    http://www.OpenRTOS.com - Real Time Engineers ltd license FreeRTOS to High
+    Integrity Systems, who sell the code with commercial support,
     indemnification and middleware, under the OpenRTOS brand.
-    
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety 
-    engineered and independently SIL3 certified version for use in safety and 
+
+    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+    engineered and independently SIL3 certified version for use in safety and
     mission critical applications that require provable dependability.
 */
 
@@ -76,7 +76,8 @@
 #define CO_ROUTINE_H
 
 #ifndef INC_FREERTOS_H
-	#error "include FreeRTOS.h must appear in source files before include croutine.h"
+#error                                                                         \
+    "include FreeRTOS.h must appear in source files before include croutine.h"
 #endif
 
 #include "list.h"
@@ -88,20 +89,27 @@ extern "C" {
 /* Used to hide the implementation of the co-routine control block.  The
 control block structure however has to be included in the header due to
 the macro implementation of the co-routine functionality. */
-typedef void * xCoRoutineHandle;
+typedef void *xCoRoutineHandle;
 
 /* Defines the prototype to which co-routine functions must conform. */
-typedef void (*crCOROUTINE_CODE)( xCoRoutineHandle, unsigned portBASE_TYPE );
+typedef void (*crCOROUTINE_CODE)(xCoRoutineHandle, unsigned portBASE_TYPE);
 
-typedef struct corCoRoutineControlBlock
-{
-	crCOROUTINE_CODE 		pxCoRoutineFunction;
-	xListItem				xGenericListItem;	/*< List item used to place the CRCB in ready and blocked queues. */
-	xListItem				xEventListItem;		/*< List item used to place the CRCB in event lists. */
-	unsigned portBASE_TYPE 	uxPriority;			/*< The priority of the co-routine in relation to other co-routines. */
-	unsigned portBASE_TYPE 	uxIndex;			/*< Used to distinguish between co-routines when multiple co-routines use the same co-routine function. */
-	unsigned short 		uxState;			/*< Used internally by the co-routine implementation. */
-} corCRCB; /* Co-routine control block.  Note must be identical in size down to uxPriority with tskTCB. */
+typedef struct corCoRoutineControlBlock {
+  crCOROUTINE_CODE pxCoRoutineFunction;
+  xListItem
+  xGenericListItem; /*< List item used to place the CRCB in ready and blocked
+                       queues. */
+  xListItem
+  xEventListItem; /*< List item used to place the CRCB in event lists. */
+  unsigned portBASE_TYPE uxPriority; /*< The priority of the co-routine in
+                                        relation to other co-routines. */
+  unsigned portBASE_TYPE uxIndex; /*< Used to distinguish between co-routines
+                                     when multiple co-routines use the same
+                                     co-routine function. */
+  unsigned short
+  uxState; /*< Used internally by the co-routine implementation. */
+} corCRCB; /* Co-routine control block.  Note must be identical in size down to
+              uxPriority with tskTCB. */
 
 /**
  * croutine. h
@@ -126,15 +134,18 @@ typedef struct corCoRoutineControlBlock
  * execute the same function.  See the example below and the co-routine section
  * of the WEB documentation for further information.
  *
- * @return pdPASS if the co-routine was successfully created and added to a ready
+ * @return pdPASS if the co-routine was successfully created and added to a
+ ready
  * list, otherwise an error code defined with ProjDefs.h.
  *
  * Example usage:
    <pre>
  // Co-routine to be created.
- void vFlashCoRoutine( xCoRoutineHandle xHandle, unsigned portBASE_TYPE uxIndex )
+ void vFlashCoRoutine( xCoRoutineHandle xHandle, unsigned portBASE_TYPE uxIndex
+ )
  {
- // Variables in co-routines must be declared static if they must maintain value across a blocking call.
+ // Variables in co-routines must be declared static if they must maintain value
+ across a blocking call.
  // This may not be necessary for const variables.
  static const char cLedToFlash[ 2 ] = { 5, 6 };
  static const portTickType uxFlashRates[ 2 ] = { 200, 400 };
@@ -162,7 +173,7 @@ typedef struct corCoRoutineControlBlock
  {
  unsigned char ucParameterToPass;
  xTaskHandle xHandle;
-		
+
      // Create two co-routines at priority 0.  The first is given index 0
      // so (from the code above) toggles LED 5 every 200 ticks.  The second
      // is given index 1 so toggles LED 6 every 400 ticks.
@@ -175,8 +186,9 @@ typedef struct corCoRoutineControlBlock
  * \defgroup xCoRoutineCreate xCoRoutineCreate
  * \ingroup Tasks
  */
-signed portBASE_TYPE xCoRoutineCreate( crCOROUTINE_CODE pxCoRoutineCode, unsigned portBASE_TYPE uxPriority, unsigned portBASE_TYPE uxIndex );
-
+signed portBASE_TYPE xCoRoutineCreate(crCOROUTINE_CODE pxCoRoutineCode,
+                                      unsigned portBASE_TYPE uxPriority,
+                                      unsigned portBASE_TYPE uxIndex);
 
 /**
  * croutine. h
@@ -200,7 +212,7 @@ signed portBASE_TYPE xCoRoutineCreate( crCOROUTINE_CODE pxCoRoutineCode, unsigne
  // The rest of the idle task will execute between co-routine calls.
  void vApplicationIdleHook( void )
  {
-	vCoRoutineSchedule();
+ vCoRoutineSchedule();
  }
 
  // Alternatively, if you do not require any other part of the idle task to
@@ -217,7 +229,7 @@ signed portBASE_TYPE xCoRoutineCreate( crCOROUTINE_CODE pxCoRoutineCode, unsigne
  * \defgroup vCoRoutineSchedule vCoRoutineSchedule
  * \ingroup Tasks
  */
-void vCoRoutineSchedule( void );
+void vCoRoutineSchedule(void);
 
 /**
  * croutine. h
@@ -231,7 +243,8 @@ void vCoRoutineSchedule( void );
  // Co-routine to be created.
  void vACoRoutine( xCoRoutineHandle xHandle, unsigned portBASE_TYPE uxIndex )
  {
- // Variables in co-routines must be declared static if they must maintain value across a blocking call.
+ // Variables in co-routines must be declared static if they must maintain value
+ across a blocking call.
  static long ulAVariable;
 
      // Must start every co-routine with a call to crSTART();
@@ -248,7 +261,9 @@ void vCoRoutineSchedule( void );
  * \defgroup crSTART crSTART
  * \ingroup Tasks
  */
-#define crSTART( pxCRCB ) switch( ( ( corCRCB * )( pxCRCB ) )->uxState ) { case 0:
+#define crSTART(pxCRCB)                                                        \
+  switch (((corCRCB *)(pxCRCB))->uxState) {                                    \
+  case 0:
 
 /**
  * croutine. h
@@ -262,7 +277,8 @@ void vCoRoutineSchedule( void );
  // Co-routine to be created.
  void vACoRoutine( xCoRoutineHandle xHandle, unsigned portBASE_TYPE uxIndex )
  {
- // Variables in co-routines must be declared static if they must maintain value across a blocking call.
+ // Variables in co-routines must be declared static if they must maintain value
+ across a blocking call.
  static long ulAVariable;
 
      // Must start every co-routine with a call to crSTART();
@@ -285,8 +301,14 @@ void vCoRoutineSchedule( void );
  * These macros are intended for internal use by the co-routine implementation
  * only.  The macros should not be used directly by application writers.
  */
-#define crSET_STATE0( xHandle ) ( ( corCRCB * )( xHandle ) )->uxState = (__LINE__ * 2); return; case (__LINE__ * 2):
-#define crSET_STATE1( xHandle ) ( ( corCRCB * )( xHandle ) )->uxState = ((__LINE__ * 2)+1); return; case ((__LINE__ * 2)+1):
+#define crSET_STATE0(xHandle)                                                  \
+  ((corCRCB *)(xHandle))->uxState = (__LINE__ * 2);                            \
+  return;                                                                      \
+  case(__LINE__ * 2) :
+#define crSET_STATE1(xHandle)                                                  \
+  ((corCRCB *)(xHandle))->uxState = ((__LINE__ * 2) + 1);                      \
+  return;                                                                      \
+  case((__LINE__ * 2) + 1) :
 
 /**
  * croutine. h
@@ -312,7 +334,8 @@ void vCoRoutineSchedule( void );
  // Co-routine to be created.
  void vACoRoutine( xCoRoutineHandle xHandle, unsigned portBASE_TYPE uxIndex )
  {
- // Variables in co-routines must be declared static if they must maintain value across a blocking call.
+ // Variables in co-routines must be declared static if they must maintain value
+ across a blocking call.
  // This may not be necessary for const variables.
  // We are to delay for 200ms.
  static const xTickType xDelayTime = 200 / portTICK_RATE_MS;
@@ -334,12 +357,11 @@ void vCoRoutineSchedule( void );
  * \defgroup crDELAY crDELAY
  * \ingroup Tasks
  */
-#define crDELAY( xHandle, xTicksToDelay )												\
-	if( ( xTicksToDelay ) > 0 )															\
-	{																					\
-		vCoRoutineAddToDelayedList( ( xTicksToDelay ), NULL );							\
-	}																					\
-	crSET_STATE0( ( xHandle ) );
+#define crDELAY(xHandle, xTicksToDelay)                                        \
+  if ((xTicksToDelay) > 0) {                                                   \
+    vCoRoutineAddToDelayedList((xTicksToDelay), NULL);                         \
+  }                                                                            \
+  crSET_STATE0((xHandle));
 
 /**
  * <pre>
@@ -392,9 +414,11 @@ void vCoRoutineSchedule( void );
    <pre>
  // Co-routine function that blocks for a fixed period then posts a number onto
  // a queue.
- static void prvCoRoutineFlashTask( xCoRoutineHandle xHandle, unsigned portBASE_TYPE uxIndex )
+ static void prvCoRoutineFlashTask( xCoRoutineHandle xHandle, unsigned
+ portBASE_TYPE uxIndex )
  {
- // Variables in co-routines must be declared static if they must maintain value across a blocking call.
+ // Variables in co-routines must be declared static if they must maintain value
+ across a blocking call.
  static portBASE_TYPE xNumberToPost = 0;
  static portBASE_TYPE xResult;
 
@@ -404,7 +428,8 @@ void vCoRoutineSchedule( void );
     for( ;; )
     {
         // This assumes the queue has already been created.
-        crQUEUE_SEND( xHandle, xCoRoutineQueue, &xNumberToPost, NO_DELAY, &xResult );
+        crQUEUE_SEND( xHandle, xCoRoutineQueue, &xNumberToPost, NO_DELAY,
+ &xResult );
 
         if( xResult != pdPASS )
         {
@@ -424,20 +449,18 @@ void vCoRoutineSchedule( void );
  * \defgroup crQUEUE_SEND crQUEUE_SEND
  * \ingroup Tasks
  */
-#define crQUEUE_SEND( xHandle, pxQueue, pvItemToQueue, xTicksToWait, pxResult )			\
-{																						\
-	*( pxResult ) = xQueueCRSend( ( pxQueue) , ( pvItemToQueue) , ( xTicksToWait ) );	\
-	if( *( pxResult ) == errQUEUE_BLOCKED )												\
-	{																					\
-		crSET_STATE0( ( xHandle ) );													\
-		*pxResult = xQueueCRSend( ( pxQueue ), ( pvItemToQueue ), 0 );					\
-	}																					\
-	if( *pxResult == errQUEUE_YIELD )													\
-	{																					\
-		crSET_STATE1( ( xHandle ) );													\
-		*pxResult = pdPASS;																\
-	}																					\
-}
+#define crQUEUE_SEND(xHandle, pxQueue, pvItemToQueue, xTicksToWait, pxResult)  \
+  {                                                                            \
+    *(pxResult) = xQueueCRSend((pxQueue), (pvItemToQueue), (xTicksToWait));    \
+    if (*(pxResult) == errQUEUE_BLOCKED) {                                     \
+      crSET_STATE0((xHandle));                                                 \
+      *pxResult = xQueueCRSend((pxQueue), (pvItemToQueue), 0);                 \
+    }                                                                          \
+    if (*pxResult == errQUEUE_YIELD) {                                         \
+      crSET_STATE1((xHandle));                                                 \
+      *pxResult = pdPASS;                                                      \
+    }                                                                          \
+  }
 
 /**
  * croutine. h
@@ -490,9 +513,11 @@ void vCoRoutineSchedule( void );
  <pre>
  // A co-routine receives the number of an LED to flash from a queue.  It
  // blocks on the queue until the number is received.
- static void prvCoRoutineFlashWorkTask( xCoRoutineHandle xHandle, unsigned portBASE_TYPE uxIndex )
+ static void prvCoRoutineFlashWorkTask( xCoRoutineHandle xHandle, unsigned
+ portBASE_TYPE uxIndex )
  {
- // Variables in co-routines must be declared static if they must maintain value across a blocking call.
+ // Variables in co-routines must be declared static if they must maintain value
+ across a blocking call.
  static portBASE_TYPE xResult;
  static unsigned portBASE_TYPE uxLEDToFlash;
 
@@ -502,7 +527,8 @@ void vCoRoutineSchedule( void );
     for( ;; )
     {
         // Wait for data to become available on the queue.
-        crQUEUE_RECEIVE( xHandle, xCoRoutineQueue, &uxLEDToFlash, portMAX_DELAY, &xResult );
+        crQUEUE_RECEIVE( xHandle, xCoRoutineQueue, &uxLEDToFlash, portMAX_DELAY,
+ &xResult );
 
         if( xResult == pdPASS )
         {
@@ -516,20 +542,18 @@ void vCoRoutineSchedule( void );
  * \defgroup crQUEUE_RECEIVE crQUEUE_RECEIVE
  * \ingroup Tasks
  */
-#define crQUEUE_RECEIVE( xHandle, pxQueue, pvBuffer, xTicksToWait, pxResult )			\
-{																						\
-	*( pxResult ) = xQueueCRReceive( ( pxQueue) , ( pvBuffer ), ( xTicksToWait ) );		\
-	if( *( pxResult ) == errQUEUE_BLOCKED ) 											\
-	{																					\
-		crSET_STATE0( ( xHandle ) );													\
-		*( pxResult ) = xQueueCRReceive( ( pxQueue) , ( pvBuffer ), 0 );				\
-	}																					\
-	if( *( pxResult ) == errQUEUE_YIELD )												\
-	{																					\
-		crSET_STATE1( ( xHandle ) );													\
-		*( pxResult ) = pdPASS;															\
-	}																					\
-}
+#define crQUEUE_RECEIVE(xHandle, pxQueue, pvBuffer, xTicksToWait, pxResult)    \
+  {                                                                            \
+    *(pxResult) = xQueueCRReceive((pxQueue), (pvBuffer), (xTicksToWait));      \
+    if (*(pxResult) == errQUEUE_BLOCKED) {                                     \
+      crSET_STATE0((xHandle));                                                 \
+      *(pxResult) = xQueueCRReceive((pxQueue), (pvBuffer), 0);                 \
+    }                                                                          \
+    if (*(pxResult) == errQUEUE_YIELD) {                                       \
+      crSET_STATE1((xHandle));                                                 \
+      *(pxResult) = pdPASS;                                                    \
+    }                                                                          \
+  }
 
 /**
  * croutine. h
@@ -575,7 +599,8 @@ void vCoRoutineSchedule( void );
  * Example usage:
  <pre>
  // A co-routine that blocks on a queue waiting for characters to be received.
- static void vReceivingCoRoutine( xCoRoutineHandle xHandle, unsigned portBASE_TYPE uxIndex )
+ static void vReceivingCoRoutine( xCoRoutineHandle xHandle, unsigned
+ portBASE_TYPE uxIndex )
  {
  char cRxedChar;
  portBASE_TYPE xResult;
@@ -587,7 +612,8 @@ void vCoRoutineSchedule( void );
      {
          // Wait for data to become available on the queue.  This assumes the
          // queue xCommsRxQueue has already been created!
-         crQUEUE_RECEIVE( xHandle, xCommsRxQueue, &uxLEDToFlash, portMAX_DELAY, &xResult );
+         crQUEUE_RECEIVE( xHandle, xCommsRxQueue, &uxLEDToFlash, portMAX_DELAY,
+ &xResult );
 
          // Was a character received?
          if( xResult == pdPASS )
@@ -619,14 +645,16 @@ void vCoRoutineSchedule( void );
          // In this manner we can ensure that if more than one co-routine is
          // blocked on the queue only one is woken by this ISR no matter how
          // many characters are posted to the queue.
-         xCRWokenByPost = crQUEUE_SEND_FROM_ISR( xCommsRxQueue, &cRxedChar, xCRWokenByPost );
+         xCRWokenByPost = crQUEUE_SEND_FROM_ISR( xCommsRxQueue, &cRxedChar,
+ xCRWokenByPost );
      }
  }</pre>
  * \defgroup crQUEUE_SEND_FROM_ISR crQUEUE_SEND_FROM_ISR
  * \ingroup Tasks
  */
-#define crQUEUE_SEND_FROM_ISR( pxQueue, pvItemToQueue, xCoRoutinePreviouslyWoken ) xQueueCRSendFromISR( ( pxQueue ), ( pvItemToQueue ), ( xCoRoutinePreviouslyWoken ) )
-
+#define crQUEUE_SEND_FROM_ISR(pxQueue, pvItemToQueue,                          \
+                              xCoRoutinePreviouslyWoken)                       \
+  xQueueCRSendFromISR((pxQueue), (pvItemToQueue), (xCoRoutinePreviouslyWoken))
 
 /**
  * croutine. h
@@ -661,7 +689,8 @@ void vCoRoutineSchedule( void );
  * queue was created, so this many bytes will be copied from the queue into
  * pvBuffer.
  *
- * @param pxCoRoutineWoken A co-routine may be blocked waiting for space to become
+ * @param pxCoRoutineWoken A co-routine may be blocked waiting for space to
+ become
  * available on the queue.  If crQUEUE_RECEIVE_FROM_ISR causes such a
  * co-routine to unblock *pxCoRoutineWoken will get set to pdTRUE, otherwise
  * *pxCoRoutineWoken will remain unchanged.
@@ -673,7 +702,8 @@ void vCoRoutineSchedule( void );
  <pre>
  // A co-routine that posts a character to a queue then blocks for a fixed
  // period.  The character is incremented each time.
- static void vSendingCoRoutine( xCoRoutineHandle xHandle, unsigned portBASE_TYPE uxIndex )
+ static void vSendingCoRoutine( xCoRoutineHandle xHandle, unsigned portBASE_TYPE
+ uxIndex )
  {
  // cChar holds its value while this co-routine is blocked and must therefore
  // be declared static.
@@ -686,31 +716,32 @@ void vCoRoutineSchedule( void );
      for( ;; )
      {
          // Send the next character to the queue.
-         crQUEUE_SEND( xHandle, xCoRoutineQueue, &cCharToTx, NO_DELAY, &xResult );
+         crQUEUE_SEND( xHandle, xCoRoutineQueue, &cCharToTx, NO_DELAY, &xResult
+ );
 
          if( xResult == pdPASS )
          {
              // The character was successfully posted to the queue.
          }
-		 else
-		 {
-			// Could not post the character to the queue.
-		 }
+   else
+   {
+   // Could not post the character to the queue.
+   }
 
          // Enable the UART Tx interrupt to cause an interrupt in this
-		 // hypothetical UART.  The interrupt will obtain the character
-		 // from the queue and send it.
-		 ENABLE_RX_INTERRUPT();
+   // hypothetical UART.  The interrupt will obtain the character
+   // from the queue and send it.
+   ENABLE_RX_INTERRUPT();
 
-		 // Increment to the next character then block for a fixed period.
-		 // cCharToTx will maintain its value across the delay as it is
-		 // declared static.
-		 cCharToTx++;
-		 if( cCharToTx > 'x' )
-		 {
-			cCharToTx = 'a';
-		 }
-		 crDELAY( 100 );
+   // Increment to the next character then block for a fixed period.
+   // cCharToTx will maintain its value across the delay as it is
+   // declared static.
+   cCharToTx++;
+   if( cCharToTx > 'x' )
+   {
+   cCharToTx = 'a';
+   }
+   crDELAY( 100 );
      }
 
      // All co-routines must end with a call to crEND().
@@ -726,19 +757,20 @@ void vCoRoutineSchedule( void );
      while( UART_TX_REG_EMPTY() )
      {
          // Are there any characters in the queue waiting to be sent?
-		 // xCRWokenByPost will automatically be set to pdTRUE if a co-routine
-		 // is woken by the post - ensuring that only a single co-routine is
-		 // woken no matter how many times we go around this loop.
+   // xCRWokenByPost will automatically be set to pdTRUE if a co-routine
+   // is woken by the post - ensuring that only a single co-routine is
+   // woken no matter how many times we go around this loop.
          if( crQUEUE_RECEIVE_FROM_ISR( pxQueue, &cCharToTx, &xCRWokenByPost ) )
-		 {
-			 SEND_CHARACTER( cCharToTx );
-		 }
+   {
+    SEND_CHARACTER( cCharToTx );
+   }
      }
  }</pre>
  * \defgroup crQUEUE_RECEIVE_FROM_ISR crQUEUE_RECEIVE_FROM_ISR
  * \ingroup Tasks
  */
-#define crQUEUE_RECEIVE_FROM_ISR( pxQueue, pvBuffer, pxCoRoutineWoken ) xQueueCRReceiveFromISR( ( pxQueue ), ( pvBuffer ), ( pxCoRoutineWoken ) )
+#define crQUEUE_RECEIVE_FROM_ISR(pxQueue, pvBuffer, pxCoRoutineWoken)          \
+  xQueueCRReceiveFromISR((pxQueue), (pvBuffer), (pxCoRoutineWoken))
 
 /*
  * This function is intended for internal use by the co-routine macros only.
@@ -749,7 +781,7 @@ void vCoRoutineSchedule( void );
  * Removes the current co-routine from its ready list and places it in the
  * appropriate delayed list.
  */
-void vCoRoutineAddToDelayedList( portTickType xTicksToDelay, xList *pxEventList );
+void vCoRoutineAddToDelayedList(portTickType xTicksToDelay, xList *pxEventList);
 
 /*
  * This function is intended for internal use by the queue implementation only.
@@ -758,7 +790,7 @@ void vCoRoutineAddToDelayedList( portTickType xTicksToDelay, xList *pxEventList 
  * Removes the highest priority co-routine from the event list and places it in
  * the pending ready list.
  */
-signed portBASE_TYPE xCoRoutineRemoveFromEventList( const xList *pxEventList );
+signed portBASE_TYPE xCoRoutineRemoveFromEventList(const xList *pxEventList);
 
 #ifdef __cplusplus
 }

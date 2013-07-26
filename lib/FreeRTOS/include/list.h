@@ -56,19 +56,19 @@
     ***************************************************************************
 
 
-    http://www.FreeRTOS.org - Documentation, books, training, latest versions, 
+    http://www.FreeRTOS.org - Documentation, books, training, latest versions,
     license and Real Time Engineers Ltd. contact details.
 
     http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
     including FreeRTOS+Trace - an indispensable productivity tool, and our new
     fully thread aware and reentrant UDP/IP stack.
 
-    http://www.OpenRTOS.com - Real Time Engineers ltd license FreeRTOS to High 
-    Integrity Systems, who sell the code with commercial support, 
+    http://www.OpenRTOS.com - Real Time Engineers ltd license FreeRTOS to High
+    Integrity Systems, who sell the code with commercial support,
     indemnification and middleware, under the OpenRTOS brand.
-    
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety 
-    engineered and independently SIL3 certified version for use in safety and 
+
+    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+    engineered and independently SIL3 certified version for use in safety and
     mission critical applications that require provable dependability.
 */
 
@@ -100,7 +100,6 @@
  * \ingroup FreeRTOSIntro
  */
 
-
 #ifndef LIST_H
 #define LIST_H
 
@@ -110,32 +109,41 @@ extern "C" {
 /*
  * Definition of the only type of object that a list can contain.
  */
-struct xLIST_ITEM
-{
-	portTickType xItemValue;				/*< The value being listed.  In most cases this is used to sort the list in descending order. */
-	volatile struct xLIST_ITEM * pxNext;	/*< Pointer to the next xListItem in the list. */
-	volatile struct xLIST_ITEM * pxPrevious;/*< Pointer to the previous xListItem in the list. */
-	void * pvOwner;							/*< Pointer to the object (normally a TCB) that contains the list item.  There is therefore a two way link between the object containing the list item and the list item itself. */
-	void * pvContainer;						/*< Pointer to the list in which this list item is placed (if any). */
+struct xLIST_ITEM {
+  portTickType xItemValue; /*< The value being listed.  In most cases this is
+                              used to sort the list in descending order. */
+  volatile struct xLIST_ITEM *pxNext; /*< Pointer to the next xListItem in the
+                                         list. */
+  volatile struct xLIST_ITEM *
+  pxPrevious;    /*< Pointer to the previous xListItem in the list. */
+  void *pvOwner; /*< Pointer to the object (normally a TCB) that contains the
+                    list item.  There is therefore a two way link between the
+                    object containing the list item and the list item itself. */
+  void *pvContainer; /*< Pointer to the list in which this list item is placed
+                        (if any). */
 };
-typedef struct xLIST_ITEM xListItem;		/* For some reason lint wants this as two separate definitions. */
+typedef struct xLIST_ITEM xListItem; /* For some reason lint wants this as two
+                                        separate definitions. */
 
-struct xMINI_LIST_ITEM
-{
-	portTickType xItemValue;
-	volatile struct xLIST_ITEM *pxNext;
-	volatile struct xLIST_ITEM *pxPrevious;
+struct xMINI_LIST_ITEM {
+  portTickType xItemValue;
+  volatile struct xLIST_ITEM *pxNext;
+  volatile struct xLIST_ITEM *pxPrevious;
 };
 typedef struct xMINI_LIST_ITEM xMiniListItem;
 
 /*
  * Definition of the type of queue used by the scheduler.
  */
-typedef struct xLIST
-{
-	volatile unsigned portBASE_TYPE uxNumberOfItems;
-	volatile xListItem * pxIndex;			/*< Used to walk through the list.  Points to the last item returned by a call to pvListGetOwnerOfNextEntry (). */
-	volatile xMiniListItem xListEnd;		/*< List item that contains the maximum possible item value meaning it is always at the end of the list and is therefore used as a marker. */
+typedef struct xLIST {
+  volatile unsigned portBASE_TYPE uxNumberOfItems;
+  volatile xListItem *
+  pxIndex; /*< Used to walk through the list.  Points to the last item returned
+              by a call to pvListGetOwnerOfNextEntry (). */
+  volatile xMiniListItem xListEnd; /*< List item that contains the maximum
+                                      possible item value meaning it is always
+                                      at the end of the list and is therefore
+                                      used as a marker. */
 } xList;
 
 /*
@@ -145,7 +153,8 @@ typedef struct xLIST
  * \page listSET_LIST_ITEM_OWNER listSET_LIST_ITEM_OWNER
  * \ingroup LinkedList
  */
-#define listSET_LIST_ITEM_OWNER( pxListItem, pxOwner )		( pxListItem )->pvOwner = ( void * ) ( pxOwner )
+#define listSET_LIST_ITEM_OWNER(pxListItem, pxOwner)                           \
+  (pxListItem)->pvOwner = (void *)(pxOwner)
 
 /*
  * Access macro to get the owner of a list item.  The owner of a list item
@@ -154,7 +163,7 @@ typedef struct xLIST
  * \page listSET_LIST_ITEM_OWNER listSET_LIST_ITEM_OWNER
  * \ingroup LinkedList
  */
-#define listGET_LIST_ITEM_OWNER( pxListItem )		( pxListItem )->pvOwner
+#define listGET_LIST_ITEM_OWNER(pxListItem) (pxListItem)->pvOwner
 
 /*
  * Access macro to set the value of the list item.  In most cases the value is
@@ -163,7 +172,8 @@ typedef struct xLIST
  * \page listSET_LIST_ITEM_VALUE listSET_LIST_ITEM_VALUE
  * \ingroup LinkedList
  */
-#define listSET_LIST_ITEM_VALUE( pxListItem, xValue )		( pxListItem )->xItemValue = ( xValue )
+#define listSET_LIST_ITEM_VALUE(pxListItem, xValue)                            \
+  (pxListItem)->xItemValue = (xValue)
 
 /*
  * Access macro to retrieve the value of the list item.  The value can
@@ -173,7 +183,7 @@ typedef struct xLIST
  * \page listGET_LIST_ITEM_VALUE listGET_LIST_ITEM_VALUE
  * \ingroup LinkedList
  */
-#define listGET_LIST_ITEM_VALUE( pxListItem )				( ( pxListItem )->xItemValue )
+#define listGET_LIST_ITEM_VALUE(pxListItem) ((pxListItem)->xItemValue)
 
 /*
  * Access macro the retrieve the value of the list item at the head of a given
@@ -182,7 +192,8 @@ typedef struct xLIST
  * \page listGET_LIST_ITEM_VALUE listGET_LIST_ITEM_VALUE
  * \ingroup LinkedList
  */
-#define listGET_ITEM_VALUE_OF_HEAD_ENTRY( pxList )			( (&( ( pxList )->xListEnd ))->pxNext->xItemValue )
+#define listGET_ITEM_VALUE_OF_HEAD_ENTRY(pxList)                               \
+  ((&((pxList)->xListEnd))->pxNext->xItemValue)
 
 /*
  * Access macro to determine if a list contains any items.  The macro will
@@ -191,12 +202,13 @@ typedef struct xLIST
  * \page listLIST_IS_EMPTY listLIST_IS_EMPTY
  * \ingroup LinkedList
  */
-#define listLIST_IS_EMPTY( pxList )				( ( pxList )->uxNumberOfItems == ( unsigned portBASE_TYPE ) 0 )
+#define listLIST_IS_EMPTY(pxList)                                              \
+  ((pxList)->uxNumberOfItems == (unsigned portBASE_TYPE)0)
 
 /*
  * Access macro to return the number of items in the list.
  */
-#define listCURRENT_LIST_LENGTH( pxList )		( ( pxList )->uxNumberOfItems )
+#define listCURRENT_LIST_LENGTH(pxList) ((pxList)->uxNumberOfItems)
 
 /*
  * Access function to obtain the owner of the next entry in a list.
@@ -217,19 +229,17 @@ typedef struct xLIST
  * \page listGET_OWNER_OF_NEXT_ENTRY listGET_OWNER_OF_NEXT_ENTRY
  * \ingroup LinkedList
  */
-#define listGET_OWNER_OF_NEXT_ENTRY( pxTCB, pxList )									\
-{																						\
-xList * const pxConstList = ( pxList );													\
-	/* Increment the index to the next item and return the item, ensuring */			\
-	/* we don't return the marker used at the end of the list.  */						\
-	( pxConstList )->pxIndex = ( pxConstList )->pxIndex->pxNext;						\
-	if( ( pxConstList )->pxIndex == ( xListItem * ) &( ( pxConstList )->xListEnd ) )	\
-	{																					\
-		( pxConstList )->pxIndex = ( pxConstList )->pxIndex->pxNext;					\
-	}																					\
-	( pxTCB ) = ( pxConstList )->pxIndex->pvOwner;										\
-}
-
+#define listGET_OWNER_OF_NEXT_ENTRY(pxTCB, pxList)                             \
+  {                                                                            \
+    xList *const pxConstList = (pxList);                                       \
+    /* Increment the index to the next item and return the item, ensuring */   \
+    /* we don't return the marker used at the end of the list.  */             \
+    (pxConstList)->pxIndex = (pxConstList)->pxIndex->pxNext;                   \
+    if ((pxConstList)->pxIndex == (xListItem *)&((pxConstList)->xListEnd)) {   \
+      (pxConstList)->pxIndex = (pxConstList)->pxIndex->pxNext;                 \
+    }                                                                          \
+    (pxTCB) = (pxConstList)->pxIndex->pvOwner;                                 \
+  }
 
 /*
  * Access function to obtain the owner of the first entry in a list.  Lists
@@ -247,7 +257,8 @@ xList * const pxConstList = ( pxList );													\
  * \page listGET_OWNER_OF_HEAD_ENTRY listGET_OWNER_OF_HEAD_ENTRY
  * \ingroup LinkedList
  */
-#define listGET_OWNER_OF_HEAD_ENTRY( pxList )  ( (&( ( pxList )->xListEnd ))->pxNext->pvOwner )
+#define listGET_OWNER_OF_HEAD_ENTRY(pxList)                                    \
+  ((&((pxList)->xListEnd))->pxNext->pvOwner)
 
 /*
  * Check to see if a list item is within a list.  The list item maintains a
@@ -259,7 +270,8 @@ xList * const pxConstList = ( pxList );													\
  * @return pdTRUE is the list item is in the list, otherwise pdFALSE.
  * pointer against
  */
-#define listIS_CONTAINED_WITHIN( pxList, pxListItem ) ( ( pxListItem )->pvContainer == ( void * ) ( pxList ) )
+#define listIS_CONTAINED_WITHIN(pxList, pxListItem)                            \
+  ((pxListItem)->pvContainer == (void *)(pxList))
 
 /*
  * Return the list a list item is contained within (referenced from).
@@ -267,14 +279,15 @@ xList * const pxConstList = ( pxList );													\
  * @param pxListItem The list item being queried.
  * @return A pointer to the xList object that references the pxListItem
  */
-#define listLIST_ITEM_CONTAINER( pxListItem ) ( ( pxListItem )->pvContainer )
+#define listLIST_ITEM_CONTAINER(pxListItem) ((pxListItem)->pvContainer)
 
 /*
  * This provides a crude means of knowing if a list has been initialised, as
  * pxList->xListEnd.xItemValue is set to portMAX_DELAY by the vListInitialise()
  * function.
  */
-#define listLIST_IS_INITIALISED( pxList ) ( ( pxList )->xListEnd.xItemValue == portMAX_DELAY )
+#define listLIST_IS_INITIALISED(pxList)                                        \
+  ((pxList)->xListEnd.xItemValue == portMAX_DELAY)
 
 /*
  * Must be called before a list is used!  This initialises all the members
@@ -286,7 +299,7 @@ xList * const pxConstList = ( pxList );													\
  * \page vListInitialise vListInitialise
  * \ingroup LinkedList
  */
-void vListInitialise( xList *pxList );
+void vListInitialise(xList *pxList);
 
 /*
  * Must be called before a list item is used.  This sets the list container to
@@ -297,7 +310,7 @@ void vListInitialise( xList *pxList );
  * \page vListInitialiseItem vListInitialiseItem
  * \ingroup LinkedList
  */
-void vListInitialiseItem( xListItem *pxItem );
+void vListInitialiseItem(xListItem *pxItem);
 
 /*
  * Insert a list item into a list.  The item will be inserted into the list in
@@ -310,7 +323,7 @@ void vListInitialiseItem( xListItem *pxItem );
  * \page vListInsert vListInsert
  * \ingroup LinkedList
  */
-void vListInsert( xList *pxList, xListItem *pxNewListItem );
+void vListInsert(xList *pxList, xListItem *pxNewListItem);
 
 /*
  * Insert a list item into a list.  The item will be inserted in a position
@@ -331,7 +344,7 @@ void vListInsert( xList *pxList, xListItem *pxNewListItem );
  * \page vListInsertEnd vListInsertEnd
  * \ingroup LinkedList
  */
-void vListInsertEnd( xList *pxList, xListItem *pxNewListItem );
+void vListInsertEnd(xList *pxList, xListItem *pxNewListItem);
 
 /*
  * Remove an item from a list.  The list item has a pointer to the list that
@@ -339,18 +352,17 @@ void vListInsertEnd( xList *pxList, xListItem *pxNewListItem );
  *
  * @param uxListRemove The item to be removed.  The item will remove itself from
  * the list pointed to by it's pxContainer parameter.
- * 
+ *
  * @return The number of items that remain in the list after the list item has
  * been removed.
  *
  * \page uxListRemove uxListRemove
  * \ingroup LinkedList
  */
-unsigned portBASE_TYPE uxListRemove( xListItem *pxItemToRemove );
+unsigned portBASE_TYPE uxListRemove(xListItem *pxItemToRemove);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

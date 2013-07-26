@@ -4,7 +4,8 @@
   * @author  MCD Application Team
   * @version V3.1.2
   * @date    09/28/2009
-  * @brief   This file contains all the functions prototypes for the CRC firmware 
+  * @brief   This file contains all the functions prototypes for the CRC
+  *firmware
   *          library.
   ******************************************************************************
   * @copy
@@ -17,14 +18,14 @@
   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
   *
   * <h2><center>&copy; COPYRIGHT 2009 STMicroelectronics</center></h2>
-  */ 
+  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F10x_CRC_H
 #define __STM32F10x_CRC_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -78,7 +79,7 @@ uint8_t CRC_GetIDRegister(void);
 #endif
 
 #endif /* __STM32F10x_CRC_H */
-/**
+       /**
   * @}
   */
 
