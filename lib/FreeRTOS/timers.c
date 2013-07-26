@@ -98,19 +98,20 @@ typedef struct tmrTimerControl {
   const signed char *pcTimerName; /*<< Text name.  This is not used by the
                                      kernel, it is included simply to make
                                      debugging easier. */
-  xListItem
-  xTimerListItem; /*<< Standard linked list item as used by all kernel features
-                     for event management. */
+  xListItem xTimerListItem; /*<< Standard linked list item as used by all kernel
+                               features
+                               for event management. */
   portTickType xTimerPeriodInTicks; /*<< How quickly and often the timer
                                        expires. */
   unsigned portBASE_TYPE
   uxAutoReload; /*<< Set to pdTRUE if the timer should be automatically
                    restarted once expired.  Set to pdFALSE if the timer is, in
                    effect, a one shot timer. */
-  void *
-  pvTimerID; /*<< An ID to identify the timer.  This allows the timer to be
-                identified when the same callback is used for multiple timers.
-                */
+  void *pvTimerID; /*<< An ID to identify the timer.  This allows the timer to
+                      be
+                      identified when the same callback is used for multiple
+                      timers.
+                      */
   tmrTIMER_CALLBACK pxCallbackFunction; /*<< The function that will be called
                                            when the timer expires. */
 } xTIMER;
@@ -120,9 +121,10 @@ queue. */
 typedef struct tmrTimerQueueMessage {
   portBASE_TYPE xMessageID; /*<< The command being sent to the timer service
                                task. */
-  portTickType
-  xMessageValue; /*<< An optional value used by a subset of commands, for
-                    example, when changing the period of a timer. */
+  portTickType xMessageValue; /*<< An optional value used by a subset of
+                                 commands, for
+                                 example, when changing the period of a timer.
+                                 */
   xTIMER *pxTimer; /*<< The timer to which the command will be applied. */
 } xTIMER_MESSAGE;
 

@@ -127,7 +127,7 @@ void paramTOCProcess(int command) {
     memcpy(&p.data[2], &paramsCrc, 4);
     crtpSendPacket(&p);
     break;
-  case CMD_GET_ITEM: // Get param variable
+  case CMD_GET_ITEM:                      // Get param variable
     for (ptr = 0; ptr < paramsLen; ptr++) // Ptr points a group
         {
       if (params[ptr].type & PARAM_GROUP) {

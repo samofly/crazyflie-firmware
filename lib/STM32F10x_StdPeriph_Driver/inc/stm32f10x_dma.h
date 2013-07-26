@@ -443,8 +443,8 @@ void DMA_ClearITPendingBit(uint32_t DMA_IT);
 
 #endif /*__STM32F10x_DMA_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

@@ -88,13 +88,14 @@
 static xList pxReadyCoRoutineLists
     [configMAX_CO_ROUTINE_PRIORITIES]; /*< Prioritised ready co-routines. */
 static xList xDelayedCoRoutineList1;   /*< Delayed co-routines. */
-static xList
-xDelayedCoRoutineList2; /*< Delayed co-routines (two lists are used - one for
-                           delays that have overflowed the current tick count.
-                           */
-static xList *
-pxDelayedCoRoutineList; /*< Points to the delayed co-routine list currently
-                           being used. */
+static xList xDelayedCoRoutineList2; /*< Delayed co-routines (two lists are used
+                                        - one for
+                                        delays that have overflowed the current
+                                        tick count.
+                                        */
+static xList *pxDelayedCoRoutineList; /*< Points to the delayed co-routine list
+                                         currently
+                                         being used. */
 static xList *pxOverflowDelayedCoRoutineList; /*< Points to the delayed
                                                  co-routine list currently being
                                                  used to hold co-routines that

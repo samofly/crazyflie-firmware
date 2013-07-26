@@ -50,9 +50,9 @@ extern "C" {
   */
 
 typedef struct {
-  uint16_t
-  CAN_Prescaler; /*!< Specifies the length of a time quantum. It ranges from 1
-                    to 1024. */
+  uint16_t CAN_Prescaler; /*!< Specifies the length of a time quantum. It ranges
+                             from 1
+                             to 1024. */
 
   uint8_t CAN_Mode; /*!< Specifies the CAN operating mode.
                          This parameter can be a value of @ref
@@ -136,15 +136,15 @@ typedef struct {
                                      This parameter can be a value between
                                    0x0000 and 0xFFFF */
 
-  uint16_t
-  CAN_FilterFIFOAssignment; /*!< Specifies the FIFO (0 or 1) which will be
-                               assigned to the filter.
-                                 This parameter can be a value of @ref
-                               CAN_filter_FIFO */
+  uint16_t CAN_FilterFIFOAssignment; /*!< Specifies the FIFO (0 or 1) which will
+                                        be
+                                        assigned to the filter.
+                                          This parameter can be a value of @ref
+                                        CAN_filter_FIFO */
 
-  uint8_t
-  CAN_FilterNumber; /*!< Specifies the filter which will be initialized. It
-                       ranges from 0 to 13. */
+  uint8_t CAN_FilterNumber; /*!< Specifies the filter which will be initialized.
+                               It
+                               ranges from 0 to 13. */
 
   uint8_t CAN_FilterMode; /*!< Specifies the filter mode to be initialized.
                                This parameter can be a value of @ref
@@ -154,10 +154,10 @@ typedef struct {
                                 This parameter can be a value of @ref
                               CAN_filter_scale */
 
-  FunctionalState
-  CAN_FilterActivation; /*!< Enable or disable the filter.
-                             This parameter can be set either to ENABLE or
-                           DISABLE. */
+  FunctionalState CAN_FilterActivation; /*!< Enable or disable the filter.
+                                             This parameter can be set either to
+                                           ENABLE or
+                                           DISABLE. */
 } CAN_FilterInitTypeDef;
 
 /**
@@ -183,9 +183,9 @@ typedef struct {
   uint8_t DLC; /*!< Specifies the length of the frame that will be transmitted.
                     This parameter can be a value between 0 to 8 */
 
-  uint8_t Data
-      [8]; /*!< Contains the data to be transmitted. It ranges from 0 to 0xFF.
-              */
+  uint8_t Data[8]; /*!< Contains the data to be transmitted. It ranges from 0 to
+                    * 0xFF.
+                      */
 } CanTxMsg;
 
 /**
@@ -335,8 +335,8 @@ typedef struct {
 #define IS_CAN_FILTER_NUMBER(NUMBER) ((NUMBER) <= 27)
 #endif /* STM32F10X_CL */
        /**
-  * @}
-  */
+* @}
+*/
 
 /** @defgroup CAN_filter_mode
   * @{
@@ -459,8 +459,9 @@ typedef struct {
   * @{
   */
 
-#define CANSLEEPFAILED ((uint8_t)0x00) /*!< CAN did not enter the sleep mode   \
-                                          */
+#define CANSLEEPFAILED                                                         \
+  ((uint8_t)0x00) /*!< CAN did not enter the sleep mode                        \
+                     */
 #define CANSLEEPOK ((uint8_t)0x01) /*!< CAN entered the sleep mode */
 
 /**
@@ -471,8 +472,9 @@ typedef struct {
   * @{
   */
 
-#define CANWAKEUPFAILED ((uint8_t)0x00) /*!< CAN did not leave the sleep mode  \
-                                           */
+#define CANWAKEUPFAILED                                                        \
+  ((uint8_t)0x00) /*!< CAN did not leave the sleep mode                        \
+                     */
 #define CANWAKEUPOK ((uint8_t)0x01) /*!< CAN leaved the sleep mode */
 
 /**
@@ -499,12 +501,15 @@ typedef struct {
   * @{
   */
 
-#define CAN_IT_RQCP0 ((uint32_t)0x00000005) /*!< Request completed mailbox 0   \
-                                               */
-#define CAN_IT_RQCP1 ((uint32_t)0x00000006) /*!< Request completed mailbox 1   \
-                                               */
-#define CAN_IT_RQCP2 ((uint32_t)0x00000007) /*!< Request completed mailbox 2   \
-                                               */
+#define CAN_IT_RQCP0                                                           \
+  ((uint32_t)0x00000005) /*!< Request completed mailbox 0                      \
+                            */
+#define CAN_IT_RQCP1                                                           \
+  ((uint32_t)0x00000006) /*!< Request completed mailbox 1                      \
+                            */
+#define CAN_IT_RQCP2                                                           \
+  ((uint32_t)0x00000007) /*!< Request completed mailbox 2                      \
+                            */
 #define CAN_IT_TME ((uint32_t)0x00000001)  /*!< Transmit mailbox empty */
 #define CAN_IT_FMP0 ((uint32_t)0x00000002) /*!< FIFO 0 message pending */
 #define CAN_IT_FF0 ((uint32_t)0x00000004)  /*!< FIFO 0 full */
@@ -579,8 +584,8 @@ void CAN_ClearITPendingBit(CAN_TypeDef *CANx, uint32_t CAN_IT);
 
 #endif /* __STM32F10x_CAN_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

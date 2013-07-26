@@ -196,9 +196,8 @@ typedef enum {
 #define GPIO_Remap_PD01                                                        \
   ((uint32_t)0x00008000) /*!< PD01 Alternate Function mapping */
 #define GPIO_Remap_TIM5CH4_LSI                                                 \
-  ((                                                                           \
-      uint32_t)0x00200001) /*!< LSI connected to TIM5 Channel4 input capture   \
-                              for calibration */
+  ((uint32_t)0x00200001) /*!< LSI connected to TIM5 Channel4 input capture     \
+                            for calibration */
 #define GPIO_Remap_ADC1_ETRGINJ                                                \
   ((uint32_t)0x00200002) /*!< ADC1 External Trigger Injected Conversion        \
                             remapping */
@@ -382,8 +381,8 @@ void GPIO_ETH_MediaInterfaceConfig(uint32_t GPIO_ETH_MediaInterface);
 
 #endif /* __STM32F10x_GPIO_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

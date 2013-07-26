@@ -183,8 +183,8 @@ void BKP_ClearITPendingBit(void);
 
 #endif /* __STM32F10x_BKP_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

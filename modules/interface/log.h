@@ -71,7 +71,7 @@ struct log_s {
         LOG_ADD_GROUP(LOG_GROUP | LOG_START, NAME, 0x0)
 
 //#define LOG_GROUP_START_SYNC(NAME, LOCK) LOG_ADD_GROUP(LOG_GROUP | LOG_START,
-//NAME, LOCK);
+// NAME, LOCK);
 
 #define LOG_GROUP_STOP(NAME)                                                   \
   LOG_ADD_GROUP(LOG_GROUP | LOG_STOP, stop_##NAME, 0x0)                        \

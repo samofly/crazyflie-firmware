@@ -114,9 +114,8 @@ typedef struct {
   ((uint32_t)0x0000002C) /*!< TIM4 TRGO selected as external conversion        \
                             trigger for DAC channel */
 #define DAC_Trigger_Ext_IT9                                                    \
-  (                                                                            \
-      (uint32_t)0x00000034) /*!< EXTI Line9 event selected as external         \
-                               conversion trigger for DAC channel */
+  ((uint32_t)0x00000034) /*!< EXTI Line9 event selected as external            \
+                            conversion trigger for DAC channel */
 #define DAC_Trigger_Software                                                   \
   ((uint32_t)0x0000003C) /*!< Conversion started by software trigger for DAC   \
                             channel */
@@ -155,49 +154,38 @@ typedef struct {
   ((uint32_t)0x00000000) /*!< Unmask DAC channel LFSR bit0 for noise wave      \
                             generation */
 #define DAC_LFSRUnmask_Bits1_0                                                 \
-  (                                                                            \
-      (uint32_t)0x00000100) /*!< Unmask DAC channel LFSR bit[1:0] for noise    \
-                               wave generation */
+  ((uint32_t)0x00000100) /*!< Unmask DAC channel LFSR bit[1:0] for noise       \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits2_0                                                 \
-  (                                                                            \
-      (uint32_t)0x00000200) /*!< Unmask DAC channel LFSR bit[2:0] for noise    \
-                               wave generation */
+  ((uint32_t)0x00000200) /*!< Unmask DAC channel LFSR bit[2:0] for noise       \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits3_0                                                 \
-  (                                                                            \
-      (uint32_t)0x00000300) /*!< Unmask DAC channel LFSR bit[3:0] for noise    \
-                               wave generation */
+  ((uint32_t)0x00000300) /*!< Unmask DAC channel LFSR bit[3:0] for noise       \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits4_0                                                 \
-  (                                                                            \
-      (uint32_t)0x00000400) /*!< Unmask DAC channel LFSR bit[4:0] for noise    \
-                               wave generation */
+  ((uint32_t)0x00000400) /*!< Unmask DAC channel LFSR bit[4:0] for noise       \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits5_0                                                 \
-  (                                                                            \
-      (uint32_t)0x00000500) /*!< Unmask DAC channel LFSR bit[5:0] for noise    \
-                               wave generation */
+  ((uint32_t)0x00000500) /*!< Unmask DAC channel LFSR bit[5:0] for noise       \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits6_0                                                 \
-  (                                                                            \
-      (uint32_t)0x00000600) /*!< Unmask DAC channel LFSR bit[6:0] for noise    \
-                               wave generation */
+  ((uint32_t)0x00000600) /*!< Unmask DAC channel LFSR bit[6:0] for noise       \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits7_0                                                 \
-  (                                                                            \
-      (uint32_t)0x00000700) /*!< Unmask DAC channel LFSR bit[7:0] for noise    \
-                               wave generation */
+  ((uint32_t)0x00000700) /*!< Unmask DAC channel LFSR bit[7:0] for noise       \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits8_0                                                 \
-  (                                                                            \
-      (uint32_t)0x00000800) /*!< Unmask DAC channel LFSR bit[8:0] for noise    \
-                               wave generation */
+  ((uint32_t)0x00000800) /*!< Unmask DAC channel LFSR bit[8:0] for noise       \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits9_0                                                 \
-  (                                                                            \
-      (uint32_t)0x00000900) /*!< Unmask DAC channel LFSR bit[9:0] for noise    \
-                               wave generation */
+  ((uint32_t)0x00000900) /*!< Unmask DAC channel LFSR bit[9:0] for noise       \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits10_0                                                \
-  (                                                                            \
-      (uint32_t)0x00000A00) /*!< Unmask DAC channel LFSR bit[10:0] for noise   \
-                               wave generation */
+  ((uint32_t)0x00000A00) /*!< Unmask DAC channel LFSR bit[10:0] for noise      \
+                            wave generation */
 #define DAC_LFSRUnmask_Bits11_0                                                \
-  (                                                                            \
-      (uint32_t)0x00000B00) /*!< Unmask DAC channel LFSR bit[11:0] for noise   \
-                               wave generation */
+  ((uint32_t)0x00000B00) /*!< Unmask DAC channel LFSR bit[11:0] for noise      \
+                            wave generation */
 #define DAC_TriangleAmplitude_1                                                \
   ((uint32_t)0x00000000) /*!< Select max triangle amplitude of 1 */
 #define DAC_TriangleAmplitude_3                                                \
@@ -347,8 +335,8 @@ uint16_t DAC_GetDataOutputValue(uint32_t DAC_Channel);
 
 #endif /*__STM32F10x_DAC_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

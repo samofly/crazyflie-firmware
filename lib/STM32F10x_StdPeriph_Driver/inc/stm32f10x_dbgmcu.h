@@ -96,8 +96,8 @@ void DBGMCU_Config(uint32_t DBGMCU_Periph, FunctionalState NewState);
 
 #endif /* __STM32F10x_DBGMCU_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

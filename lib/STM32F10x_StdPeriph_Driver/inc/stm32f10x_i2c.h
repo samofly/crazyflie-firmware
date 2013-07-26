@@ -48,10 +48,10 @@ extern "C" {
   */
 
 typedef struct {
-  uint32_t
-  I2C_ClockSpeed; /*!< Specifies the clock frequency.
-                       This parameter must be set to a value lower than 400kHz
-                     */
+  uint32_t I2C_ClockSpeed; /*!< Specifies the clock frequency.
+                                This parameter must be set to a value lower than
+                              400kHz
+                              */
 
   uint16_t I2C_Mode; /*!< Specifies the I2C mode.
                           This parameter can be a value of @ref I2C_mode */
@@ -103,8 +103,9 @@ typedef struct {
 
 #define I2C_DutyCycle_16_9                                                     \
   ((uint16_t)0x4000) /*!< I2C fast mode Tlow/Thigh = 16/9 */
-#define I2C_DutyCycle_2 ((uint16_t)0xBFFF) /*!< I2C fast mode Tlow/Thigh = 2   \
-                                              */
+#define I2C_DutyCycle_2                                                        \
+  ((uint16_t)0xBFFF) /*!< I2C fast mode Tlow/Thigh = 2                         \
+                        */
 #define IS_I2C_DUTY_CYCLE(CYCLE)                                               \
   (((CYCLE) == I2C_DutyCycle_16_9) || ((CYCLE) == I2C_DutyCycle_2))
 /**
@@ -485,8 +486,8 @@ void I2C_ClearITPendingBit(I2C_TypeDef *I2Cx, uint32_t I2C_IT);
 
 #endif /*__STM32F10x_I2C_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

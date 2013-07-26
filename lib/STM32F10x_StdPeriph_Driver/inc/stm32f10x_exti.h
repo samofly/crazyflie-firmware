@@ -184,8 +184,8 @@ void EXTI_ClearITPendingBit(uint32_t EXTI_Line);
 
 #endif /* __STM32F10x_EXTI_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

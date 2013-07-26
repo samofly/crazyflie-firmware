@@ -264,10 +264,11 @@ typedef struct {
 } CoreDebug_Type;
 
 /* Memory mapping of Cortex-M3 Hardware */
-#define SCS_BASE (0xE000E000)       /*!< System Control Space Base Address    */
-#define ITM_BASE (0xE0000000)       /*!< ITM Base Address                     */
-#define CoreDebug_BASE (0xE000EDF0) /*!< Core Debug Base Address               \
-                                       */
+#define SCS_BASE (0xE000E000) /*!< System Control Space Base Address    */
+#define ITM_BASE (0xE0000000) /*!< ITM Base Address                     */
+#define CoreDebug_BASE                                                         \
+  (0xE000EDF0) /*!< Core Debug Base Address                                    \
+                  */
 #define SysTick_BASE                                                           \
   (SCS_BASE + 0x0010) /*!< SysTick Base Address                 */
 #define NVIC_BASE                                                              \
@@ -278,23 +279,26 @@ typedef struct {
 #define InterruptType                                                          \
   ((InterruptType_Type *)SCS_BASE) /*!< Interrupt Type Register                \
                                       */
-#define SCB ((SCB_Type *)SCB_BASE) /*!< SCB configuration struct               \
-                                      */
+#define SCB                                                                    \
+  ((SCB_Type *)SCB_BASE) /*!< SCB configuration struct                         \
+                            */
 #define SysTick                                                                \
   ((SysTick_Type *)SysTick_BASE) /*!< SysTick configuration struct         */
 #define NVIC                                                                   \
-  ((NVIC_Type *)NVIC_BASE)         /*!< NVIC configuration struct            */
-#define ITM ((ITM_Type *)ITM_BASE) /*!< ITM configuration struct               \
-                                      */
+  ((NVIC_Type *)NVIC_BASE) /*!< NVIC configuration struct            */
+#define ITM                                                                    \
+  ((ITM_Type *)ITM_BASE) /*!< ITM configuration struct                         \
+                            */
 #define CoreDebug                                                              \
   ((CoreDebug_Type *)CoreDebug_BASE) /*!< Core Debug configuration struct      \
                                         */
 
 #if defined(__MPU_PRESENT) && (__MPU_PRESENT == 1)
 #define MPU_BASE                                                               \
-  (SCS_BASE + 0x0D90)              /*!< Memory Protection Unit               */
-#define MPU ((MPU_Type *)MPU_BASE) /*!< Memory Protection Unit                 \
-                                      */
+  (SCS_BASE + 0x0D90) /*!< Memory Protection Unit               */
+#define MPU                                                                    \
+  ((MPU_Type *)MPU_BASE) /*!< Memory Protection Unit                           \
+                            */
 #endif
 
 /*******************************************************************************

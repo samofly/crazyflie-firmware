@@ -144,18 +144,23 @@ typedef struct {
 #define ADC_ExternalTrigConv_None                                              \
   ((uint32_t)0x000E0000) /*!< For ADC1, ADC2 and ADC3 */
 
-#define ADC_ExternalTrigConv_T3_CC1 ((uint32_t)0x00000000) /*!< For ADC3 only  \
-                                                              */
-#define ADC_ExternalTrigConv_T2_CC3 ((uint32_t)0x00020000) /*!< For ADC3 only  \
-                                                              */
-#define ADC_ExternalTrigConv_T8_CC1 ((uint32_t)0x00060000) /*!< For ADC3 only  \
-                                                              */
+#define ADC_ExternalTrigConv_T3_CC1                                            \
+  ((uint32_t)0x00000000) /*!< For ADC3 only                                    \
+                            */
+#define ADC_ExternalTrigConv_T2_CC3                                            \
+  ((uint32_t)0x00020000) /*!< For ADC3 only                                    \
+                            */
+#define ADC_ExternalTrigConv_T8_CC1                                            \
+  ((uint32_t)0x00060000) /*!< For ADC3 only                                    \
+                            */
 #define ADC_ExternalTrigConv_T8_TRGO                                           \
-  ((uint32_t)0x00080000)                                   /*!< For ADC3 only */
-#define ADC_ExternalTrigConv_T5_CC1 ((uint32_t)0x000A0000) /*!< For ADC3 only  \
-                                                              */
-#define ADC_ExternalTrigConv_T5_CC3 ((uint32_t)0x000C0000) /*!< For ADC3 only  \
-                                                              */
+  ((uint32_t)0x00080000) /*!< For ADC3 only */
+#define ADC_ExternalTrigConv_T5_CC1                                            \
+  ((uint32_t)0x000A0000) /*!< For ADC3 only                                    \
+                            */
+#define ADC_ExternalTrigConv_T5_CC3                                            \
+  ((uint32_t)0x000C0000) /*!< For ADC3 only                                    \
+                            */
 
 #define IS_ADC_EXT_TRIG(REGTRIG)                                               \
   (((REGTRIG) == ADC_ExternalTrigConv_T1_CC1) ||                               \

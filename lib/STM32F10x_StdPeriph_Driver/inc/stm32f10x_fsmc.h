@@ -56,12 +56,14 @@ typedef struct {
                                        @note: It is not used with synchronous
                                      NOR Flash memories. */
 
-  uint32_t
-  FSMC_AddressHoldTime; /*!< Defines the number of HCLK cycles to configure
-                             the duration of the address hold time.
-                             This parameter can be a value between 0 and 0xF.
-                             @note: It is not used with synchronous NOR Flash
-                           memories.*/
+  uint32_t FSMC_AddressHoldTime; /*!< Defines the number of HCLK cycles to
+                                    configure
+                                      the duration of the address hold time.
+                                      This parameter can be a value between 0
+                                    and 0xF.
+                                      @note: It is not used with synchronous NOR
+                                    Flash
+                                    memories.*/
 
   uint32_t FSMC_DataSetupTime; /*!< Defines the number of HCLK cycles to
                                   configure
@@ -183,9 +185,11 @@ typedef struct {
   FSMC_ReadWriteTimingStruct; /*!< Timing Parameters for write and read access
                                  if the  ExtendedMode is not used*/
 
-  FSMC_NORSRAMTimingInitTypeDef *
-  FSMC_WriteTimingStruct; /*!< Timing Parameters for write access if the
-                             ExtendedMode is used*/
+  FSMC_NORSRAMTimingInitTypeDef *FSMC_WriteTimingStruct; /*!< Timing Parameters
+                                                            for write access if
+                                                            the
+                                                            ExtendedMode is
+                                                            used*/
 } FSMC_NORSRAMInitTypeDef;
 
 /**
@@ -796,8 +800,8 @@ void FSMC_ClearITPendingBit(uint32_t FSMC_Bank, uint32_t FSMC_IT);
 
 #endif /*__STM32F10x_FSMC_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

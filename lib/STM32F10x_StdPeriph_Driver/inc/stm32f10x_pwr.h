@@ -146,8 +146,8 @@ void PWR_ClearFlag(uint32_t PWR_FLAG);
 
 #endif /* __STM32F10x_PWR_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

@@ -96,9 +96,9 @@ typedef void (*crCOROUTINE_CODE)(xCoRoutineHandle, unsigned portBASE_TYPE);
 
 typedef struct corCoRoutineControlBlock {
   crCOROUTINE_CODE pxCoRoutineFunction;
-  xListItem
-  xGenericListItem; /*< List item used to place the CRCB in ready and blocked
-                       queues. */
+  xListItem xGenericListItem; /*< List item used to place the CRCB in ready and
+                                 blocked
+                                 queues. */
   xListItem
   xEventListItem; /*< List item used to place the CRCB in event lists. */
   unsigned portBASE_TYPE uxPriority; /*< The priority of the co-routine in

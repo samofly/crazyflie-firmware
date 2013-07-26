@@ -137,9 +137,9 @@ typedef struct xMINI_LIST_ITEM xMiniListItem;
  */
 typedef struct xLIST {
   volatile unsigned portBASE_TYPE uxNumberOfItems;
-  volatile xListItem *
-  pxIndex; /*< Used to walk through the list.  Points to the last item returned
-              by a call to pvListGetOwnerOfNextEntry (). */
+  volatile xListItem *pxIndex; /*< Used to walk through the list.  Points to the
+                                  last item returned
+                                  by a call to pvListGetOwnerOfNextEntry (). */
   volatile xMiniListItem xListEnd; /*< List item that contains the maximum
                                       possible item value meaning it is always
                                       at the end of the list and is therefore

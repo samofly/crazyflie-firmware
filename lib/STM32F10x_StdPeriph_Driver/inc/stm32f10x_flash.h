@@ -66,11 +66,13 @@ typedef enum {
   * @{
   */
 
-#define FLASH_Latency_0 ((uint32_t)0x00000000) /*!< FLASH Zero Latency cycle   \
-                                                  */
+#define FLASH_Latency_0                                                        \
+  ((uint32_t)0x00000000) /*!< FLASH Zero Latency cycle                         \
+                            */
 #define FLASH_Latency_1 ((uint32_t)0x00000001) /*!< FLASH One Latency cycle */
-#define FLASH_Latency_2 ((uint32_t)0x00000002) /*!< FLASH Two Latency cycles   \
-                                                  */
+#define FLASH_Latency_2                                                        \
+  ((uint32_t)0x00000002) /*!< FLASH Two Latency cycles                         \
+                            */
 #define IS_FLASH_LATENCY(LATENCY)                                              \
   (((LATENCY) == FLASH_Latency_0) || ((LATENCY) == FLASH_Latency_1) ||         \
    ((LATENCY) == FLASH_Latency_2))
@@ -425,8 +427,9 @@ typedef enum {
 #define FLASH_FLAG_BSY ((uint32_t)0x00000001) /*!< FLASH Busy flag */
 #define FLASH_FLAG_EOP                                                         \
   ((uint32_t)0x00000020) /*!< FLASH End of Operation flag */
-#define FLASH_FLAG_PGERR ((uint32_t)0x00000004) /*!< FLASH Program error flag  \
-                                                   */
+#define FLASH_FLAG_PGERR                                                       \
+  ((uint32_t)0x00000004) /*!< FLASH Program error flag                         \
+                            */
 #define FLASH_FLAG_WRPRTERR                                                    \
   ((uint32_t)0x00000010) /*!< FLASH Write protected error flag */
 #define FLASH_FLAG_OPTERR                                                      \
@@ -490,8 +493,8 @@ FLASH_Status FLASH_WaitForLastOperation(uint32_t Timeout);
 
 #endif /* __STM32F10x_FLASH_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

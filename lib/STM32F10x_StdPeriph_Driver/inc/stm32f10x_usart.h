@@ -79,12 +79,12 @@ typedef struct {
                           enabled or disabled.
                             This parameter can be a value of @ref USART_Mode */
 
-  uint16_t
-  USART_HardwareFlowControl; /*!< Specifies wether the hardware flow control
-                                mode is enabled
-                                  or disabled.
-                                  This parameter can be a value of @ref
-                                USART_Hardware_Flow_Control */
+  uint16_t USART_HardwareFlowControl; /*!< Specifies wether the hardware flow
+                                         control
+                                         mode is enabled
+                                           or disabled.
+                                           This parameter can be a value of @ref
+                                         USART_Hardware_Flow_Control */
 } USART_InitTypeDef;
 
 /**
@@ -425,8 +425,8 @@ void USART_ClearITPendingBit(USART_TypeDef *USARTx, uint16_t USART_IT);
 
 #endif /* __STM32F10x_USART_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

@@ -41,9 +41,10 @@
   * @{
   */
 
-#define CRL_CNF_Set ((uint16_t)0x0010)   /*!< Configuration Flag Enable Mask */
-#define CRL_CNF_Reset ((uint16_t)0xFFEF) /*!< Configuration Flag Disable Mask  \
-                                            */
+#define CRL_CNF_Set ((uint16_t)0x0010) /*!< Configuration Flag Enable Mask */
+#define CRL_CNF_Reset                                                          \
+  ((uint16_t)0xFFEF) /*!< Configuration Flag Disable Mask                      \
+                        */
 #define RTC_LSB_Mask ((uint32_t)0x0000FFFF)  /*!< RTC LSB Mask */
 #define PRLH_MSB_Mask ((uint32_t)0x000F0000) /*!< RTC Prescaler MSB Mask */
 

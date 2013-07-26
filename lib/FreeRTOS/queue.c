@@ -123,9 +123,9 @@ typedef struct QueueDefinition {
   signed char *pcReadFrom; /*< Points to the last place that a queued item was
                               read from. */
 
-  xList
-  xTasksWaitingToSend; /*< List of tasks that are blocked waiting to post onto
-                          this queue.  Stored in priority order. */
+  xList xTasksWaitingToSend; /*< List of tasks that are blocked waiting to post
+                                onto
+                                this queue.  Stored in priority order. */
   xList xTasksWaitingToReceive; /*< List of tasks that are blocked waiting to
                                    read from this queue.  Stored in priority
                                    order. */

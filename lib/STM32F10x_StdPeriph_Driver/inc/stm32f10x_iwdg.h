@@ -125,8 +125,8 @@ FlagStatus IWDG_GetFlagStatus(uint16_t IWDG_FLAG);
 
 #endif /* __STM32F10x_IWDG_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

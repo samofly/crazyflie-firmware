@@ -501,8 +501,8 @@ void SPI_I2S_ClearITPendingBit(SPI_TypeDef *SPIx, uint8_t SPI_I2S_IT);
 
 #endif /*__STM32F10x_SPI_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

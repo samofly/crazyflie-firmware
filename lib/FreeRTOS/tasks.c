@@ -108,14 +108,16 @@ task.h is included from an application file. */
  * (the task's run time environment, including register values)
  */
 typedef struct tskTaskControlBlock {
-  volatile portSTACK_TYPE *
-  pxTopOfStack; /*< Points to the location of the last item placed on the tasks
-                   stack.  THIS MUST BE THE FIRST MEMBER OF THE TCB STRUCT. */
+  volatile portSTACK_TYPE *pxTopOfStack; /*< Points to the location of the last
+                                            item placed on the tasks
+                                            stack.  THIS MUST BE THE FIRST
+                                            MEMBER OF THE TCB STRUCT. */
 
 #if (portUSING_MPU_WRAPPERS == 1)
-  xMPU_SETTINGS
-  xMPUSettings; /*< The MPU settings are defined as part of the port layer.
-                   THIS MUST BE THE SECOND MEMBER OF THE TCB STRUCT. */
+  xMPU_SETTINGS xMPUSettings; /*< The MPU settings are defined as part of the
+                                 port layer.
+                                 THIS MUST BE THE SECOND MEMBER OF THE TCB
+                                 STRUCT. */
 #endif
 
   xListItem xGenericListItem; /*< The list that the state list item of a task is
@@ -125,9 +127,10 @@ typedef struct tskTaskControlBlock {
   unsigned portBASE_TYPE uxPriority; /*< The priority of the task.  0 is the
                                         lowest priority. */
   portSTACK_TYPE *pxStack; /*< Points to the start of the stack. */
-  signed char pcTaskName
-      [configMAX_TASK_NAME_LEN]; /*< Descriptive name given to the task when
-                                    created.  Facilitates debugging only. */
+  signed char pcTaskName[configMAX_TASK_NAME_LEN]; /*< Descriptive name given to
+                                                      the task when
+                                                      created.  Facilitates
+                                                      debugging only. */
 
 #if (portSTACK_GROWTH > 0)
   portSTACK_TYPE *pxEndOfStack; /*< Points to the end of the stack on
@@ -147,9 +150,9 @@ typedef struct tskTaskControlBlock {
                                          time a TCB is created.  It allows
                                          debuggers to determine when a task has
                                          been deleted and then recreated. */
-  unsigned portBASE_TYPE
-  uxTaskNumber; /*< Stores a number specifically for use by third party trace
-                   code. */
+  unsigned portBASE_TYPE uxTaskNumber; /*< Stores a number specifically for use
+                                          by third party trace
+                                          code. */
 #endif
 
 #if (configUSE_MUTEXES == 1)
@@ -184,9 +187,10 @@ PRIVILEGED_DATA tskTCB *volatile pxCurrentTCB = NULL;
 PRIVILEGED_DATA static xList pxReadyTasksLists
     [configMAX_PRIORITIES];                     /*< Prioritised ready tasks. */
 PRIVILEGED_DATA static xList xDelayedTaskList1; /*< Delayed tasks. */
-PRIVILEGED_DATA static xList
-xDelayedTaskList2; /*< Delayed tasks (two lists are used - one for delays that
-                      have overflowed the current tick count. */
+PRIVILEGED_DATA static xList xDelayedTaskList2; /*< Delayed tasks (two lists are
+                                                   used - one for delays that
+                                                   have overflowed the current
+                                                   tick count. */
 PRIVILEGED_DATA static xList *volatile pxDelayedTaskList; /*< Points to the
                                                              delayed task list
                                                              currently being
@@ -203,10 +207,12 @@ PRIVILEGED_DATA static xList *volatile pxOverflowDelayedTaskList; /*< Points to
                                                                      the current
                                                                      tick count.
                                                                      */
-PRIVILEGED_DATA static xList
-xPendingReadyList; /*< Tasks that have been readied while the scheduler was
-                      suspended.  They will be moved to the ready queue when the
-                      scheduler is resumed. */
+PRIVILEGED_DATA static xList xPendingReadyList; /*< Tasks that have been readied
+                                                   while the scheduler was
+                                                   suspended.  They will be
+                                                   moved to the ready queue when
+                                                   the
+                                                   scheduler is resumed. */
 
 #if (INCLUDE_vTaskDelete == 1)
 

@@ -80,8 +80,8 @@ uint8_t CRC_GetIDRegister(void);
 
 #endif /* __STM32F10x_CRC_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

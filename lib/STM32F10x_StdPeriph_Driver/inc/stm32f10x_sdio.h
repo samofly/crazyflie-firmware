@@ -65,11 +65,11 @@ typedef struct {
                               This parameter can be a value of @ref
                             SDIO_Bus_Wide */
 
-  uint32_t
-  SDIO_HardwareFlowControl; /*!< Specifies whether the SDIO hardware flow
-                               control is enabled or disabled.
-                                 This parameter can be a value of @ref
-                               SDIO_Hardware_Flow_Control */
+  uint32_t SDIO_HardwareFlowControl; /*!< Specifies whether the SDIO hardware
+                                        flow
+                                        control is enabled or disabled.
+                                          This parameter can be a value of @ref
+                                        SDIO_Hardware_Flow_Control */
 
   uint8_t SDIO_ClockDiv; /*!< Specifies the clock frequency of the SDIO
                             controller.
@@ -106,9 +106,9 @@ typedef struct {
 } SDIO_CmdInitTypeDef;
 
 typedef struct {
-  uint32_t
-  SDIO_DataTimeOut; /*!< Specifies the data timeout period in card bus clock
-                       periods. */
+  uint32_t SDIO_DataTimeOut; /*!< Specifies the data timeout period in card bus
+                                clock
+                                periods. */
 
   uint32_t SDIO_DataLength; /*!< Specifies the number of data bytes to be
                                transferred. */
@@ -284,10 +284,12 @@ typedef struct {
 
 #define SDIO_Wait_No                                                           \
   ((uint32_t)0x00000000) /*!< SDIO No Wait, TimeOut is enabled */
-#define SDIO_Wait_IT ((uint32_t)0x00000100) /*!< SDIO Wait Interrupt Request   \
-                                               */
-#define SDIO_Wait_Pend ((uint32_t)0x00000200) /*!< SDIO Wait End of transfer   \
-                                                 */
+#define SDIO_Wait_IT                                                           \
+  ((uint32_t)0x00000100) /*!< SDIO Wait Interrupt Request                      \
+                            */
+#define SDIO_Wait_Pend                                                         \
+  ((uint32_t)0x00000200) /*!< SDIO Wait End of transfer                        \
+                            */
 #define IS_SDIO_WAIT(WAIT)                                                     \
   (((WAIT) == SDIO_Wait_No) || ((WAIT) == SDIO_Wait_IT) ||                     \
    ((WAIT) == SDIO_Wait_Pend))
@@ -534,8 +536,8 @@ void SDIO_ClearITPendingBit(uint32_t SDIO_IT);
 
 #endif /* __STM32F10x_SDIO_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

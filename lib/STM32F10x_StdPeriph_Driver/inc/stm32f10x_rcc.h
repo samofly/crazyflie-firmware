@@ -145,8 +145,8 @@ typedef struct {
    ((MUL) == RCC_PLLMul_6_5))
 #endif /* STM32F10X_CL */
        /**
-  * @}
-  */
+* @}
+*/
 
 #ifdef STM32F10X_CL
 /** @defgroup PREDIV1_division_factor
@@ -391,8 +391,8 @@ typedef struct {
    ((SOURCE) == RCC_OTGFSCLKSource_PLLVCO_Div2))
 #endif /* STM32F10X_CL */
        /**
-  * @}
-  */
+* @}
+*/
 
 #ifdef STM32F10X_CL
 /** @defgroup I2S2_clock_source
@@ -491,8 +491,8 @@ typedef struct {
   ((((PERIPH) & 0xFFFFAFFF) == 0x00) && ((PERIPH) != 0x00))
 #endif /* STM32F10X_CL */
        /**
-  * @}
-  */
+* @}
+*/
 
 /** @defgroup APB2_peripheral
   * @{
@@ -709,8 +709,8 @@ void RCC_ClearITPendingBit(uint8_t RCC_IT);
 
 #endif /* __STM32F10x_RCC_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

@@ -145,7 +145,7 @@ static void eskylinkInitPairing(void) {
   nrfWrite1Reg(REG_FEATURE, 0x00); // No dynamic size payload
   nrfWrite1Reg(REG_DYNPD, 0x00);
   nrfWrite1Reg(REG_RX_PW_P0, 13); // 13 bytes payload
-  nrfWrite1Reg(REG_EN_AA, 0); // Disable shockburst
+  nrfWrite1Reg(REG_EN_AA, 0);     // Disable shockburst
 
   // Flush RX
   for (i = 0; i < 3; i++)
@@ -166,7 +166,7 @@ static void eskylinkInitPaired(int channel) {
   nrfWrite1Reg(REG_FEATURE, 0x00); // No dynamic size payload
   nrfWrite1Reg(REG_DYNPD, 0x00);
   nrfWrite1Reg(REG_RX_PW_P0, 13); // 13 bytes payload
-  nrfWrite1Reg(REG_EN_AA, 0); // Disable shockburst
+  nrfWrite1Reg(REG_EN_AA, 0);     // Disable shockburst
 }
 
 // FIXME: A lot of parameters shall be configurable

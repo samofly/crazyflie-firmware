@@ -35,7 +35,7 @@
 // addresses of the device
 
 // CBR=1 0x76 I2C address when CSB is connected to HIGH (VCC)
-#define MS5611_ADDR_CSB_HIGH 0x76 
+#define MS5611_ADDR_CSB_HIGH 0x76
 
 // CBR=0 0x77 I2C address when CSB is connected to LOW (GND)
 #define MS5611_ADDR_CSB_LOW 0x77
@@ -56,7 +56,7 @@
 #define MS5611_OSR_4096 0x08
 
 // by adding ints from 0 to 6 we can read all the prom configuration values.
-#define MS5611_PROM_BASE_ADDR 0xA2 
+#define MS5611_PROM_BASE_ADDR 0xA2
 
 // C1 will be at 0xA2 and all the subsequent are multiples of 2
 #define MS5611_PROM_REG_COUNT 6 // number of registers in the PROM
@@ -64,9 +64,9 @@
 
 // Self test parameters. Only checks that values are sane
 #define MS5611_ST_PRESS_MAX (1100.0) // mbar
-#define MS5611_ST_PRESS_MIN (450.0) // mbar
-#define MS5611_ST_TEMP_MAX (60.0) // degree celcius
-#define MS5611_ST_TEMP_MIN (-20.0) // degree celcius
+#define MS5611_ST_PRESS_MIN (450.0)  // mbar
+#define MS5611_ST_TEMP_MAX (60.0)    // degree celcius
+#define MS5611_ST_TEMP_MIN (-20.0)   // degree celcius
 
 bool ms5611Init(I2C_TypeDef *i2cPort);
 bool ms5611SelfTest(void);

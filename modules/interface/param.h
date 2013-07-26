@@ -88,7 +88,7 @@ struct param_s {
         PARAM_ADD_GROUP(PARAM_GROUP | PARAM_START, NAME, 0x0)
 
 //#define PARAM_GROUP_START_SYNC(NAME, LOCK) PARAM_ADD_GROUP(PARAM_GROUP |
-//PARAM_START, NAME, LOCK);
+// PARAM_START, NAME, LOCK);
 
 #define PARAM_GROUP_STOP(NAME)                                                 \
   PARAM_ADD_GROUP(PARAM_GROUP | PARAM_STOP, stop_##NAME, 0x0)                  \

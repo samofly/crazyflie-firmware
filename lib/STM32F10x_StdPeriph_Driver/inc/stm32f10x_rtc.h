@@ -123,8 +123,8 @@ void RTC_ClearITPendingBit(uint16_t RTC_IT);
 
 #endif /* __STM32F10x_RTC_H */
        /**
-  * @}
-  */
+* @}
+*/
 
 /**
   * @}

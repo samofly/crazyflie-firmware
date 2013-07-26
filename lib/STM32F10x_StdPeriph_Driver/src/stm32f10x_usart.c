@@ -57,10 +57,12 @@
 #define CR2_LINEN_Set ((uint16_t)0x4000)   /*!< USART LIN Enable Mask */
 #define CR2_LINEN_Reset ((uint16_t)0xBFFF) /*!< USART LIN Disable Mask */
 
-#define CR2_LBDL_Mask ((uint16_t)0xFFDF) /*!< USART LIN Break detection Mask   \
-                                            */
-#define CR2_STOP_CLEAR_Mask ((uint16_t)0xCFFF) /*!< USART CR2 STOP Bits Mask   \
-                                                  */
+#define CR2_LBDL_Mask                                                          \
+  ((uint16_t)0xFFDF) /*!< USART LIN Break detection Mask                       \
+                        */
+#define CR2_STOP_CLEAR_Mask                                                    \
+  ((uint16_t)0xCFFF) /*!< USART CR2 STOP Bits Mask                             \
+                        */
 #define CR2_CLOCK_CLEAR_Mask ((uint16_t)0xF0FF) /*!< USART CR2 Clock Mask */
 
 #define CR3_SCEN_Set ((uint16_t)0x0020)   /*!< USART SC Enable Mask */
