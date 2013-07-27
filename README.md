@@ -1,6 +1,8 @@
-CrazyFlie Firmware
+### CrazyFlie Firmware
 
-Folder description:
+#### Folder description:
+
+```
 ./              | Root, contains the Makefile
  + init         | Contains the main.c
  + config       | Configuration files
@@ -22,17 +24,19 @@ Folder description:
  |  + FreeRTOS  | Source FreeRTOS folder. Cleaned up from the useless files
  |  + STM32F... | Library folder of the St STM32 peripheral lib
  |  + CMSIS     | Core abstraction layer
+```
 
-Make targets:
+#### Make targets:
 
+```
 all        : Shortcut for build
 compile    : Compile cflie.hex. WARNING: Do NOT update version.c
 build      : Update version.c and compile cflie.elf/hex
 clean_o    : Clean only the Objects files, keep the executables (ie .elf, .hex)
 clean      : Clean every compiled files
 mrproper   : Clean every compiled files and the classical editors backup files
-
 flash      : Flash cflie.elf using OpenOCD
 halt       : Halt the target using OpenOCD
 reset      : Reset the target using OpenOCD
 openocd    : Launch OpenOCD
+```
