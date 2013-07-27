@@ -139,6 +139,7 @@ bool stabilizerTest(void) {
 static void stabilizerTask(void *param) {
   uint32_t attitudeCounter = 0;
   uint32_t lastWakeTime;
+  uint32_t lastSenseUpdateTime;
 
   vTaskSetApplicationTaskTag(0, (void *)TASK_STABILIZER_ID_NBR);
 
@@ -146,19 +147,24 @@ static void stabilizerTask(void *param) {
   systemWaitStart();
 
   lastWakeTime = xTaskGetTickCount();
+  lastSenseUpdateTime = xTaskGetTickCount();
 
   while (1) {
     vTaskDelayUntil(&lastWakeTime, F2T(IMU_UPDATE_FREQ));
 
     imu6Read(&gyro, &acc);
+    uint32_t imuReadTime = xTaskGetTickCount();
 
     if (imu6IsCalibrated()) {
       commanderGetRPY(&eulerRollDesired, &eulerPitchDesired, &eulerYawDesired);
       commanderGetRPYType(&rollType, &pitchType, &yawType);
 
       if (++attitudeCounter >= ATTITUDE_UPDATE_RATE_DIVIDER) {
+        float senseUpdateDtSec =
+            ((float)(T2M(imuReadTime - lastSenseUpdateTime)) / 1000);
+        lastSenseUpdateTime = imuReadTime;
         sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z,
-                           FUSION_UPDATE_DT);
+                           senseUpdateDtSec);
         sensfusion6GetEulerRPY(&eulerRollActual, &eulerPitchActual,
                                &eulerYawActual);
 
