@@ -29,7 +29,10 @@ The goals are:
   the copter stabilizer under different conditions
 * Hard: expose REST API. See REST.md for more details.
 
-#### Folder description:
+#### [Buildbot console](http://buildcop.org:29010/console)
+
+
+#### Directory structure:
 
 ```
 ./              | Root, contains the Makefile
