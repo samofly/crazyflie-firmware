@@ -1,5 +1,33 @@
 ### CrazyFlie Firmware
 
+Crazyflie is a tiny quadcopter. See more details on the [BitCraze website](http://www.bitcraze.se/),
+[the product page](http://www.seeedstudio.com/depot/bitcraze-m-64.html)
+or just enjoy [Crazyflie video footage](http://www.youtube.com/watch?v=3WBUVYZkODI).
+
+This repository contains a modification of Crazyflie firmware.
+The official firmware repository is http://bitbucket.org/bitcraze/crazyflie-firmware.
+
+The purpose of this fork is to go forward w/o a need to wait for the upstream code reviews.
+At the moment of writing this, I have 2 pending CLs to the upstream
+([1](https://bitbucket.org/bitcraze/crazyflie-firmware/pull-request/9/fix-url-to-open-x-imu-algorithm/diff
+),
+[2](https://bitbucket.org/bitcraze/crazyflie-firmware/issue/14/incorrect-dt-passed-to-sensfusion6updateq
+)).
+
+The goals are:
+
+* Adopt clang-format to enforce code formatting rules (done for fork, pending for upstream)
+* Setup Buildbot for Crazyflie firmware (done for fork, pending for upstream)
+* Add unit tests
+* Generate firmware binary for each green revision and host it on the external storage
+* Run clang static analyzer on Buildbot
+* Run regression tests for IMU (based on to be recorded golden data)
+* Run the firmware inside QEMU
+* Implement simulator environment with a physics model to test the quality of
+  the copter stabilizer under different conditions
+* Run automated tests for the different radio protocols, that Crazyflie supports
+* Rebase to a newer version of FreeRTOS
+
 #### Folder description:
 
 ```
