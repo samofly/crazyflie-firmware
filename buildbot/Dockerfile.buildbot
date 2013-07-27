@@ -17,6 +17,9 @@ RUN apt-get install -y autoconf automake git python-dev python-virtualenv
 RUN apt-get install -y openssh-server
 RUN mkdir /var/run/sshd
 
+# Install sendmail to allow sending emails
+RUN apt-get install -y sendmail
+
 # Install Buildbot
 # We need at least Buildbot 0.8.8, due to http://trac.buildbot.net/ticket/2476
 # Once Buildbot 0.8.8 is released, uncomment the following lines and
