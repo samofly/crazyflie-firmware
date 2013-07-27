@@ -17,8 +17,8 @@ RUN apt-get install -y autoconf automake git python-dev python-virtualenv
 RUN apt-get install -y openssh-server
 RUN mkdir /var/run/sshd
 
-# Install sendmail to allow sending emails
-RUN apt-get install -y sendmail
+# Install postfix to allow sending emails
+RUN env DEBIAN_FRONTEND="noninteractive" apt-get install -y postfix
 
 # Install Buildbot
 # We need at least Buildbot 0.8.8, due to http://trac.buildbot.net/ticket/2476
@@ -46,4 +46,4 @@ RUN /bin/sh -c "cd /home/user/buildbot && buildslave create-slave slave localhos
 
 EXPOSE $WEB_PORT:8010
 
-CMD /bin/bash -c "cd /home/user/buildbot && buildbot start master && buildslave start slave && /usr/sbin/sshd -D"
+CMD /bin/bash -c "cd /home/user/buildbot && buildbot start master && buildslave start slave && service postfix start && /usr/sbin/sshd -D"
