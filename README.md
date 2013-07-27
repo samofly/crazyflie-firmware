@@ -18,8 +18,11 @@ At the moment of writing this, I have 2 pending CLs to the upstream
 
 The goals are:
 
-* Adopt clang-format to enforce code formatting rules (done for fork, pending for upstream)
-* Setup Buildbot for Crazyflie firmware (done for fork, pending for upstream)
+* Adopt clang-format to enforce code formatting rules
+  ([done](https://github.com/krasin/crazyflie-firmware/blob/krasin/scripts/clang-format-all.sh)
+  for fork, pending for upstream)
+* Setup Buildbot for Crazyflie firmware
+  ([done](http://buildcop.org:29010/console) for fork, pending for upstream)
 * Run clang static analyzer on Buildbot
 * Add unit tests (run them inside QEMU)
 * Generate firmware binaries for each green revision and host them on the external storage
