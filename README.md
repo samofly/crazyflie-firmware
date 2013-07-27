@@ -18,15 +18,16 @@ The goals are:
 
 * Adopt clang-format to enforce code formatting rules (done for fork, pending for upstream)
 * Setup Buildbot for Crazyflie firmware (done for fork, pending for upstream)
-* Add unit tests
-* Generate firmware binary for each green revision and host it on the external storage
 * Run clang static analyzer on Buildbot
-* Run regression tests for IMU (based on to be recorded golden data)
+* Add unit tests (run them inside QEMU)
+* Generate firmware binaries for each green revision and host them on the external storage
 * Run the firmware inside QEMU
-* Implement simulator environment with a physics model to test the quality of
-  the copter stabilizer under different conditions
+* Run regression tests for IMU (based on to be recorded golden data)
 * Run automated tests for the different radio protocols, that Crazyflie supports
 * Rebase to a newer version of FreeRTOS
+* Hard: Implement simulator environment with a physics model to test the quality of
+  the copter stabilizer under different conditions
+* Hard: expose REST API. See REST.md for more details.
 
 #### Folder description:
 
