@@ -39,7 +39,7 @@ ENV PATH /home/user/arm-2013.05/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/us
 RUN mkdir -p /home/user/buildbot
 RUN /bin/sh -c "cd /home/user/buildbot && buildbot create-master master"
 ADD ./master.cfg /home/user/buildbot/master/master.cfg
-RUN /bin/sh -c "cd /home/user/buildbot && buildslave create-slave slave localhost:9989 example-slave pass"
+RUN /bin/sh -c "cd /home/user/buildbot && buildslave create-slave slave localhost:9989 example-slave $PASSWORD"
 
 EXPOSE $WEB_PORT:8010
 
