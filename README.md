@@ -7,6 +7,8 @@ or just enjoy [Crazyflie video footage](http://www.youtube.com/watch?v=3WBUVYZkO
 This repository contains a modification of Crazyflie firmware.
 The official firmware repository is http://bitbucket.org/bitcraze/crazyflie-firmware.
 
+![Crazyflie](https://raw.github.com/krasin/crazyflie-firmware/krasin/res/crazyflie.jpg)
+
 The purpose of this fork is to go forward w/o a need to wait for the upstream code reviews.
 At the moment of writing this, I have 2 pending CLs to the upstream
 ([1](https://bitbucket.org/bitcraze/crazyflie-firmware/pull-request/9/fix-url-to-open-x-imu-algorithm/diff
@@ -27,7 +29,8 @@ The goals are:
 * Rebase to a newer version of FreeRTOS
 * Hard: Implement simulator environment with a physics model to test the quality of
   the copter stabilizer under different conditions
-* Hard: expose REST API. See REST.md for more details.
+* Hard: expose REST API. See [REST.md](https://github.com/krasin/crazyflie-firmware/blob/krasin/REST.md)
+  for more details.
 
 #### [Buildbot console](http://buildcop.org:29010/console)
 
