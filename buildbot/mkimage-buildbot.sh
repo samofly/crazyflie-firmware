@@ -2,15 +2,16 @@
 
 set -ue
 
-if [ $# -ne 3 ]
+if [ $# -ne 4 ]
 then
-    echo "Usage: ./mkimage-buildbot.sh <image_name> <password> <web port>"
+    echo "Usage: ./mkimage-buildbot.sh <base_image> <image_name> <password> <web port>"
     exit 1
 fi
 
-export IMAGE_NAME=$1
-export PASSWORD=$2
-export WEB_PORT=$3
+export BASE_IMAGE=$1
+export IMAGE_NAME=$2
+export PASSWORD=$3
+export WEB_PORT=$4
 
 docker rmi $IMAGE_NAME || echo "Old buildbot image not found, so nothing to delete"
 
