@@ -9,7 +9,7 @@ SET(CMAKE_C_COMPILER arm-none-eabi-gcc)
 SET(CMAKE_CXX_COMPILER arm-none-eabi-g++)
 SET(CMAKE_ASM_COMPILER arm-none-eabi-as)
 
-SET(CMAKE_C_FLAGS "-Os -g3 -std=c99 -mcpu=cortex-m3 -mthumb -L ${CMAKE_SOURCE_DIR}/scripts -T ${CMAKE_SOURCE_DIR}/scripts/STM32F103_32K_20K_FLASH_CLOAD.ld -DSTM32F10X_MD -include stm32f10x_conf.h -ffunction-sections -fdata-sections -Wl,-Map=cflie.map,--cref,--gc-sections -DBOARD_REV_E -Wall -fno-strict-aliasing")
+SET(CMAKE_C_FLAGS "-Os -g3 -std=c99 -mcpu=cortex-m3 -mthumb -L ${CMAKE_SOURCE_DIR}/scripts -T ${CMAKE_SOURCE_DIR}/scripts/STM32F103_32K_20K_FLASH_CLOAD.ld -DSTM32F10X_MD -include stm32f10x_conf.h -ffunction-sections -fdata-sections -Wl,--cref,--gc-sections -DBOARD_REV_E -Wall -fno-strict-aliasing")
 SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
 
 include_directories(
@@ -96,3 +96,11 @@ add_custom_command(OUTPUT cflie.tmp
                    DEPENDS cflie.elf
                    COMMENT "objcopy cflie.elf to cflie.bin")
 add_custom_target(cflie.bin ALL DEPENDS cflie.tmp)
+
+add_executable(hello.elf
+  test/hello.c)
+
+enable_testing()
+
+add_test(hello_test qemu-system-arm -M stm32-p103 -nographic
+  -monitor null -serial null -semihosting -kernel hello.elf)
