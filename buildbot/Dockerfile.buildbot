@@ -9,9 +9,19 @@ RUN apt-get update
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -s /bin/true /sbin/initctl
 
-# Install packages for Buildbot and Crazyflie
-RUN apt-get install -y gcc-multilib g++-multilib make cmake texinfo
-RUN apt-get install -y autoconf automake git python-dev python-virtualenv
+# Install packages
+RUN apt-get install -y gcc-multilib g++-multilib make cmake texinfo glib2.0-dev libsdl1.2-dev
+RUN apt-get install -y autoconf automake git python-dev python-virtualenv dh-autoreconf
+RUN apt-get install -y libpixman-1-dev
+
+# Create user
+RUN adduser --gecos "" --disabled-password user
+RUN adduser user sudo
+RUN sh -c "echo \"$PASSWORD\n$PASSWORD\n\" | passwd user"
+
+# Install QEMU with stm32-p103 machine support
+RUN cd /home/user && git clone https://github.com/krasin/qemu_stm32.git
+RUN cd /home/user/qemu_stm32 && ./configure --target-list=arm-softmmu && make -j7
 
 # Install ssh daemon
 RUN apt-get install -y openssh-server
@@ -29,14 +39,10 @@ RUN env DEBIAN_FRONTEND="noninteractive" apt-get install -y postfix
 RUN pip install http://buildbot.googlecode.com/files/buildbot-0.8.8rc1.tar.gz
 RUN pip install http://buildbot.googlecode.com/files/buildbot-slave-0.8.8rc1.tar.gz
 
-RUN adduser --gecos "" --disabled-password user
-RUN adduser user sudo
-RUN sh -c "echo \"$PASSWORD\n$PASSWORD\n\" | passwd user"
-
 # Install arm-eabi toolchain
 ADD https://sourcery.mentor.com/GNUToolchain/package11442/public/arm-none-eabi/arm-2013.05-23-arm-none-eabi-i686-pc-linux-gnu.tar.bz2 /home/user/arm-eabi.tar.bzip2
 RUN tar -C /home/user -xjf /home/user/arm-eabi.tar.bzip2 
-ENV PATH /home/user/arm-2013.05/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PATH /home/user/arm-2013.05/bin:/home/user/qemu_stm32/arm-softmmu:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Setup Buildbot dir and configs
 RUN mkdir -p /home/user/buildbot
