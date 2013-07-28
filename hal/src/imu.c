@@ -44,6 +44,10 @@
 #include "uart.h"
 #include "param.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950288
+#endif /* M_PI */
+
 #define IMU_ENABLE_MAG_HMC5883
 #define IMU_ENABLE_PRESSURE_MS5611
 //#define IMU_MPU6050_DLPF_256HZ

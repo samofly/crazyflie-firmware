@@ -50,6 +50,22 @@
 
 #include "console.h"
 
+#if !defined(V_SLOCAL_REVISION)
+#define V_SLOCAL_REVISION ""
+#endif /* V_SLOCAL_REVISION */
+
+#if !defined(V_SREVISION)
+#define V_SREVISION ""
+#endif /* V_SREVISION */
+
+#if !defined(V_STAG)
+#define V_STAG ""
+#endif /* V_STAG */
+
+#if !defined(V_MODIFIED)
+#define V_MODIFIED 1
+#endif
+
 /* Private variable */
 static bool canFly;
 
