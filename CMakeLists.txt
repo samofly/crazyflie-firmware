@@ -107,5 +107,4 @@ set_target_properties(hello.elf
 
 enable_testing()
 
-add_test(hello_test qemu-system-arm -cpu cortex-m3 -nographic
-  -monitor null -serial null -semihosting -kernel hello.elf)
+add_test(hello_test ${CMAKE_SOURCE_DIR}/test/run.sh hello.elf ${CMAKE_SOURCE_DIR}/test/hello.c)
