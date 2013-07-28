@@ -9,7 +9,7 @@ SET(CMAKE_C_COMPILER arm-none-eabi-gcc)
 SET(CMAKE_CXX_COMPILER arm-none-eabi-g++)
 SET(CMAKE_ASM_COMPILER arm-none-eabi-as)
 
-SET(CMAKE_C_FLAGS "-Os -g3 -std=c99 -mcpu=cortex-m3 -mthumb -L ${CMAKE_SOURCE_DIR}/scripts -T ${CMAKE_SOURCE_DIR}/scripts/STM32F103_32K_20K_FLASH_CLOAD.ld -DSTM32F10X_MD -include stm32f10x_conf.h -ffunction-sections -fdata-sections -Wl,--cref,--gc-sections -DBOARD_REV_E -Wall -fno-strict-aliasing")
+SET(CMAKE_C_FLAGS "-Os -g3 -std=c99 -mcpu=cortex-m3 -mthumb -DSTM32F10X_MD -include stm32f10x_conf.h -ffunction-sections -fdata-sections -DBOARD_REV_E -Wall -fno-strict-aliasing")
 SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
 
 include_directories(
@@ -88,6 +88,9 @@ add_executable(cflie.elf
   lib/STM32F10x_StdPeriph_Driver/src/misc.c
 )
 
+set_target_properties(cflie.elf
+  PROPERTIES LINK_FLAGS "-L ${CMAKE_SOURCE_DIR}/scripts -T ${CMAKE_SOURCE_DIR}/scripts/STM32F103_32K_20K_FLASH_CLOAD.ld -Wl,-Map=cflie.map,--cref,--gc-sections")
+
 target_link_libraries(cflie.elf m)
 
 add_custom_command(OUTPUT cflie.tmp
@@ -99,8 +102,10 @@ add_custom_target(cflie.bin ALL DEPENDS cflie.tmp)
 
 add_executable(hello.elf
   test/hello.c)
+set_target_properties(hello.elf
+  PROPERTIES LINK_FLAGS "-T generic-m-hosted.ld")
 
 enable_testing()
 
-add_test(hello_test qemu-system-arm -M stm32-p103 -nographic
+add_test(hello_test qemu-system-arm -cpu cortex-m3 -nographic
   -monitor null -serial null -semihosting -kernel hello.elf)
