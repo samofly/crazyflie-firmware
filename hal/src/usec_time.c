@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -32,17 +32,16 @@
 
 uint32_t usecTimerHighCount;
 
-void initUsecTimer(void)
-{
+void initUsecTimer(void) {
   usecTimerHighCount = 0;
 
-  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
   NVIC_InitTypeDef NVIC_InitStructure;
 
-  //Enable the Timer
+  // Enable the Timer
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 
-  //Timer configuration
+  // Timer configuration
   TIM_TimeBaseStructure.TIM_Period = 0xFFFF;
   TIM_TimeBaseStructure.TIM_Prescaler = 72;
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -61,8 +60,7 @@ void initUsecTimer(void)
   TIM_Cmd(TIM1, ENABLE);
 }
 
-uint64_t usecTimestamp(void)
-{
+uint64_t usecTimestamp(void) {
   uint32_t high0;
   __atomic_load(&usecTimerHighCount, &high0, __ATOMIC_SEQ_CST);
   uint32_t low = TIM1->CNT;
@@ -70,8 +68,7 @@ uint64_t usecTimestamp(void)
   __atomic_load(&usecTimerHighCount, &high, __ATOMIC_SEQ_CST);
 
   // There was no increment in between
-  if (high == high0)
-  {
+  if (high == high0) {
     return (((uint64_t)high) << 16) + low;
   }
   // There was an increment, but we don't expect another one soon

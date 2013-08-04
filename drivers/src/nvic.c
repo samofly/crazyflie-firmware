@@ -68,10 +68,10 @@ void DONT_DISCARD HardFault_Handler(void) {
   // " LDM r0,{r1-r2} \n"
   // " BX LR; \n");
   __asm("TST LR, #4 \n"
-	"ITE EQ \n"
-	"MRSEQ R0, MSP \n"
-	"MRSNE R0, PSP \n"
-	"B printHardFault");
+        "ITE EQ \n"
+        "MRSEQ R0, MSP \n"
+        "MRSNE R0, PSP \n"
+        "B printHardFault");
 }
 
 void DONT_DISCARD printHardFault(uint32_t *hardfaultArgs) {
