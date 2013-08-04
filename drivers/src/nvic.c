@@ -29,7 +29,6 @@
 #include "uart.h"
 #include "i2croutines.h"
 #include "i2cdev.h"
-#include "core_cm3.h"
 
 #define DONT_DISCARD __attribute__((used))
 
@@ -178,9 +177,7 @@ void DONT_DISCARD TIM1_UP_IRQHandler(void) {
 
   TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 
-  // We know that there's only one writer of this variable
-  // but we need to store it atomically for the readers.
-  __STREXW(usecTimerHighCount+1, &usecTimerHighCount);
+  __sync_fetch_and_add(&usecTimerHighCount, 1);
 }
 
 void DONT_DISCARD I2C1_EV_IRQHandler(void) { i2cInterruptHandlerI2c1(); }

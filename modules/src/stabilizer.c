@@ -23,6 +23,8 @@
  *
  *
  */
+#define DEBUG_MODULE "STABILIZER"
+
 #include "stm32f10x_conf.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -35,6 +37,8 @@
 #include "imu.h"
 #include "motors.h"
 #include "log.h"
+#include "usec_time.h"
+#include "debug.h"
 
 /**
  * Defines in what divided update rate should the attitude
@@ -145,7 +149,7 @@ bool stabilizerTest(void) {
 static void stabilizerTask(void *param) {
   uint32_t attitudeCounter = 0;
   uint32_t lastWakeTime;
-  uint32_t lastSenseUpdateTime;
+  uint64_t lastUpdateTime;
 
   vTaskSetApplicationTaskTag(0, (void *)TASK_STABILIZER_ID_NBR);
 
@@ -153,24 +157,24 @@ static void stabilizerTask(void *param) {
   systemWaitStart();
 
   lastWakeTime = xTaskGetTickCount();
-  lastSenseUpdateTime = xTaskGetTickCount();
+  lastUpdateTime = usecTimestamp();
 
   while (1) {
     vTaskDelayUntil(&lastWakeTime, F2T(IMU_UPDATE_FREQ));
 
     imu6Read(&gyro, &acc);
-    uint32_t imuReadTime = xTaskGetTickCount();
+    uint64_t imuReadTime = usecTimestamp();
 
     if (imu6IsCalibrated()) {
       commanderGetRPY(&eulerRollDesired, &eulerPitchDesired, &eulerYawDesired);
       commanderGetRPYType(&rollType, &pitchType, &yawType);
 
       if (++attitudeCounter >= ATTITUDE_UPDATE_RATE_DIVIDER) {
-        float senseUpdateDtSec =
-            ((float)(T2M(imuReadTime - lastSenseUpdateTime)) / 1000);
-        lastSenseUpdateTime = imuReadTime;
-        sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z,
-                           senseUpdateDtSec);
+        float dtSec =
+            ((float)(imuReadTime - lastUpdateTime) / 1000000);
+	DEBUG_PRINT("sec: %d usec: %d dt: %f\n", (int)(imuReadTime / 1000000), (int)(imuReadTime % 1000000), dtSec);
+        lastUpdateTime = imuReadTime;
+        sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z, dtSec);
         sensfusion6GetEulerRPY(&eulerRollActual, &eulerPitchActual,
                                &eulerYawActual);
 

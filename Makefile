@@ -45,9 +45,6 @@ MEMMANG_OBJ = heap_4.o
 VPATH += $(FREERTOS)
 FREERTOS_OBJ = list.o tasks.o queue.o timers.o $(MEMMANG_OBJ)
 
-# CMSIS
-VPATH += $(STLIB)/CMSIS/Core/CM3
-
 # Crazyflie
 VPATH += init hal/src modules/src utils/src drivers/src
 
@@ -73,9 +70,6 @@ PROJ_OBJ += log.o worker.o
 # Utilities
 PROJ_OBJ += filter.o cpuid.o cfassert.o configblock.o eprintf.o crc.o fp16.o debug.o
 PROJ_OBJ += version.o
-
-# CMSIS
-PROJ_OBJ += core_cm3.o
 
 OBJ = $(CRT0) $(FREERTOS_OBJ) $(PORT_OBJ) $(ST_OBJ) $(PROJ_OBJ)
 

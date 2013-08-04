@@ -68,7 +68,6 @@ add_executable(cflie.elf
   modules/src/param.c
   modules/src/system.c
   modules/src/console.c
-  lib/CMSIS/Core/CM3/core_cm3.c
   lib/FreeRTOS/list.c
   lib/FreeRTOS/portable/GCC/ARM_CM3/port.c
   lib/FreeRTOS/portable/MemMang/heap_4.c
@@ -102,11 +101,20 @@ add_custom_command(OUTPUT cflie.tmp
                    COMMENT "objcopy cflie.elf to cflie.bin")
 add_custom_target(cflie.bin ALL DEPENDS cflie.tmp)
 
-add_executable(hello.elf
-  test/hello.c)
-set_target_properties(hello.elf
-  PROPERTIES LINK_FLAGS "-T generic-m-hosted.ld")
-
 enable_testing()
 
-add_test(hello_test ${CMAKE_SOURCE_DIR}/test/run.sh hello.elf ${CMAKE_SOURCE_DIR}/test/hello.c)
+add_executable(hello_test.elf
+  test/hello.c)
+set_target_properties(hello_test.elf
+  PROPERTIES LINK_FLAGS "-T generic-m-hosted.ld")
+
+add_test(hello_test ${CMAKE_SOURCE_DIR}/test/run.sh hello_test.elf ${CMAKE_SOURCE_DIR}/test/hello.c)
+
+
+add_executable(atomic_test.elf
+  test/atomic.c
+  )
+set_target_properties(atomic_test.elf
+  PROPERTIES LINK_FLAGS "-T generic-m-hosted.ld")
+
+add_test(atomic_test ${CMAKE_SOURCE_DIR}/test/run.sh atomic_test.elf ${CMAKE_SOURCE_DIR}/test/atomic.c)
