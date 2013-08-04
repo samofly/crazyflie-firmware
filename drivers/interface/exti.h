@@ -31,6 +31,6 @@
 void extiInit();
 bool extiTest();
 
-inline void extiInterruptHandler(void);
+void extiInterruptHandler(void);
 
 #endif /* __EXTI_H__ */
