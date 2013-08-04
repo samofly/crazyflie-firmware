@@ -29,6 +29,7 @@
 #include "uart.h"
 #include "i2croutines.h"
 #include "i2cdev.h"
+#include "core_cm3.h"
 
 #define DONT_DISCARD __attribute__((used))
 
@@ -173,10 +174,13 @@ void DONT_DISCARD EXTI9_5_IRQHandler(void) { extiInterruptHandler(); }
 void DONT_DISCARD USART3_IRQHandler(void) { uartIsr(); }
 
 void DONT_DISCARD TIM1_UP_IRQHandler(void) {
-  extern uint32_t traceTickCount;
+  extern uint32_t usecTimerHighCount;
 
   TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
-  traceTickCount++;
+
+  // We know that there's only one writer of this variable
+  // but we need to store it atomically for the readers.
+  __STREXW(usecTimerHighCount+1, &usecTimerHighCount);
 }
 
 void DONT_DISCARD I2C1_EV_IRQHandler(void) { i2cInterruptHandlerI2c1(); }

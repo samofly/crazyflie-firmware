@@ -49,6 +49,7 @@ add_executable(cflie.elf
   hal/src/pm.c
   hal/src/radiolink.c
   hal/src/uart.c
+  hal/src/usec_time.c
   hal/src/imu.c
   hal/src/eskylink.c
   hal/src/ledseq.c
@@ -67,6 +68,7 @@ add_executable(cflie.elf
   modules/src/param.c
   modules/src/system.c
   modules/src/console.c
+  lib/CMSIS/Core/CM3/core_cm3.c
   lib/FreeRTOS/list.c
   lib/FreeRTOS/portable/GCC/ARM_CM3/port.c
   lib/FreeRTOS/portable/MemMang/heap_4.c

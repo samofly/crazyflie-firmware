@@ -35,6 +35,7 @@
 #include "config.h"
 #include "system.h"
 #include "nvic.h"
+#include "usec_time.h"
 
 #include "led.h"
 
@@ -48,6 +49,7 @@ int main() {
   // Low level init: Clock and Interrupt controller
   prvClockInit();
   nvicInit();
+  initUsecTimer();
 
   // Launch the system task that will initialize and start everything
   systemLaunch();
