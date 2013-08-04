@@ -9,7 +9,7 @@ SET(CMAKE_C_COMPILER arm-none-eabi-gcc)
 SET(CMAKE_CXX_COMPILER arm-none-eabi-g++)
 SET(CMAKE_ASM_COMPILER arm-none-eabi-as)
 
-SET(CMAKE_C_FLAGS "-Os -g3 -std=c99 -mcpu=cortex-m3 -mthumb -DSTM32F10X_MD -include stm32f10x_conf.h -ffunction-sections -fdata-sections -DBOARD_REV_E -Wall -fno-strict-aliasing")
+SET(CMAKE_C_FLAGS "-Os -g3 -std=c99 -mcpu=cortex-m3 -mthumb -DSTM32F10X_MD -include stm32f10x_conf.h -ffunction-sections -fdata-sections -DBOARD_REV_E -Wall -fno-strict-aliasing -Werror")
 SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
 
 include_directories(
