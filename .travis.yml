@@ -3,7 +3,7 @@ language: c
 notifications:
   email: false
 
-before_install:
+before_script:
   # Create tmp directory to keep things clean
   - mkdir -p tmp
   - cd tmp
@@ -21,26 +21,13 @@ before_install:
   - make -j7
   - export PATH=$PATH:$(pwd)/arm-softmmu
   - sudo cp -f $(pwd)/arm-softmmu/qemu-system-arm /usr/bin/qemu-system-arm
-  - cd ..
-  # Install llvm
-  - travis_retry git clone http://llvm.org/git/llvm.git
-  - cd llvm && git checkout f5b9110ce1e0d5bc6f96b1e74d110f0cc576324a
-  # Install clang
-  - cd tools
-  - travis_retry git clone http://llvm.org/git/clang.git
-  - cd clang && git checkout 40ec4d26b7622eb07ad8d5f02da0dd43a1dc74b5
   - cd ../..
-  - mkdir -p cbuild
-  - cd cbuild
-  - cmake ..
-  - make -j4
-  - export PATH=$PATH:$(pwd)/bin
-  - sudo cp -f -r $(pwd)/bin/* /usr/bin/
-  - cd ../../..
 
-install:
+script:
   - export PATH=$PATH:$(pwd)/tmp/arm-2012.09/bin:$(pwd)/tmp/qemu_stm32/arm-softmmu:$(pwd)/tmp/llvm/cbuild/bin
   - echo $PATH
+  - arm-none-eabi-as --version
+  - arm-none-eani-gcc --version
   - make
   - mkdir -p cbuild
   - cd cbuild
