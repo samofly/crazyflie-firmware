@@ -7,7 +7,7 @@ or just enjoy [Crazyflie video footage](http://www.youtube.com/watch?v=3WBUVYZkO
 This repository contains a modification of Crazyflie firmware.
 The official firmware repository is http://bitbucket.org/bitcraze/crazyflie-firmware.
 
-![Crazyflie](https://raw.github.com/samofly/crazyflie-firmware/krasin/res/crazyflie.jpg)
+![Crazyflie](https://raw.github.com/samofly/crazyflie-firmware/samofly/res/crazyflie.jpg)
 
 The purpose of this fork is to go forward w/o a need to wait for the upstream code reviews.
 At the moment of writing this, I have 2 pending CLs to the upstream
@@ -19,7 +19,7 @@ At the moment of writing this, I have 2 pending CLs to the upstream
 The goals are:
 
 * Adopt clang-format to enforce code formatting rules
-  ([done](https://github.com/samofly/crazyflie-firmware/blob/krasin/scripts/clang-format-all.sh)
+  ([done](https://github.com/samofly/crazyflie-firmware/blob/samofly/scripts/clang-format-all.sh)
   for fork, pending for upstream)
 * Setup Buildbot for Crazyflie firmware
   ([done](http://buildcop.org:29010/console) for fork, pending for upstream)
@@ -32,7 +32,7 @@ The goals are:
 * Rebase to a newer version of FreeRTOS
 * Hard: Implement simulator environment with a physics model to test the quality of
   the copter stabilizer under different conditions
-* Hard: expose REST API. See [REST.md](https://github.com/samofly/crazyflie-firmware/blob/krasin/REST.md)
+* Hard: expose REST API. See [REST.md](https://github.com/samofly/crazyflie-firmware/blob/samofly/REST.md)
   for more details.
 
 #### [Buildbot console](http://buildcop.org:29010/console)
