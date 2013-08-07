@@ -6,7 +6,7 @@ notifications:
 before_install:
   # Create tmp directory to keep things clean
   - mkdir -p tmp
-  - cd tmp/
+  - cd tmp
   # Install arm-none-eabi-*
   - wget https://sourcery.mentor.com/public/gnu_toolchain/arm-none-eabi/arm-2012.09-63-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
   - tar xjf arm-2012.09-63-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
@@ -14,20 +14,20 @@ before_install:
   - command -v arm-none-eabi-as > /dev/null 2>&1 || { exit 1; }
   # Install qemu
   - travis_retry git clone https://github.com/krasin/qemu_stm32.git
-  - cd qemu_stm32/
+  - cd qemu_stm32
   - travis_retry git submodule update --init pixman
   - ./configure --target-list=arm-softmmu
   - make -j7
   - export PATH=$PATH:$(pwd)/arm-softmmu
-  - cd ../
+  - cd ..
   # Install llvm
   - travis_retry git clone http://llvm.org/git/llvm.git
   - cd llvm && git checkout f5b9110ce1e0d5bc6f96b1e74d110f0cc576324a
   # Install clang
-  - cd tools/
+  - cd tools
   - travis_retry git clone http://llvm.org/git/clang.git
   - cd clang && git checkout 40ec4d26b7622eb07ad8d5f02da0dd43a1dc74b5
-  - cd ../../
+  - cd ../..
   - mkdir -p cbuild
   - cd cbuild
   - cmake ..
@@ -36,10 +36,12 @@ before_install:
   - cd ../../..
 
 install:
+  - export PATH=$PATH:$(pwd)/tmp/arm-2012.09/bin:$(pwd)/tmp/qemu_stm32/arm-softmmu:$(pwd)/tmp/llvm/cbuild/bin
+  - echo $PATH
   - make
   - mkdir -p cbuild
   - cd cbuild
-  - cmake ../
+  - cmake ..
   - make
   - make test
-  - cd ../
+  - cd ..
