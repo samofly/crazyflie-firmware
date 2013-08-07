@@ -5,6 +5,8 @@ notifications:
 
 before_script:
   - uname -a
+  - sudo apt-get -qq update
+  - sudo apt-get install ia32-libs #only needed for 64-bit
   # Create tmp directory to keep things clean
   - mkdir -p tmp
   - cd tmp
