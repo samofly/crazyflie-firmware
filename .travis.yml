@@ -6,7 +6,7 @@ notifications:
 before_script:
   - uname -a
   - sudo apt-get update -qq
-  - if [ `uname -m` = x86_64 ]; then sudo apt-get install --force-yes ia32-libs-multiarch; fi
+  - if [ `uname -m` = x86_64 ]; then sudo dpkg --add-architecture i386; sudo apt-get update; sudo apt-get install --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
   # Create tmp directory to keep things clean
   - mkdir -p tmp
   - cd tmp
