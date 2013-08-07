@@ -24,14 +24,13 @@ before_script:
   - cd ../..
 
 script:
-  - export PATH=$PATH:$(pwd)/tmp/arm-2012.09/bin:$(pwd)/tmp/qemu_stm32/arm-softmmu:$(pwd)/tmp/llvm/cbuild/bin
   - echo $PATH
+  - export CROSS_COMPILE=$(pwd)/tmp/arm-2012.09/bin/arm-none-eabi-
   - arm-none-eabi-as --version
-  - arm-none-eani-gcc --version
+  - arm-none-eabi-gcc --version
   - make
   - mkdir -p cbuild
   - cd cbuild
   - cmake ..
   - make
   - make test
-  - cd ..
