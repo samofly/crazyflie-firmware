@@ -11,6 +11,7 @@ before_install:
   - wget https://sourcery.mentor.com/public/gnu_toolchain/arm-none-eabi/arm-2012.09-63-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
   - tar xjf arm-2012.09-63-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
   - export PATH=$PATH:$(pwd)/arm-2012.09/bin
+  - sudo cp -f -r $(pwd)/arm-2012.09/bin/* /usr/bin/
   - command -v arm-none-eabi-as > /dev/null 2>&1 || { exit 1; }
   # Install qemu
   - travis_retry git clone https://github.com/krasin/qemu_stm32.git
@@ -19,6 +20,7 @@ before_install:
   - ./configure --target-list=arm-softmmu
   - make -j7
   - export PATH=$PATH:$(pwd)/arm-softmmu
+  - sudo cp -f $(pwd)/arm-softmmu/qemu-system-arm /usr/bin/qemu-system-arm
   - cd ..
   # Install llvm
   - travis_retry git clone http://llvm.org/git/llvm.git
@@ -33,6 +35,7 @@ before_install:
   - cmake ..
   - make -j4
   - export PATH=$PATH:$(pwd)/bin
+  - sudo cp -f -r $(pwd)/bin/* /usr/bin/
   - cd ../../..
 
 install:
