@@ -171,8 +171,6 @@ static void stabilizerTask(void *param) {
 
       if (++attitudeCounter >= ATTITUDE_UPDATE_RATE_DIVIDER) {
         float dtSec = ((float)(imuReadTime - lastUpdateTime) / 1000000);
-        DEBUG_PRINT("sec: %d usec: %d dt: %f\n", (int)(imuReadTime / 1000000),
-                    (int)(imuReadTime % 1000000), dtSec);
         lastUpdateTime = imuReadTime;
         sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z, dtSec);
         sensfusion6GetEulerRPY(&eulerRollActual, &eulerPitchActual,
