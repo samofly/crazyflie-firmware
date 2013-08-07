@@ -4,6 +4,7 @@ notifications:
   email: false
 
 before_script:
+  - uname -a
   # Create tmp directory to keep things clean
   - mkdir -p tmp
   - cd tmp
@@ -11,23 +12,14 @@ before_script:
   - wget https://sourcery.mentor.com/public/gnu_toolchain/arm-none-eabi/arm-2012.09-63-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
   - tar xjf arm-2012.09-63-arm-none-eabi-i686-pc-linux-gnu.tar.bz2
   - export PATH=$PATH:$(pwd)/arm-2012.09/bin
-  - sudo cp -f -r $(pwd)/arm-2012.09/bin/* /usr/bin/
-  - command -v arm-none-eabi-as > /dev/null 2>&1 || { exit 1; }
-  # Install qemu
-  - travis_retry git clone https://github.com/krasin/qemu_stm32.git
-  - cd qemu_stm32
-  - travis_retry git submodule update --init pixman
-  - ./configure --target-list=arm-softmmu
-  - make -j7
-  - export PATH=$PATH:$(pwd)/arm-softmmu
-  - sudo cp -f $(pwd)/arm-softmmu/qemu-system-arm /usr/bin/qemu-system-arm
-  - cd ../..
-
-script:
-  - echo $PATH
-  - export CROSS_COMPILE=$(pwd)/tmp/arm-2012.09/bin/arm-none-eabi-
+  - chmod +x arm-2012.09/bin/arm-none-eabi-as
+  - chmod +x arm-2012.09/bin/arm-none-eabi-gcc
   - arm-none-eabi-as --version
   - arm-none-eabi-gcc --version
+  - export CROSS_COMPILE=$(pwd)/arm-2012.09/bin/arm-none-eabi-
+  - cd ..
+
+script:
   - make
   - mkdir -p cbuild
   - cd cbuild
