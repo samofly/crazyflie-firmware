@@ -5,8 +5,8 @@ notifications:
 
 before_script:
   - uname -a
-  - sudo apt-get -qq update
-  - sudo apt-get install ia32-libs #only needed for 64-bit
+  - sudo apt-get update -qq
+  - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes ia32-libs ia32-libs-multiarch; fi
   # Create tmp directory to keep things clean
   - mkdir -p tmp
   - cd tmp
