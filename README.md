@@ -1,4 +1,4 @@
-### CrazyFlie Firmware
+### CrazyFlie Firmware [![Build Status](https://travis-ci.org/samofly/crazyflie-firmware.png?branch=samofly)](https://travis-ci.org/samofly/crazyflie-firmware)
 
 Crazyflie is a tiny quadcopter. See more details on the [BitCraze website](http://www.bitcraze.se/),
 [the product page](http://www.seeedstudio.com/depot/bitcraze-m-64.html)
