@@ -65,7 +65,7 @@ static void interruptCallback() {
   xSemaphoreGiveFromISR(dataRdy, &xHigherPriorityTaskWoken);
 
   if (xHigherPriorityTaskWoken)
-    vPortYieldFromISR();
+    vPortYield();
 }
 
 // 'Class' functions, called from callbacks
