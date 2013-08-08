@@ -1,8 +1,5 @@
 language: c
 
-notifications:
-  email: false
-
 before_script:
   - uname -a
   - sudo apt-get update -qq
@@ -43,7 +40,4 @@ script:
   - cd cbuild
   - cmake ..
   - make
-  - make test
-
-after_script:
-  - cat Testing/Temporary/LastTest.log
+  - ctest --verbose
