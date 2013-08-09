@@ -102,12 +102,17 @@ void paramTask(void *prm) {
   while (1) {
     crtpReceivePacketBlock(CRTP_PORT_PARAM, &p);
 
-    if (p.channel == TOC_CH)
+    switch (p.channel) {
+    case TOC_CH:
       paramTOCProcess(p.data[0]);
-    else if (p.channel == READ_CH)
+      break;
+    case READ_CH:
       paramReadProcess(p.data[0]);
-    else if (p.channel == WRITE_CH)
+      break;
+    case WRITE_CH:
       paramWriteProcess(p.data[0], &p.data[1]);
+      break;
+    }
   }
 }
 
@@ -143,22 +148,19 @@ void paramTOCProcess(int command) {
       }
     }
 
+    p.header = CRTP_HEADER(CRTP_PORT_PARAM, TOC_CH);
+    p.data[0] = CMD_GET_ITEM;
     if (ptr < paramsLen) {
-      p.header = CRTP_HEADER(CRTP_PORT_PARAM, TOC_CH);
-      p.data[0] = CMD_GET_ITEM;
       p.data[1] = n;
       p.data[2] = params[ptr].type;
       memcpy(p.data + 3, group, strlen(group) + 1);
       memcpy(p.data + 3 + strlen(group) + 1, params[ptr].name,
              strlen(params[ptr].name) + 1);
       p.size = 3 + 2 + strlen(group) + strlen(params[ptr].name);
-      crtpSendPacket(&p);
     } else {
-      p.header = CRTP_HEADER(CRTP_PORT_PARAM, TOC_CH);
-      p.data[0] = CMD_GET_ITEM;
       p.size = 1;
-      crtpSendPacket(&p);
     }
+    crtpSendPacket(&p);
     break;
   }
 }
