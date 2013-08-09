@@ -136,14 +136,7 @@ void stabilizerInit(void) {
 }
 
 bool stabilizerTest(void) {
-  bool pass = true;
-
-  pass &= motorsTest();
-  pass &= imu6Test();
-  pass &= sensfusion6Test();
-  pass &= controllerTest();
-
-  return pass;
+  return motorsTest() & imu6Test() & sensfusion6Test() & controllerTest();
 }
 
 static void stabilizerTask(void *param) {
@@ -165,76 +158,58 @@ static void stabilizerTask(void *param) {
     imu6Read(&gyro, &acc);
     uint64_t imuReadTime = usecTimestamp();
 
-    if (imu6IsCalibrated()) {
-      commanderGetRPY(&eulerRollDesired, &eulerPitchDesired, &eulerYawDesired);
-      commanderGetRPYType(&rollType, &pitchType, &yawType);
+    if (!imu6IsCalibrated()) {
+      continue;
+    }
 
-      if (++attitudeCounter >= ATTITUDE_UPDATE_RATE_DIVIDER) {
-        float dtSec = ((float)(imuReadTime - lastUpdateTime) / 1000000);
-        lastUpdateTime = imuReadTime;
-        sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z, dtSec);
-        sensfusion6GetEulerRPY(&eulerRollActual, &eulerPitchActual,
-                               &eulerYawActual);
+    commanderGetRPY(&eulerRollDesired, &eulerPitchDesired, &eulerYawDesired);
+    commanderGetRPYType(&rollType, &pitchType, &yawType);
 
-        controllerCorrectAttitudePID(
+    if (++attitudeCounter >= ATTITUDE_UPDATE_RATE_DIVIDER) {
+      float dtSec = ((float)(imuReadTime - lastUpdateTime) / 1000000);
+      lastUpdateTime = imuReadTime;
+      sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z, dtSec);
+      sensfusion6GetEulerRPY(&eulerRollActual, &eulerPitchActual,
+                             &eulerYawActual);
+
+      controllerCorrectAttitudePID(
             eulerRollActual, eulerPitchActual, eulerYawActual, eulerRollDesired,
             eulerPitchDesired, -eulerYawDesired, &rollRateDesired,
             &pitchRateDesired, &yawRateDesired);
-        attitudeCounter = 0;
-      }
-
-      if (rollType == RATE) {
-        rollRateDesired = eulerRollDesired;
-      }
-      if (pitchType == RATE) {
-        pitchRateDesired = eulerPitchDesired;
-      }
-      if (yawType == RATE) {
-        yawRateDesired = -eulerYawDesired;
-      }
-
-      // TODO: Investigate possibility to subtract gyro drift.
-      controllerCorrectRatePID(gyro.x, -gyro.y, gyro.z, rollRateDesired,
-                               pitchRateDesired, yawRateDesired);
-
-      controllerGetActuatorOutput(&actuatorRoll, &actuatorPitch, &actuatorYaw);
-
-      commanderGetTrust(&actuatorThrust);
-      if (actuatorThrust > 0) {
-#if defined(TUNE_ROLL)
-        distributePower(actuatorThrust, actuatorRoll, 0, 0);
-#elif defined(TUNE_PITCH)
-        distributePower(actuatorThrust, 0, actuatorPitch, 0);
-#elif defined(TUNE_YAW)
-        distributePower(actuatorThrust, 0, 0, -actuatorYaw);
-#else
-        distributePower(actuatorThrust, actuatorRoll, actuatorPitch,
-                        -actuatorYaw);
-#endif
-      } else {
-        distributePower(0, 0, 0, 0);
-        controllerResetAllPID();
-      }
-#if 0
-     static int i = 0;
-      if (++i > 19)
-      {
-        uartPrintf("%i, %i, %i\n",
-            (int32_t)(eulerRollActual*100),
-            (int32_t)(eulerPitchActual*100),
-            (int32_t)(eulerYawActual*100));
-        i = 0;
-      }
-#endif
+      attitudeCounter = 0;
     }
+
+    if (rollType == RATE) {
+      rollRateDesired = eulerRollDesired;
+    }
+    if (pitchType == RATE) {
+      pitchRateDesired = eulerPitchDesired;
+    }
+    if (yawType == RATE) {
+      yawRateDesired = -eulerYawDesired;
+    }
+
+    // TODO: Investigate possibility to subtract gyro drift.
+    controllerCorrectRatePID(gyro.x, -gyro.y, gyro.z, rollRateDesired,
+                             pitchRateDesired, yawRateDesired);
+
+    controllerGetActuatorOutput(&actuatorRoll, &actuatorPitch, &actuatorYaw);
+
+    commanderGetTrust(&actuatorThrust);
+    if (actuatorThrust <= 0) {
+      distributePower(0, 0, 0, 0);
+      controllerResetAllPID();
+      continue;
+    }
+    distributePower(actuatorThrust, actuatorRoll, actuatorPitch, -actuatorYaw);
   }
 }
 
 static void distributePower(const uint16_t thrust, const int16_t roll,
                             const int16_t pitch, const int16_t yaw) {
 #ifdef QUAD_FORMATION_X
-  roll = roll >> 1;
-  pitch = pitch >> 1;
+  roll >>= 1;
+  pitch >>= 1;
   motorPowerM1 = limitThrust(thrust - roll + pitch + yaw);
   motorPowerM2 = limitThrust(thrust - roll - pitch - yaw);
   motorPowerM3 = limitThrust(thrust + roll - pitch + yaw);
