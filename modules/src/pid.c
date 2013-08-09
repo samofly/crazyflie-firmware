@@ -44,7 +44,6 @@ void pidInit(PidObject *pid, const float desired, const float kp,
   pid->kp = kp;
   pid->ki = ki;
   pid->kd = kd;
-
   pid->iLimit = DEFAULT_PID_INTEGRATION_LIMIT;
 }
 
@@ -63,7 +62,6 @@ float pidUpdate(PidObject *pid, const float measured, const bool updateError) {
   }
 
   pid->deriv = (pid->error - pid->prevError) / IMU_UPDATE_DT;
-
   pid->outP = pid->kp * pid->error;
   pid->outI = pid->ki * pid->integ;
   pid->outD = pid->kd * pid->deriv;
@@ -87,13 +85,17 @@ void pidReset(PidObject *pid) {
   pid->deriv = 0;
 }
 
-void pidSetError(PidObject *pid, const float error) { pid->error = error; }
+void pidSetError(PidObject *pid, const float error) {
+  pid->error = error;
+}
 
 void pidSetDesired(PidObject *pid, const float desired) {
   pid->desired = desired;
 }
 
-float pidGetDesired(PidObject *pid) { return pid->desired; }
+float pidGetDesired(PidObject *pid) {
+  return pid->desired;
+}
 
 bool pidIsActive(PidObject *pid) {
   bool isActive = TRUE;
@@ -105,8 +107,14 @@ bool pidIsActive(PidObject *pid) {
   return isActive;
 }
 
-void pidSetKp(PidObject *pid, const float kp) { pid->kp = kp; }
+void pidSetKp(PidObject *pid, const float kp) {
+  pid->kp = kp;
+}
 
-void pidSetKi(PidObject *pid, const float ki) { pid->ki = ki; }
+void pidSetKi(PidObject *pid, const float ki) {
+  pid->ki = ki;
+}
 
-void pidSetKd(PidObject *pid, const float kd) { pid->kd = kd; }
+void pidSetKd(PidObject *pid, const float kd) {
+  pid->kd = kd;
+}

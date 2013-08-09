@@ -74,19 +74,26 @@ static bool isInit;
 /* System wide synchronisation */
 xSemaphoreHandle canStartMutex;
 
+extern int paramsLen;
+
 /* Private functions */
 static void systemTask(void *arg);
 
 /* Public functions */
 void systemLaunch(void) {
-  xTaskCreate(systemTask, (const signed char * const) "SYSTEM",
-              2 * configMINIMAL_STACK_SIZE, NULL, /*Piority*/ 2, NULL);
+  xTaskCreate(systemTask,
+              (const signed char * const) "SYSTEM",
+              configMINIMAL_STACK_SIZE << 1,
+              NULL,
+              2, /*Piority*/
+              NULL);
 }
 
 // This must be the first module to be initialized!
 void systemInit(void) {
-  if (isInit)
+  if (isInit) {
     return;
+  }
 
   canStartMutex = xSemaphoreCreateMutex();
   xSemaphoreTake(canStartMutex, portMAX_DELAY);
@@ -101,23 +108,10 @@ void systemInit(void) {
 }
 
 bool systemTest() {
-  bool pass = isInit;
-
-  pass &= adcTest();
-  pass &= ledseqTest();
-  pass &= pmTest();
-  pass &= workerTest();
-
-  return pass;
+  return adcTest() & ledseqTest() & pmTest() & workerTest();
 }
 
-/* Private functions implementation */
-
-extern int paramsLen;
-
 void systemTask(void *arg) {
-  bool pass = true;
-
   // Init the high-levels modules
   systemInit();
 
@@ -142,14 +136,8 @@ void systemTask(void *arg) {
   commanderInit();
   stabilizerInit();
 
-  // Test the modules
-  pass &= systemTest();
-  pass &= commTest();
-  pass &= commanderTest();
-  pass &= stabilizerTest();
-
   // Start the firmware
-  if (pass) {
+  if (systemTest() & commTest() & commanderTest() & stabilizerTest()) {
     systemStart();
     ledseqRun(LED_RED, seq_alive);
     ledseqRun(LED_GREEN, seq_testPassed);
@@ -168,26 +156,33 @@ void systemTask(void *arg) {
   workerLoop();
 
   // Should never reach this point!
-  while (1)
+  while (1) {
     vTaskDelay(portMAX_DELAY);
+  }
 }
 
-/* Global system variables */
-void systemStart() { xSemaphoreGive(canStartMutex); }
+void systemStart() {
+  xSemaphoreGive(canStartMutex);
+}
 
 void systemWaitStart(void) {
   // This permits to guarantee that the system task is initialized before other
   // tasks waits for the start event.
-  while (!isInit)
+  while (!isInit) {
     vTaskDelay(2);
+  }
 
   xSemaphoreTake(canStartMutex, portMAX_DELAY);
   xSemaphoreGive(canStartMutex);
 }
 
-void systemSetCanFly(bool val) { canFly = val; }
+void systemSetCanFly(bool val) {
+  canFly = val;
+}
 
-bool systemCanFly(void) { return canFly; }
+bool systemCanFly(void) {
+  return canFly;
+}
 
 /*System parameters (mostly for test, should be removed from here) */
 PARAM_GROUP_START(cpu)

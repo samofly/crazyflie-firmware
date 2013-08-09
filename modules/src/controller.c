@@ -32,14 +32,6 @@
 #include "controller.h"
 #include "pid.h"
 #include "param.h"
-/*
-#define TRUNCATE_SINT16(out, in) \
-  {\
-    if (in > INT16_MAX) out = (int16_t)INT16_MAX;\
-    else if (in < INT16_MIN) out = (int16_t)INT16_MIN;\
-    else out = (int16_t)in;\
-  }
-*/
 
 // Fancier version
 #define TRUNCATE_SINT16(out, in)                                               \
@@ -62,9 +54,14 @@ int16_t yawOutput;
 
 static bool isInit;
 
+static int16_t trunc_float(float v) {
+  return (int16_t)(v < INT16_MIN) ? INT16_MIN : ((v > INT16_MAX) ? INT16_MAX : v);
+}
+
 void controllerInit() {
-  if (isInit)
+  if (isInit) {
     return;
+  }
 
   // TODO: get parameters from configuration manager instead
   pidInit(&pidRollRate, 0, PID_ROLL_RATE_KP, PID_ROLL_RATE_KI,
@@ -86,19 +83,21 @@ void controllerInit() {
   isInit = true;
 }
 
-bool controllerTest() { return isInit; }
+bool controllerTest() {
+  return isInit;
+}
 
 void controllerCorrectRatePID(float rollRateActual, float pitchRateActual,
                               float yawRateActual, float rollRateDesired,
                               float pitchRateDesired, float yawRateDesired) {
   pidSetDesired(&pidRollRate, rollRateDesired);
-  TRUNCATE_SINT16(rollOutput, pidUpdate(&pidRollRate, rollRateActual, TRUE));
+  rollOutput = trunc_float(pidUpdate(&pidRollRate, rollRateActual, TRUE));
 
   pidSetDesired(&pidPitchRate, pitchRateDesired);
-  TRUNCATE_SINT16(pitchOutput, pidUpdate(&pidPitchRate, pitchRateActual, TRUE));
+  pitchOutput = trunc_float(pidUpdate(&pidPitchRate, pitchRateActual, TRUE));
 
   pidSetDesired(&pidYawRate, yawRateDesired);
-  TRUNCATE_SINT16(yawOutput, pidUpdate(&pidYawRate, yawRateActual, TRUE));
+  yawOutput = trunc_float(pidUpdate(&pidYawRate, yawRateActual, TRUE));
 }
 
 void controllerCorrectAttitudePID(float eulerRollActual, float eulerPitchActual,
@@ -117,10 +116,11 @@ void controllerCorrectAttitudePID(float eulerRollActual, float eulerPitchActual,
   // Update PID for yaw axis
   float yawError;
   yawError = eulerYawDesired - eulerYawActual;
-  if (yawError > 180.0)
+  if (yawError > 180.0) {
     yawError -= 360.0;
-  else if (yawError < -180.0)
+  } else if (yawError < -180.0) {
     yawError += 360.0;
+  }
   pidSetError(&pidYaw, yawError);
   *yawRateDesired = pidUpdate(&pidYaw, eulerYawActual, FALSE);
 }

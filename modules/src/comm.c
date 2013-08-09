@@ -40,8 +40,9 @@
 static bool isInit;
 
 void commInit(void) {
-  if (isInit)
+  if (isInit) {
     return;
+  }
 
 #ifdef HAS_UART
   uartInit();

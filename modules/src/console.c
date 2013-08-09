@@ -47,8 +47,9 @@ static void consoleSendMessage(void) {
 }
 
 void consoleInit() {
-  if (isInit)
+  if (isInit) {
     return;
+  }
 
   messageToPrint.size = 0;
   messageToPrint.header = CRTP_HEADER(CRTP_PORT_CONSOLE, 0);
@@ -57,13 +58,15 @@ void consoleInit() {
   isInit = true;
 }
 
-bool consoleTest(void) { return isInit; }
+bool consoleTest(void) {
+  return isInit;
+}
 
 int consolePutchar(int ch) {
   if (xSemaphoreTake(synch, portMAX_DELAY) == pdTRUE) {
     messageToPrint.data[messageToPrint.size] = (unsigned char)ch;
     messageToPrint.size++;
-    if (ch == '\n' || messageToPrint.size == CRTP_MAX_DATA_SIZE) {
+    if (!(ch ^ '\n') || !(messageToPrint.size ^ CRTP_MAX_DATA_SIZE)) {
       consoleSendMessage();
     }
     xSemaphoreGive(synch);
@@ -75,8 +78,9 @@ int consolePutchar(int ch) {
 int consolePuts(char *str) {
   int ret = 0;
 
-  while (*str)
+  while (*str) {
     ret |= consolePutchar(*str++);
+  }
 
   return ret;
 }
