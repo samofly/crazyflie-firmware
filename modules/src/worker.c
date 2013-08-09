@@ -49,7 +49,9 @@ void workerInit() {
   workerQueue = xQueueCreate(WORKER_QUEUE_LENGTH, sizeof(struct worker_work));
 }
 
-bool workerTest() { return (workerQueue != NULL); }
+bool workerTest() {
+  return (workerQueue != NULL);
+}
 
 void workerLoop() {
   struct worker_work work;

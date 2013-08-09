@@ -40,8 +40,12 @@ typedef enum {
 void pidCrtlTask(void *param);
 
 void pidCtrlInit() {
-  xTaskCreate(pidCrtlTask, (const signed char * const) "PIDCrtl",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/ 2, NULL);
+  xTaskCreate(pidCrtlTask,
+              (const signed char * const) "PIDCrtl",
+              configMINIMAL_STACK_SIZE,
+              NULL,
+              2, /*priority*/
+              NULL);
   crtpInitTaskQueue(6);
 }
 

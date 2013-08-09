@@ -34,8 +34,6 @@
 #define M_PI 3.14159265358979323846264338327950288
 #endif /* M_PI */
 
-//#define MADWICK_QUATERNION_IMU
-
 #ifdef MADWICK_QUATERNION_IMU
 #define BETA_DEF 0.01f             // 2 * proportional gain
 #else                              // MAHONY_QUATERNION_IMU
@@ -60,17 +58,27 @@ float q3 = 0.0f; // quaternion of sensor frame relative to auxiliary frame
 
 static bool isInit;
 
+// Fast inverse square-root
+// See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
+//
 // TODO: Make math util file
-static float invSqrt(float x);
+static float invSqrt(float x) {
+  float halfx = 0.5f * x;
+  float y = x;
+  long i = *(long *)&y;
+  i = 0x5f3759df - (i >> 1);
+  y = *(float *)&i;
+  y = y * (1.5f - (halfx * y * y));
+  return y;
+}
 
 void sensfusion6Init() {
-  if (isInit)
-    return;
-
   isInit = TRUE;
 }
 
-bool sensfusion6Test(void) { return isInit; }
+bool sensfusion6Test(void) {
+  return isInit;
+}
 
 #ifdef MADWICK_QUATERNION_IMU
 // Implementation of Madgwick's IMU and AHRS algorithms.
@@ -245,24 +253,11 @@ void sensfusion6GetEulerRPY(float *roll, float *pitch, float *yaw) {
   *roll = atan(gy / sqrt(gx * gx + gz * gz)) * 180 / M_PI;
 }
 
-//---------------------------------------------------------------------------------------------------
-// Fast inverse square-root
-// See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
-float invSqrt(float x) {
-  float halfx = 0.5f * x;
-  float y = x;
-  long i = *(long *)&y;
-  i = 0x5f3759df - (i >> 1);
-  y = *(float *)&i;
-  y = y * (1.5f - (halfx * y * y));
-  return y;
-}
-
 PARAM_GROUP_START(sensorfusion6)
 #ifdef MADWICK_QUATERNION_IMU
 PARAM_ADD(PARAM_FLOAT, beta, &beta)
 #else // MAHONY_QUATERNION_IMU
 PARAM_ADD(PARAM_FLOAT, kp, &twoKp)
 PARAM_ADD(PARAM_FLOAT, ki, &twoKi)
-#endif
+#endif /* MADWICK_QUATERNION_IMU */
 PARAM_GROUP_STOP(sensorfusion6)

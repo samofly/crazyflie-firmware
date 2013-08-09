@@ -47,6 +47,8 @@
 #define CMD_GET_ITEM 0
 #define CMD_GET_INFO 1
 
+CRTPPacket p;
+
 // Private functions
 static void paramTask(void *prm);
 void paramTOCProcess(int command);
@@ -58,7 +60,6 @@ extern struct param_s _param_stop;
 // The following two function SHALL NOT be called outside paramTask!
 static void paramWriteProcess(int id, void *);
 static void paramReadProcess(int id);
-static int variableGetIndex(int id);
 
 // Pointer to the parameters list and length of it
 static struct param_s *params;
@@ -68,19 +69,36 @@ static int paramsCount = 0;
 
 static bool isInit = false;
 
+static int variableGetIndex(int id) {
+  int i;
+  int n = 0;
+
+  for (i = 0; i < paramsLen; i++) {
+    if (!(params[i].type & PARAM_GROUP)) {
+      if (n == id)
+        break;
+      n++;
+    }
+  }
+
+  return i;
+}
+
 void paramInit(void) {
   int i;
 
-  if (isInit)
+  if (isInit) {
     return;
+  }
 
   params = &_param_start;
   paramsLen = &_param_stop - &_param_start;
   paramsCrc = crcSlow(params, paramsLen);
 
   for (i = 0; i < paramsLen; i++) {
-    if (!(params[i].type & PARAM_GROUP))
+    if (!(params[i].type & PARAM_GROUP)) {
       paramsCount++;
+    }
   }
 
   // Start the param task
@@ -92,22 +110,26 @@ void paramInit(void) {
   isInit = true;
 }
 
-bool paramTest(void) { return isInit; }
-
-CRTPPacket p;
+bool paramTest(void) {
+  return isInit;
+}
 
 void paramTask(void *prm) {
   crtpInitTaskQueue(CRTP_PORT_PARAM);
 
   while (1) {
     crtpReceivePacketBlock(CRTP_PORT_PARAM, &p);
-
-    if (p.channel == TOC_CH)
+    switch (p.channel) {
+    case TOC_CH:
       paramTOCProcess(p.data[0]);
-    else if (p.channel == READ_CH)
+      break;
+    case READ_CH:
       paramReadProcess(p.data[0]);
-    else if (p.channel == WRITE_CH)
+      break;
+    case WRITE_CH:
       paramWriteProcess(p.data[0], &p.data[1]);
+      break;
+    }
   }
 }
 
@@ -128,37 +150,31 @@ void paramTOCProcess(int command) {
     crtpSendPacket(&p);
     break;
   case CMD_GET_ITEM:                      // Get param variable
-    for (ptr = 0; ptr < paramsLen; ptr++) // Ptr points a group
-        {
+    for (ptr = 0; ptr < paramsLen; ptr++) { // Ptr points a group
       if (params[ptr].type & PARAM_GROUP) {
-        if (params[ptr].type & PARAM_START)
+        group = "";
+        if (params[ptr].type & PARAM_START) {
           group = params[ptr].name;
-        else
-          group = "";
-      } else // Ptr points a variable
-          {
-        if (n == p.data[1])
+        }
+      } else { // Ptr points a variable
+        if (n == p.data[1]) {
           break;
+        }
         n++;
       }
     }
-
+    p.header = CRTP_HEADER(CRTP_PORT_PARAM, TOC_CH);
+    p.data[0] = CMD_GET_ITEM;
+    p.size = 1;
     if (ptr < paramsLen) {
-      p.header = CRTP_HEADER(CRTP_PORT_PARAM, TOC_CH);
-      p.data[0] = CMD_GET_ITEM;
       p.data[1] = n;
       p.data[2] = params[ptr].type;
       memcpy(p.data + 3, group, strlen(group) + 1);
       memcpy(p.data + 3 + strlen(group) + 1, params[ptr].name,
              strlen(params[ptr].name) + 1);
       p.size = 3 + 2 + strlen(group) + strlen(params[ptr].name);
-      crtpSendPacket(&p);
-    } else {
-      p.header = CRTP_HEADER(CRTP_PORT_PARAM, TOC_CH);
-      p.data[0] = CMD_GET_ITEM;
-      p.size = 1;
-      crtpSendPacket(&p);
     }
+    crtpSendPacket(&p);
     break;
   }
 }
@@ -235,22 +251,4 @@ static void paramReadProcess(int ident) {
   }
 
   crtpSendPacket(&p);
-}
-
-static int variableGetIndex(int id) {
-  int i;
-  int n = 0;
-
-  for (i = 0; i < paramsLen; i++) {
-    if (!(params[i].type & PARAM_GROUP)) {
-      if (n == id)
-        break;
-      n++;
-    }
-  }
-
-  if (i >= paramsLen)
-    return -1;
-
-  return i;
 }

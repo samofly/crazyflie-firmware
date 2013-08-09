@@ -79,71 +79,74 @@ void infoTask(void *param) {
 
       switch (infoNbr) {
       case infoCopterNr:
-        if (p.data[0] == infoName) {
+        switch (p.data[0]) {
+        case infoName:
           p.data[1] = 0x90;
           p.data[2] = 0x00; // Version 0.9.0 (Crazyflie)
           strcpy((char *)&p.data[3], "CrazyFlie");
 
           p.size = 3 + strlen("CrazyFlie");
           crtpSendPacket(&p);
-        } else if (p.data[0] == infoVersion) {
+          break;
+        case infoVersion:
           i = 1;
 
           strncpy((char *)&p.data[i], V_SLOCAL_REVISION, 31 - i);
           i += strlen(V_SLOCAL_REVISION);
 
-          if (i < 31)
+          if (i < 31) {
             p.data[i++] = ',';
+          }
 
           strncpy((char *)&p.data[i], V_SREVISION, 31 - i);
           i += strlen(V_SREVISION);
 
-          if (i < 31)
+          if (i < 31) {
             p.data[i++] = ',';
+          }
 
           strncpy((char *)&p.data[i], V_STAG, 31 - i);
           i += strlen(V_STAG);
 
-          if (i < 31)
+          if (i < 31) {
             p.data[i++] = ',';
-          if (i < 31)
+          }
+          if (i < 31) {
             p.data[i++] = V_MODIFIED ? 'M' : 'C';
+          }
 
           p.size = (i < 31) ? i : 31;
           crtpSendPacket(&p);
-        } else if (p.data[0] == infoCpuId) {
+          break;
+        case infoCpuId:
           memcpy((char *)&p.data[1], (char *)CpuId, 12);
 
           p.size = 13;
           crtpSendPacket(&p);
+          break;
         }
-
         break;
       case infoBatteryNr:
-        if (p.data[0] == batteryVoltage) {
+        switch (p.data[0]) {
+        case batteryVoltage:
           float value = pmGetBatteryVoltage();
-
           memcpy(&p.data[1], (char *)&value, 4);
-
           p.size = 5;
           crtpSendPacket(&p);
-        } else if (p.data[0] == batteryMax) {
+          break;
+        case batteryMax:
           float value = pmGetBatteryVoltageMax();
-
           memcpy(&p.data[1], (char *)&value, 4);
-
           p.size = 5;
           crtpSendPacket(&p);
-        } else if (p.data[0] == batteryMin) {
+          break;
+        case batteryMin:
           float value = pmGetBatteryVoltageMin();
-
           memcpy(&p.data[1], (char *)&value, 4);
-
           p.size = 5;
           crtpSendPacket(&p);
+          break;
         }
-        break;
-      default:
         break;
       }
     }

@@ -54,12 +54,14 @@
 #define MOTORS_GPIO_M3 GPIO_Pin_9 // T4_CH4
 #define MOTORS_GPIO_M4 GPIO_Pin_8 // T4_CH3
 
+#define NUM_MOTORS 4
+
 /* Utils Conversion macro */
 #define C_BITS_TO_16(X) ((X) << (16 - MOTORS_PWM_BITS))
 #define C_16_TO_BITS(X)                                                        \
   ((X) >> (16 - MOTORS_PWM_BITS) & ((1 << MOTORS_PWM_BITS) - 1))
 
-const int MOTORS[] = { MOTOR_M1, MOTOR_M2, MOTOR_M3, MOTOR_M4 };
+const int MOTORS[NUM_MOTORS] = { MOTOR_M1, MOTOR_M2, MOTOR_M3, MOTOR_M4 };
 static bool isInit = false;
 
 /* Public functions */
@@ -135,7 +137,7 @@ void motorsInit() {
 bool motorsTest(void) {
   int i;
 
-  for (i = 0; i < sizeof(MOTORS) / sizeof(*MOTORS); i++) {
+  for (i = 0; i < NUM_MOTORS; i++) {
     motorsSetRatio(MOTORS[i], MOTORS_TEST_RATIO);
     vTaskDelay(M2T(MOTORS_TEST_ON_TIME_MS));
     motorsSetRatio(MOTORS[i], 0);
@@ -217,10 +219,10 @@ void motorsTestTask(void *params) {
   vTaskDelay(M2T(3000));
 
   while (1) {
-    motorsSetRatio(MOTOR_M4, sequence[step % 4]);
-    motorsSetRatio(MOTOR_M3, sequence[(step + 1) % 4]);
-    motorsSetRatio(MOTOR_M2, sequence[(step + 2) % 4]);
-    motorsSetRatio(MOTOR_M1, sequence[(step + 3) % 4]);
+    motorsSetRatio(MOTOR_M4, sequence[step & 3]);
+    motorsSetRatio(MOTOR_M3, sequence[(step + 1) & 3]);
+    motorsSetRatio(MOTOR_M2, sequence[(step + 2) & 3]);
+    motorsSetRatio(MOTOR_M1, sequence[(step + 3) & 3]);
 
     if (++step > 3)
       step = 0;
@@ -228,4 +230,4 @@ void motorsTestTask(void *params) {
     vTaskDelay(M2T(1000));
   }
 }
-#endif
+#endif /* MOTOR_RAMPUP_TEST */

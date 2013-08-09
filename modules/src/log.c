@@ -124,6 +124,8 @@ static int logsCount = 0;
 
 static bool isInit = false;
 
+static CRTPPacket p;
+
 /* Log management functions */
 static int logAppendBlock(int id, struct ops_setting *settings, int len);
 static int logCreateBlock(unsigned char id, struct ops_setting *settings,
@@ -165,9 +167,9 @@ void logInit(void) {
   isInit = true;
 }
 
-bool logTest(void) { return isInit; }
-
-static CRTPPacket p;
+bool logTest(void) {
+  return isInit;
+}
 
 void logTask(void *prm) {
   crtpInitTaskQueue(CRTP_PORT_LOG);
@@ -176,10 +178,14 @@ void logTask(void *prm) {
     crtpReceivePacketBlock(CRTP_PORT_LOG, &p);
 
     xSemaphoreTake(logLock, portMAX_DELAY);
-    if (p.channel == TOC_CH)
+    switch (p.channel) {
+    case TOC_CH:
       logTOCProcess(p.data[0]);
-    if (p.channel == CONTROL_CH)
+      break;
+    case CONTROL_CH:
       logControlProcess();
+      break;
+    }
     xSemaphoreGive(logLock);
   }
 }
@@ -205,39 +211,34 @@ void logTOCProcess(int command) {
     break;
   case CMD_GET_ITEM: // Get log variable
     DEBUG("Packet is TOC_GET_ITEM Id: %d\n", p.data[1]);
-    for (ptr = 0; ptr < logsLen; ptr++) // Ptr points a group
-        {
+    for (ptr = 0; ptr < logsLen; ptr++) { // Ptr points a group
       if (logs[ptr].type & LOG_GROUP) {
         if (logs[ptr].type & LOG_START)
           group = logs[ptr].name;
         else
           group = "";
-      } else // Ptr points a variable
-          {
+      } else { // Ptr points a variable
         if (n == p.data[1])
           break;
         n++;
       }
     }
 
+    p.header = CRTP_HEADER(CRTP_PORT_LOG, TOC_CH);
+    p.data[0] = CMD_GET_ITEM;
+    p.size = 1;
     if (ptr < logsLen) {
       DEBUG("    Item is \"%s\":\"%s\"\n", group, logs[ptr].name);
-      p.header = CRTP_HEADER(CRTP_PORT_LOG, TOC_CH);
-      p.data[0] = CMD_GET_ITEM;
       p.data[1] = n;
       p.data[2] = logs[ptr].type;
       memcpy(p.data + 3, group, strlen(group) + 1);
       memcpy(p.data + 3 + strlen(group) + 1, logs[ptr].name,
              strlen(logs[ptr].name) + 1);
       p.size = 3 + 2 + strlen(group) + strlen(logs[ptr].name);
-      crtpSendPacket(&p);
     } else {
       DEBUG("    Index out of range!");
-      p.header = CRTP_HEADER(CRTP_PORT_LOG, TOC_CH);
-      p.data[0] = CMD_GET_ITEM;
-      p.size = 1;
-      crtpSendPacket(&p);
     }
+    crtpSendPacket(&p);
     break;
   }
 }
@@ -279,12 +280,14 @@ static int logCreateBlock(unsigned char id, struct ops_setting *settings,
                           int len) {
   int i;
 
-  for (i = 0; i < LOG_MAX_BLOCKS; i++)
+  for (i = 0; i < LOG_MAX_BLOCKS; i++) {
     if (logBlocks[i].id == BLOCK_ID_FREE)
       break;
+  }
 
-  if (i == LOG_MAX_BLOCKS)
+  if (i == LOG_MAX_BLOCKS) {
     return ENOMEM;
+  }
 
   logBlocks[i].id = id;
   logBlocks[i].timer = xTimerCreate((const signed char *)"logTimer", M2T(1000),
@@ -313,9 +316,10 @@ static int logAppendBlock(int id, struct ops_setting *settings, int len) {
 
   DEBUG("Appending %d variable to block %d\n", len, id);
 
-  for (i = 0; i < LOG_MAX_BLOCKS; i++)
+  for (i = 0; i < LOG_MAX_BLOCKS; i++) {
     if (logBlocks[i].id == id)
       break;
+  }
 
   if (i >= LOG_MAX_BLOCKS) {
     ERROR("Trying to append block id %d that doesn't exist.", id);
@@ -342,8 +346,8 @@ static int logAppendBlock(int id, struct ops_setting *settings, int len) {
       return ENOMEM;
     }
 
-    if (settings[i].id != 255) // TOC variable
-        {
+    ops->logType = settings[i].logType & 0x0F;
+    if (settings[i].id ^ 255) { // TOC variable
       varId = variableGetIndex(settings[i].id);
 
       if (varId < 0) {
@@ -354,14 +358,12 @@ static int logAppendBlock(int id, struct ops_setting *settings, int len) {
 
       ops->variable = logs[varId].address;
       ops->storageType = logs[varId].type;
-      ops->logType = settings[i].logType & 0x0F;
 
       DEBUG("Appended variable %d to block %d\n", settings[i].id, id);
     } else { // Memory variable
       // TODO: Check that the address is in ram
       ops->variable = (void *)(&settings[i] + 1);
       ops->storageType = (settings[i].logType >> 4) & 0x0F;
-      ops->logType = settings[i].logType & 0x0F;
       i += 2;
 
       DEBUG("Appended var addr 0x%x to block %d\n", (int)ops->variable, id);
@@ -379,9 +381,10 @@ static int logDeleteBlock(int id) {
   struct log_ops *ops;
   struct log_ops *opsNext;
 
-  for (i = 0; i < LOG_MAX_BLOCKS; i++)
+  for (i = 0; i < LOG_MAX_BLOCKS; i++) {
     if (logBlocks[i].id == id)
       break;
+  }
 
   if (i >= LOG_MAX_BLOCKS) {
     ERROR("trying to delete block id %d that doesn't exist.", id);
@@ -395,7 +398,7 @@ static int logDeleteBlock(int id) {
     ops = opsNext;
   }
 
-  if (logBlocks[i].timer != 0) {
+  if (logBlocks[i].timer == 0) {
     xTimerStop(logBlocks[i].timer, portMAX_DELAY);
     xTimerDelete(logBlocks[i].timer, portMAX_DELAY);
     logBlocks[i].timer = 0;
@@ -408,9 +411,10 @@ static int logDeleteBlock(int id) {
 static int logStartBlock(int id, unsigned int period) {
   int i;
 
-  for (i = 0; i < LOG_MAX_BLOCKS; i++)
+  for (i = 0; i < LOG_MAX_BLOCKS; i++) {
     if (logBlocks[i].id == id)
       break;
+  }
 
   if (i >= LOG_MAX_BLOCKS) {
     ERROR("Trying to start block id %d that doesn't exist.", id);
@@ -590,17 +594,19 @@ static void logReset(void) {
   if (isInit) {
     // Stop and delete all started log blocks
     for (i = 0; i < LOG_MAX_BLOCKS; i++)
-      if (logBlocks[i].id != -1) {
+      if (logBlocks[i].id ^ -1) {
         logStopBlock(logBlocks[i].id);
         logDeleteBlock(logBlocks[i].id);
       }
   }
 
   // Force free all the log block objects
-  for (i = 0; i < LOG_MAX_BLOCKS; i++)
+  for (i = 0; i < LOG_MAX_BLOCKS; i++) {
     logBlocks[i].id = BLOCK_ID_FREE;
+  }
 
   // Force free the log ops
-  for (i = 0; i < LOG_MAX_OPS; i++)
+  for (i = 0; i < LOG_MAX_OPS; i++) {
     logOps[i].variable = NULL;
+  }
 }
