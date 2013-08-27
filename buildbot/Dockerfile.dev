@@ -1,6 +1,10 @@
 FROM $BASE_IMAGE:latest
 
+# Install more software
+RUN apt-get install -y emacs vim nano tmux
+
 # Copy public key
+RUN chown user:user /home/user
 RUN mkdir -p /home/user/.ssh
 ADD ssh_id /home/user/.ssh/authorized_keys
 
