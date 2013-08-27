@@ -1,0 +1,14 @@
+FROM $BASE_IMAGE:latest
+
+# Copy public key
+RUN mkdir -p /home/user/.ssh
+ADD ssh_id /home/user/.ssh/authorized_keys
+
+# Allow passwordless sudo
+ADD sudoers /etc/sudoers
+RUN chown root:root /etc/sudoers
+
+EXPOSE $PORT0:22
+EXPOSE :$PORT1
+
+CMD /bin/bash -c "/usr/sbin/sshd -D"
