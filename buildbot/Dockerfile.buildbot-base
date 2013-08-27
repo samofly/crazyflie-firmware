@@ -45,6 +45,6 @@ RUN tar -C /home/user -xjf /home/user/arm-eabi.tar.bzip2
 # Install Clang
 RUN cd /home/user && git clone http://llvm.org/git/llvm.git && cd llvm && git checkout f5b9110ce1e0d5bc6f96b1e74d110f0cc576324a
 RUN cd /home/user/llvm/tools && git clone http://llvm.org/git/clang.git && cd clang && git checkout 40ec4d26b7622eb07ad8d5f02da0dd43a1dc74b5
-RUN mkdir /home/user/llvm/cbuild && cd /home/user/llvm/cbuild && cmake .. && make -j4
+RUN mkdir /home/user/llvm/cbuild && cd /home/user/llvm/cbuild && cmake .. && make -j4 || make || make || make
 
 ENV PATH /home/user/llvm/cbuild/bin:/home/user/arm-2013.05/bin:/home/user/qemu_stm32/arm-softmmu:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
