@@ -1,7 +1,7 @@
 FROM $BASE_IMAGE:latest
 
 # Install more software
-RUN apt-get install -y emacs vim nano tmux
+RUN apt-get install -y emacs vim nano tmux mercurial make
 
 # Copy public key
 RUN chown user:user /home/user
@@ -16,3 +16,4 @@ EXPOSE $PORT0:22
 EXPOSE :$PORT1
 
 CMD /bin/bash -c "/usr/sbin/sshd -D"
+
