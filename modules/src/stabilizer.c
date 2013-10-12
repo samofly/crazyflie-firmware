@@ -25,6 +25,8 @@
  */
 #define DEBUG_MODULE "STABILIZER"
 
+#include <string.h>
+
 #include "stm32f10x_conf.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -39,6 +41,7 @@
 #include "log.h"
 #include "usec_time.h"
 #include "debug.h"
+#include "crtp.h"
 
 /**
  * Defines in what divided update rate should the attitude
@@ -111,9 +114,6 @@ LOG_GROUP_STOP(gyro)
 
 static bool isInit;
 
-static void distributePower(const uint16_t thrust, const int16_t roll,
-                            const int16_t pitch, const int16_t yaw);
-static uint16_t limitThrust(int32_t value);
 static void stabilizerTask(void *param);
 
 void stabilizerInit(void) {
@@ -139,10 +139,10 @@ bool stabilizerTest(void) {
   return motorsTest() & imu6Test() & sensfusion6Test() & controllerTest();
 }
 
+static CRTPPacket p;
+
 static void stabilizerTask(void *param) {
-  uint32_t attitudeCounter = 0;
   uint32_t lastWakeTime;
-  uint64_t lastUpdateTime;
 
   vTaskSetApplicationTaskTag(0, (void *)TASK_STABILIZER_ID_NBR);
 
@@ -150,7 +150,6 @@ static void stabilizerTask(void *param) {
   systemWaitStart();
 
   lastWakeTime = xTaskGetTickCount();
-  lastUpdateTime = usecTimestamp();
 
   while (1) {
     vTaskDelayUntil(&lastWakeTime, F2T(IMU_UPDATE_FREQ));
@@ -158,81 +157,11 @@ static void stabilizerTask(void *param) {
     imu6Read(&gyro, &acc);
     uint64_t imuReadTime = usecTimestamp();
 
-    if (!imu6IsCalibrated()) {
-      continue;
-    }
-
-    commanderGetRPY(&eulerRollDesired, &eulerPitchDesired, &eulerYawDesired);
-    commanderGetRPYType(&rollType, &pitchType, &yawType);
-
-    if (++attitudeCounter >= ATTITUDE_UPDATE_RATE_DIVIDER) {
-      float dtSec = ((float)(imuReadTime - lastUpdateTime) / 1000000);
-      lastUpdateTime = imuReadTime;
-      sensfusion6UpdateQ(gyro.x, gyro.y, gyro.z, acc.x, acc.y, acc.z, dtSec);
-      sensfusion6GetEulerRPY(&eulerRollActual, &eulerPitchActual,
-                             &eulerYawActual);
-
-      controllerCorrectAttitudePID(
-            eulerRollActual, eulerPitchActual, eulerYawActual, eulerRollDesired,
-            eulerPitchDesired, -eulerYawDesired, &rollRateDesired,
-            &pitchRateDesired, &yawRateDesired);
-      attitudeCounter = 0;
-    }
-
-    if (rollType == RATE) {
-      rollRateDesired = eulerRollDesired;
-    }
-    if (pitchType == RATE) {
-      pitchRateDesired = eulerPitchDesired;
-    }
-    if (yawType == RATE) {
-      yawRateDesired = -eulerYawDesired;
-    }
-
-    // TODO: Investigate possibility to subtract gyro drift.
-    controllerCorrectRatePID(gyro.x, -gyro.y, gyro.z, rollRateDesired,
-                             pitchRateDesired, yawRateDesired);
-
-    controllerGetActuatorOutput(&actuatorRoll, &actuatorPitch, &actuatorYaw);
-
-    commanderGetTrust(&actuatorThrust);
-    if (actuatorThrust <= 0) {
-      distributePower(0, 0, 0, 0);
-      controllerResetAllPID();
-      continue;
-    }
-    distributePower(actuatorThrust, actuatorRoll, actuatorPitch, -actuatorYaw);
+    p.size = 30;
+    p.data[0] = 133;
+    memcpy(&p.data[1], &gyro, sizeof(gyro));
+    memcpy(&p.data[13], &acc, sizeof(acc)); 
+    memcpy(&p.data[25], &imuReadTime, 6);
+    crtpSendPacket(&p);
   }
-}
-
-static void distributePower(const uint16_t thrust, const int16_t roll,
-                            const int16_t pitch, const int16_t yaw) {
-#ifdef QUAD_FORMATION_X
-  roll >>= 1;
-  pitch >>= 1;
-  motorPowerM1 = limitThrust(thrust - roll + pitch + yaw);
-  motorPowerM2 = limitThrust(thrust - roll - pitch - yaw);
-  motorPowerM3 = limitThrust(thrust + roll - pitch + yaw);
-  motorPowerM4 = limitThrust(thrust + roll + pitch - yaw);
-#else // QUAD_FORMATION_NORMAL
-  motorPowerM1 = limitThrust(thrust + pitch + yaw);
-  motorPowerM2 = limitThrust(thrust - roll - yaw);
-  motorPowerM3 = limitThrust(thrust - pitch + yaw);
-  motorPowerM4 = limitThrust(thrust + roll - yaw);
-#endif
-
-  motorsSetRatio(MOTOR_M1, motorPowerM1);
-  motorsSetRatio(MOTOR_M2, motorPowerM2);
-  motorsSetRatio(MOTOR_M3, motorPowerM3);
-  motorsSetRatio(MOTOR_M4, motorPowerM4);
-}
-
-static uint16_t limitThrust(int32_t value) {
-  if (value > UINT16_MAX) {
-    value = UINT16_MAX;
-  } else if (value < 0) {
-    value = 0;
-  }
-
-  return (uint16_t)value;
 }
