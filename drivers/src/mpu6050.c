@@ -31,6 +31,8 @@
  */
 #define DEBUG_MODULE "MPU6050"
 
+#include <string.h>
+
 #include "stm32f10x_conf.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -2062,6 +2064,7 @@ void mpu6050GetMotion9(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx,
  */
 void mpu6050GetMotion6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx,
                        int16_t *gy, int16_t *gz) {
+  memset(buffer, 0, sizeof(buffer));
   i2cdevRead(I2Cx, devAddr, MPU6050_RA_ACCEL_XOUT_H, 14, buffer);
   *ax = (((int16_t)buffer[0]) << 8) | buffer[1];
   *ay = (((int16_t)buffer[2]) << 8) | buffer[3];
