@@ -77,16 +77,19 @@ static void stabilizerTask(void *param) {
 
   lastWakeTime = xTaskGetTickCount();
 
+  uint32_t count = 0;
   while (1) {
     vTaskDelayUntil(&lastWakeTime, F2T(IMU_UPDATE_FREQ));
 
     mpu6050GetMotion6(&mpuOut[0], &mpuOut[1], &mpuOut[2], &mpuOut[3], &mpuOut[4], &mpuOut[5]);
     uint64_t imuReadTime = usecTimestamp();
 
-    p.size = 21;
+    p.size = 25;
     p.data[0] = 133;
-    memcpy(&p.data[1], mpuOut, 12);
-    memcpy(&p.data[13], &imuReadTime, 8);
+    memcpy(&p.data[1], &count, 4);
+    memcpy(&p.data[5], mpuOut, 12);
+    memcpy(&p.data[17], &imuReadTime, 8);
     crtpSendPacket(&p);
+    count++;
   }
 }
