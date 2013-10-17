@@ -32,6 +32,7 @@
 #include "task.h"
 
 #include "mpu6050.h"
+#include "hmc5883l.h"
 #include "system.h"
 #include "stabilizer.h"
 #include "commander.h"
@@ -65,7 +66,7 @@ bool stabilizerTest(void) {
 }
 
 static CRTPPacket p;
-static int16_t mpuOut[6];
+static int16_t mpuOut[9];
 
 static void stabilizerTask(void *param) {
   uint32_t lastWakeTime;
@@ -77,18 +78,22 @@ static void stabilizerTask(void *param) {
 
   lastWakeTime = xTaskGetTickCount();
 
+  hmc5883lSetMode(HMC5883L_MODE_SINGLE);
+  vTaskDelay(M2T(HMC5883L_ST_DELAY_MS));
+
   uint32_t count = 0;
   while (1) {
     vTaskDelayUntil(&lastWakeTime, F2T(IMU_UPDATE_FREQ));
 
     mpu6050GetMotion6(&mpuOut[0], &mpuOut[1], &mpuOut[2], &mpuOut[3], &mpuOut[4], &mpuOut[5]);
+    hmc5883lGetHeading(&mpuOut[6], &mpuOut[7], &mpuOut[8]);
     uint64_t imuReadTime = usecTimestamp();
 
-    p.size = 25;
+    p.size = 30;
     p.data[0] = 133;
     memcpy(&p.data[1], &count, 4);
-    memcpy(&p.data[5], mpuOut, 12);
-    memcpy(&p.data[17], &imuReadTime, 8);
+    memcpy(&p.data[5], mpuOut, 18);
+    memcpy(&p.data[23], &imuReadTime, 8);
     crtpSendPacket(&p);
     count++;
   }
